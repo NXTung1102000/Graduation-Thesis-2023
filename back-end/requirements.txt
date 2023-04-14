@@ -1,0 +1,16 @@
+uvicorn
+fastapi
+msgpack
+celery[redis]
+starlette
+PyYAML
+requests
+aiofiles
+Jinja2
+passlib
+python-jose
+uuid
+beautifulsoup4
+requests-async
+string-grouper
+pandas
