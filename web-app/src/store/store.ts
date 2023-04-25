@@ -2,28 +2,11 @@ import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/t
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-// import loadingSlice from "../component/LoadingAndNotice/loadingSlice";
-// import noticeSlice from "../component/LoadingAndNotice/noticeSlice";
-import counterReducer from '../page/counter/counterSlice.ts';
-// import AuthSlice from "../pages/LogIn_Register/AuthSlice";
-// import CartSlice from "../pages/user/cart/CartSlice";
-
-const authPersistConfig = {
-  key: 'auth',
-  storage,
-};
-
-const cartPersistConfig = {
-  key: 'cart',
-  storage,
-};
+import AuthSlice from '../page/sign_in/AuthSlice.js';
 
 const reducer = combineReducers({
-  //   auth: persistReducer(authPersistConfig, AuthSlice),
-  //   cart: persistReducer(cartPersistConfig, CartSlice),
-  counter: counterReducer,
-  //   isLoading: loadingSlice,
-  //   notice: noticeSlice,
+  // auth: persistReducer(authPersistConfig, AuthSlice),
+  auth: AuthSlice,
 });
 
 export const store = configureStore({

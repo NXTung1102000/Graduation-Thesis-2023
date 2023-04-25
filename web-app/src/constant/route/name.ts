@@ -1,8 +1,21 @@
+export enum GuestRoute {
+  HOME = '/', // how to use this app
+  SEARCH_EXAM_INTEGRATION = '/search_exam_integration',
+}
+
 export enum StudentRoute {
-  HOME = '/',
-  STUDENT_PROFILE = '/profile',
+  PROFILE = '/profile',
+  DO_EXAM = '/do_exam',
+  HISTORY = '/history',
+  SEE_CLASS = '/class',
+  SEE_EXAM = '/exam',
 }
 
 export enum TeacherRoute {
-  TEACHER_DASHBOARD = '/dashboard',
+  MANAGER_CLASS = '/class',
+  MANAGER_EXAM = '/exam',
+}
+
+export enum AdminRoute {
+  DASHBOARD = '/admin',
 }

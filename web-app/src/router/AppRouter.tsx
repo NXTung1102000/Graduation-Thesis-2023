@@ -1,16 +1,23 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { PrivateRouter, PublicRouter } from '../constant/route/route';
+import { AdminRouter, GuestRouter, StudentRouter, TeacherRouter } from '../constant/route/route';
 import { Counter } from '../page/counter/Counter';
+import Layout from '../page/Layout';
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {PublicRouter.map((router) => (
+        {GuestRouter.map((router) => (
+          <Route key={router.router} path={router.router} element={<Layout>{router.component}</Layout>} />
+        ))}
+        {StudentRouter.map((router) => (
           <Route key={router.router} path={router.router} element={router.component} />
         ))}
-        {PrivateRouter.map((router) => (
+        {TeacherRouter.map((router) => (
+          <Route key={router.router} path={router.router} element={router.component} />
+        ))}
+        {AdminRouter.map((router) => (
           <Route key={router.router} path={router.router} element={router.component} />
         ))}
 
