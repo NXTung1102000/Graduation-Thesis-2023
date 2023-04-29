@@ -3,8 +3,11 @@ export enum GuestRoute {
   SEARCH_EXAM_INTEGRATION = '/search_exam_integration',
 }
 
-export enum StudentRoute {
+export enum AccountRoute {
   PROFILE = '/profile',
+}
+
+export enum StudentRoute {
   DO_EXAM = '/do_exam',
   HISTORY = '/history',
   SEE_CLASS = '/class',
@@ -12,8 +15,8 @@ export enum StudentRoute {
 }
 
 export enum TeacherRoute {
-  MANAGER_CLASS = '/class',
-  MANAGER_EXAM = '/exam',
+  MANAGE_CLASS = '/manage_class',
+  MANAGE_EXAM = '/manage_exam',
 }
 
 export enum AdminRoute {

@@ -1,9 +1,11 @@
 export enum GuestTab {
-  HOME = 'Tìm kiếm tích hợp',
+  HOME = 'Trang chủ',
+  SEARCH_EXAM_INTEGRATION = 'Tìm kiếm tích hợp',
 }
 
 export enum StudentTab {
   CLASS = 'Danh sách lớp',
+  PUBLIC_EXAM = 'Đề thi công khai',
   HISTORY = 'Lịch sử thi',
 }
 export enum TeacherTab {
@@ -13,4 +15,5 @@ export enum TeacherTab {
 
 export enum AdminTab {
   DASHBOARD = 'Thống kê',
+  MANAGE_TEACHER = 'Quản lý giáo viên',
 }

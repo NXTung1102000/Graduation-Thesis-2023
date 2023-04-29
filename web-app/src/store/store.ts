@@ -2,7 +2,7 @@ import { Action, combineReducers, configureStore, ThunkAction } from '@reduxjs/t
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import AuthSlice from '../page/sign_in/AuthSlice.js';
+import AuthSlice from '../page/account/AuthSlice.js';
 
 const reducer = combineReducers({
   // auth: persistReducer(authPersistConfig, AuthSlice),

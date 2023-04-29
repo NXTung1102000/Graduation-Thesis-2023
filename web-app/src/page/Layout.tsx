@@ -9,18 +9,19 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { HeaderApp } from '../component/header_footer/HeaderApp';
-import LeftBavCategory from '../component/header_footer/LeftBav';
+import LeftBav from '../component/header_footer/LeftBav';
 import { ResponsiveMenu } from '../component/header_footer/Menu';
 import { MenuUser, MenuUserMobile } from '../component/header_footer/MenuUser';
 import { name } from '../constant/name';
 // import Loading from '../component/LoadingAndNotice/Loading';
 // import { selectLoading } from '../component/LoadingAndNotice/loadingSlice';
 // import Notice from '../component/LoadingAndNotice/Notice';
-import { GuestRoute } from '../constant/route/name';
+import { AccountRoute, GuestRoute } from '../constant/route/name';
 import { useAppDispatch, useAppSelector } from '../store/hook';
-import SignIn from './sign_in/SignIn';
+import SignIn from './account/SignIn';
 
 interface Props {
   children?: JSX.Element;
@@ -28,6 +29,8 @@ interface Props {
 
 export default function Layout(props: Props) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [open, setOpen] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState(false);
 
@@ -35,23 +38,23 @@ export default function Layout(props: Props) {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const signOut = () => {
-    // navigate(UserRoute.HOME);
+    navigate(GuestRoute.HOME);
     // dispatch(LogOutUser());
     handleMenuClose();
   };
 
   const returnHome = () => {
     handleMenuClose();
-    // navigate(UserRoute.HOME);
+    navigate(GuestRoute.HOME);
   };
 
   const openProfile = () => {
     handleMenuClose();
-    // navigate(UserRoute.USER_PROFILE);
+    navigate(AccountRoute.PROFILE);
   };
 
   const navigateTab = (route?: string) => {
-    console.log(route);
+    if (route) navigate(route);
   };
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -129,13 +132,13 @@ export default function Layout(props: Props) {
           handleMenuClose={handleMenuClose}
         />
         <MenuUserMobile
-          numProduct={1}
           mobileMoreAnchorEl={mobileMoreAnchorEl}
+          openProfile={openProfile}
           signOut={signOut}
           setOpenLogin={setOpenLogin}
           handleMobileMenuClose={handleMobileMenuClose}
         />
-        <LeftBavCategory open={open} setOpen={setOpen} navigate={navigateTab} />
+        <LeftBav open={open} setOpen={setOpen} navigate={navigateTab} />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <ResponsiveMenu />
 

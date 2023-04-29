@@ -1,11 +1,9 @@
 import { AccountCircle } from '@mui/icons-material';
-import HistoryIcon from '@mui/icons-material/History';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Badge, IconButton, Menu, MenuItem } from '@mui/material';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 
-import { selectAuth } from '../../page/sign_in/AuthSlice';
+import { selectAuth } from '../../page/account/AuthSlice';
 import { useAppSelector } from '../../store/hook';
 
 interface IProps {
@@ -33,24 +31,24 @@ export function MenuUser(props: IProps) {
       open={Boolean(props.anchorEl)}
       onClose={props.handleMenuClose}
     >
-      <MenuItem onClick={props.openProfile}>Profile</MenuItem>
-      <MenuItem onClick={props.signOut}>Log out</MenuItem>
+      <MenuItem onClick={props.openProfile}>Tài khoản</MenuItem>
+      <MenuItem onClick={props.signOut}>Đăng xuất</MenuItem>
       <MenuItem
         onClick={() => {
           props.setOpenLogin(true);
           props.handleMenuClose();
         }}
       >
-        Log in
+        Đăng nhập
       </MenuItem>
     </Menu>
   );
 }
 
 interface IPropsMobile {
-  numProduct: number;
   mobileMoreAnchorEl: null | HTMLElement;
   signOut: () => void;
+  openProfile: () => void;
   setOpenLogin: (open: boolean) => void;
   handleMobileMenuClose: () => void;
 }
@@ -72,11 +70,17 @@ export function MenuUserMobile(props: IPropsMobile) {
       open={Boolean(props.mobileMoreAnchorEl)}
       onClose={props.handleMobileMenuClose}
     >
+      <MenuItem onClick={props.openProfile}>
+        <IconButton size="large" color="inherit">
+          <AccountCircle />
+        </IconButton>
+        <p>Tài khoản</p>
+      </MenuItem>
       <MenuItem onClick={props.signOut}>
         <IconButton size="large" color="inherit">
           <LogoutIcon />
         </IconButton>
-        <p>Log out</p>
+        <p>Đăng xuất</p>
       </MenuItem>
       <MenuItem
         onClick={() => {
@@ -87,7 +91,7 @@ export function MenuUserMobile(props: IPropsMobile) {
         <IconButton size="large" color="inherit">
           <LoginIcon />
         </IconButton>
-        <p>Log in</p>
+        <p>Đăng nhập</p>
       </MenuItem>
     </Menu>
   );
