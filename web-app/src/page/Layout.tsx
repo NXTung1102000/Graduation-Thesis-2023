@@ -1,9 +1,7 @@
 import { AccountCircle } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import SearchIcon from '@mui/icons-material/Search';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Badge } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
@@ -94,7 +92,10 @@ export default function Layout(props: Props) {
                 >
                   <MenuIcon />
                 </IconButton>
-                <Typography variant="h6" noWrap component="div" onClick={returnHome} sx={{ cursor: 'pointer' }}>
+                <IconButton>
+                  <MenuBookIcon fontSize="large" sx={{ color: 'white' }} />
+                </IconButton>
+                <Typography variant="h6" noWrap onClick={returnHome} sx={{ cursor: 'pointer' }}>
                   {name}
                 </Typography>
               </Box>
