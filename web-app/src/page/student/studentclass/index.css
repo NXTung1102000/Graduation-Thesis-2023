@@ -1,0 +1,26 @@
+.a-student-studentclass{
+  display: flex;
+  flex-flow: column;
+  gap: 24px;
+}
+
+.a-student-studentclass-table{
+  padding: 24px;
+  background: #FFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DAE0E2;
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+}
+
+.a-studentclass-table-status{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+}
+
+.a-studentclass-status-detail{
+  display: flex;
+  align-items: center;
+}

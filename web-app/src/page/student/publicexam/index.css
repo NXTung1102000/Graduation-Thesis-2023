@@ -1,0 +1,41 @@
+.a-student-publicexam{
+  display: flex;
+  flex-flow: column;
+  gap: 24px;
+}
+
+.a-student-publicexam-container{
+  padding: 24px;
+  background: #FFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DAE0E2;
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+}
+
+.a-publicexam-filters{
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+}
+
+.a-publicexam-list-exam{
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
+  background-color: #F2F3F4;
+  padding: 16px;
+  border: 1px solid #DAE0E2;
+  border-radius: 8px;
+}
+
+.a-publicexam-exam-createddate{
+  display: flex;
+  flex-flow: row;
+  gap: 8px;
+  font-family: 'Open Sans';
+  font-weight: normal;
+  font-size: 14px;
+  color: #323E4D;
+}

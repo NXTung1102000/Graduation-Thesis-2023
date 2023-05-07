@@ -1,0 +1,14 @@
+.MuiTableCell-root.MuiTableCell-head{
+  background-color: #F2F3F4;
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 14px;
+  color: #323E4D;
+}
+
+.MuiTableCell-root.MuiTableCell-body{
+  font-family: 'Segoe UI';
+  font-weight: normal;
+  font-size: 14px;
+  color: #323E4D;
+}

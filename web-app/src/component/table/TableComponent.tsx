@@ -8,8 +8,8 @@ import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import * as React from 'react';
-
 import TablePaginationActions from './TablePaginationActions';
+import './index.css';
 
 interface IPropsTable {
   header: string[];

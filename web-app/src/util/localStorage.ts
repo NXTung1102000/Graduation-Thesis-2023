@@ -32,4 +32,8 @@ const refreshTokens = (tokens: string) => {
   }
 };
 
-export { getAccessToken, getRefreshToken, getUserId, refreshTokens };
+const combineClassName: (preClassName: string, propsClassName?: string) => string = (preClassName, propsClassName) => {
+  return [preClassName, propsClassName].filter((preClassName) => !!preClassName).join(' ');
+};
+
+export { combineClassName, getAccessToken, getRefreshToken, getUserId, refreshTokens };

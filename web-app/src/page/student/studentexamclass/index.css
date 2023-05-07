@@ -1,0 +1,26 @@
+.a-student-studentexamclass{
+  display: flex;
+  flex-flow: column;
+  gap: 24px;
+}
+
+.a-student-studentexamclass-table{
+  padding: 24px;
+  background: #FFF 0% 0% no-repeat padding-box;
+  border: 1px solid #DAE0E2;
+  border-radius: 8px;
+  display: flex;
+  flex-flow: column;
+  gap: 16px;
+}
+
+.a-studentexamclass-table-createddate{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+}
+
+.a-studentexamclass-createddate-detail{
+  display: flex;
+  align-items: center;
+}

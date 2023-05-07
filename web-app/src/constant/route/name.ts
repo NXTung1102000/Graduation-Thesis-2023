@@ -11,6 +11,7 @@ export enum StudentRoute {
   DO_EXAM = '/do_exam',
   HISTORY = '/history',
   SEE_CLASS = '/class',
+  SEE_EXAM_CLASS = '/class/exam',
   SEE_EXAM = '/exam',
 }
 

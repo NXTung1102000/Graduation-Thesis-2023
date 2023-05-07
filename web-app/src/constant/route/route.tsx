@@ -3,9 +3,10 @@ import Statistic from '../../page/admin/Statistic';
 import SearchExamIntegration from '../../page/guest/SearchExamIntegration';
 import Home from '../../page/Home';
 import DoExam from '../../page/student/DoExam';
-import History from '../../page/student/History';
-import PublicExam from '../../page/student/PublicExam';
-import StudentClass from '../../page/student/StudentClass';
+import ExamHistory from '../../page/student/examhistory/ExamHistory';
+import PublicExam from '../../page/student/publicexam/PublicExam';
+import StudentClass from '../../page/student/studentclass/StudentClass';
+import StudentExamClass from '../../page/student/studentexamclass/StudentExamClass';
 import ManageClass from '../../page/teacher/ManageClass';
 import ManageExam from '../../page/teacher/ManageExam';
 import { AccountRoute, AdminRoute, GuestRoute, StudentRoute, TeacherRoute } from './name';
@@ -27,8 +28,9 @@ export const AccountRouter: Router_Component[] = [
 ];
 
 export const StudentRouter: Router_Component[] = [
-  { router: StudentRoute.HISTORY, component: <History /> },
+  { router: StudentRoute.HISTORY, component: <ExamHistory /> },
   { router: StudentRoute.SEE_CLASS, component: <StudentClass /> },
+  { router: StudentRoute.SEE_EXAM_CLASS, component: <StudentExamClass /> },
   { router: StudentRoute.SEE_EXAM, component: <PublicExam /> },
   { router: StudentRoute.DO_EXAM, component: <DoExam /> },
 ];
