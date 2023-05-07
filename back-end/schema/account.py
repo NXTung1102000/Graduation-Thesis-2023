@@ -1,30 +1,36 @@
 from pydantic import BaseModel
 
-class StudentBase(BaseModel):
+class AccountBase(BaseModel):
     name: str
     email: str
 
-class StudentCreate(StudentBase):
+class AccountLogin(BaseModel):
+    email: str
     password: str
 
-class Student(StudentBase):
-    student_id: int
-    is_blocked: bool
+class AccountCreate(AccountBase):
+    password: str
+
+class Account(AccountBase):
     account_id: int
-    class Config:
+    class Config():
+        orm_mode = True
+
+class Student(BaseModel):
+    student_id: int
+    detail_student: Account
+    class Config():
         orm_mode = True
 
 
-class TeacherBase(BaseModel):
-    name: str
-    email: str
-
-class TeacherCreate(TeacherBase):
-    password: str
-
-class Teacher(TeacherBase):
+class Teacher(BaseModel):
     teacher_id: int
-    is_blocked: bool
-    account_id: int
-    class Config:
+    detail_teacher: Account
+    class Config():
+        orm_mode = True
+
+class AdminBase(BaseModel):
+    email: str
+    name: str
+    class Config():
         orm_mode = True
