@@ -20,6 +20,16 @@
   gap: 16px;
 }
 
+.a-publicexam-filters-option{
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+}
+
+.a-student-publicexam-filter .MuiButtonBase-root {
+  width: 170px;
+}
+
 .a-publicexam-list-exam{
   display: flex;
   flex-flow: column;

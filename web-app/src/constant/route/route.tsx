@@ -7,8 +7,9 @@ import ExamHistory from '../../page/student/examhistory/ExamHistory';
 import PublicExam from '../../page/student/publicexam/PublicExam';
 import StudentClass from '../../page/student/studentclass/StudentClass';
 import StudentExamClass from '../../page/student/studentexamclass/StudentExamClass';
-import ManageClass from '../../page/teacher/ManageClass';
 import ManageExam from '../../page/teacher/ManageExam';
+import TeacherClass from '../../page/teacher/teacherclass/TeacherClass';
+import TeacherClassDetail from '../../page/teacher/teacherclassdetail/TeacherClassDetail';
 import { AccountRoute, AdminRoute, GuestRoute, StudentRoute, TeacherRoute } from './name';
 
 export interface Router_Component {
@@ -36,7 +37,8 @@ export const StudentRouter: Router_Component[] = [
 ];
 
 export const TeacherRouter: Router_Component[] = [
-  { router: TeacherRoute.MANAGE_CLASS, component: <ManageClass /> },
+  { router: TeacherRoute.MANAGE_CLASS, component: <TeacherClass /> },
+  { router: TeacherRoute.MANAGE_CLASS_DETAIL, component: <TeacherClassDetail /> },
   { router: TeacherRoute.MANAGE_EXAM, component: <ManageExam /> },
 ];
 

@@ -20,3 +20,12 @@ export interface IExamModel {
   time?: number;
   createdDate?: Date | string;
 }
+
+export interface IHumanModel {
+  name?: string;
+  email?: string;
+}
+
+export interface IStudentModel extends IHumanModel {}
+
+export interface ITeacherModel extends IHumanModel {}

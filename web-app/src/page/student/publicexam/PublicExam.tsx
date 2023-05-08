@@ -48,20 +48,22 @@ class PublicExam extends React.Component<IPublicExamProps> {
           <ContentHeader content="Bộ Lọc" />
           <div className="a-publicexam-filters">
             <TextField fullWidth label="Từ khóa" />
-            <TextField select fullWidth label="Loại đề thi">
-              {examTypeOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField fullWidth select label="Khối">
-              {examGradeOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+            <div className="a-publicexam-filters-option">
+              <TextField select fullWidth label="Loại đề thi">
+                {examTypeOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField fullWidth select label="Khối">
+                {examGradeOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
           </div>
           <Button size="small" variant="contained">
             {'Tìm kiếm'}

@@ -18,6 +18,7 @@ export enum StudentRoute {
 export enum TeacherRoute {
   MANAGE_CLASS = '/manage_class',
   MANAGE_EXAM = '/manage_exam',
+  MANAGE_CLASS_DETAIL = '/manage_class/detail',
 }
 
 export enum AdminRoute {
