@@ -7,7 +7,6 @@ import ExamHistory from '../../page/student/examhistory/ExamHistory';
 import PublicExam from '../../page/student/publicexam/PublicExam';
 import StudentClass from '../../page/student/studentclass/StudentClass';
 import StudentExamClass from '../../page/student/studentexamclass/StudentExamClass';
-import ManageExam from '../../page/teacher/ManageExam';
 import TeacherClass from '../../page/teacher/teacherclass/TeacherClass';
 import TeacherClassDetail from '../../page/teacher/teacherclassdetail/TeacherClassDetail';
 import TeacherExam from '../../page/teacher/teacherexam/TeacherExam';

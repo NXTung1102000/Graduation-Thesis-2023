@@ -1,9 +1,9 @@
 import React from 'react';
-import { CommonDialog, ContentHeader, PageTitle, TableComponent } from '../../../component';
-import { ClassStatus, IClass, IStudentClass } from '../../../constant';
+import { ContentHeader, PageTitle, TableComponent } from '../../../component';
+import { IClass } from '../../../constant';
 import { Link } from 'react-router-dom';
-import './index.css';
 import { TeacherRoute } from '../../../constant/route/name';
+import './index.css';
 
 interface ITeacherClassProps {}
 

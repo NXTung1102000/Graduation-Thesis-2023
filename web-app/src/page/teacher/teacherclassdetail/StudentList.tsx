@@ -1,10 +1,8 @@
 import React from 'react';
-import { CommonDialog, ContentHeader, PageTitle, TableComponent } from '../../../component';
-import { ClassStatus, IClass, IExam, IStudent, IStudentClass } from '../../../constant';
-import { Link } from 'react-router-dom';
-import './index.css';
-import { TeacherRoute } from '../../../constant/route/name';
+import { TableComponent } from '../../../component';
+import { IStudent } from '../../../constant';
 import { Button } from '@mui/material';
+import './index.css';
 
 interface IStudentListProps {}
 

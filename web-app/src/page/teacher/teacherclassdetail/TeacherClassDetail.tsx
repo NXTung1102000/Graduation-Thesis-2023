@@ -1,11 +1,9 @@
-import { CommonTableTab, ContentHeader, InfoBox, TableComponent } from '../../../component';
-import { IExam } from '../../../constant';
+import { CommonTableTab, InfoBox } from '../../../component';
 import { useLocation } from 'react-router-dom';
-import { Button } from '@mui/material';
-import './index.css';
 import ExamList from './ExamList';
 import StudentList from './StudentList';
 import TeacherList from './TeacherList';
+import './index.css';
 
 interface ITeacherClassDetailProps {}
 
