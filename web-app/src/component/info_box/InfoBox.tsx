@@ -36,6 +36,13 @@ class InfoBox extends React.Component<IInfoBoxProps> {
             {this.props.detail[key]}
           </div>
         );
+      case 'teacherName':
+        return (
+          <div className="a-infobox-info">
+            <div className="a-infobox-info-title">{'Tên giáo viên:'}</div>
+            {this.props.detail[key]}
+          </div>
+        );
       default:
         break;
     }
