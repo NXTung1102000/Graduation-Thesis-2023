@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from config.db import get_db
 from service import sign_in
-from schema import account as schema_account
+from schema import user as schema_user
+from model import models
 from datetime import datetime, timedelta
 from schema.request import RequestSchema, ResponseSchema, TokenResponse
 from util.jwt import generate_token
@@ -15,9 +16,10 @@ API_SignIn = APIRouter(prefix="", tags=["Sign in, Sign up"])
 """
 
 @API_SignIn.post('/register_student')
-async def register_student(student: schema_account.AccountCreate, db: Session = Depends(get_db)):
+async def register_student(student: schema_user.UserCreate, db: Session = Depends(get_db)):
+    role_student = 1
     try:
-        result = sign_in.register_student(student, db)
+        result = sign_in.register(student, role_student , db)
         if result:
             return ResponseSchema(
                 code="200", status="Ok", 
@@ -37,9 +39,10 @@ async def register_student(student: schema_account.AccountCreate, db: Session = 
         ).dict(exclude_none=True)
 
 @API_SignIn.post('/register_teacher')
-async def register_teacher(teacher: schema_account.AccountCreate, db: Session = Depends(get_db)):
+async def register_teacher(teacher: schema_user.UserCreate, db: Session = Depends(get_db)):
+    role_teacher = 2
     try:
-        result = sign_in.register_teacher(teacher, db)
+        result = sign_in.register(teacher, role_teacher, db)
         if result:
             return ResponseSchema(
                 code="200", status="Ok", 
@@ -60,9 +63,10 @@ async def register_teacher(teacher: schema_account.AccountCreate, db: Session = 
         ).dict(exclude_none=True)
 
 @API_SignIn.post('/register_admin')
-async def register_admin(admin: schema_account.AccountCreate, db: Session = Depends(get_db)):
+async def register_admin(admin: schema_user.UserCreate, db: Session = Depends(get_db)):
+    role_admin = 0
     try:
-        result = sign_in.register_admin(admin, db)
+        result = sign_in.register(admin, role_admin, db)
         if result:
             return ResponseSchema(
                 code="200", status="Ok", 
@@ -83,7 +87,7 @@ async def register_admin(admin: schema_account.AccountCreate, db: Session = Depe
         ).dict(exclude_none=True)
 
 @API_SignIn.post('/login')
-async def login(account: schema_account.AccountLogin, db: Session = Depends(get_db)):
+async def login(account: schema_user.UserLogin, db: Session = Depends(get_db)):
     try:
         result = sign_in.login(account, db)
         code = result[0]
@@ -91,9 +95,15 @@ async def login(account: schema_account.AccountLogin, db: Session = Depends(get_
         role = result[2]
         if(code == "200"):
             token = generate_token({"sub": account.email, "role": role})
+            user = result[3]
+            detail_user = {
+                "email": user.email,
+                "name": user.name,
+                "role": role
+            }
             return ResponseSchema(
                 code = code, status="Ok", message = message,
-                result = TokenResponse(access_token=token, token_type="Bearer", role=role)
+                result = TokenResponse(access_token=token, token_type="Bearer", user=detail_user)
             ).dict(exclude_none=True)
         
         return ResponseSchema(

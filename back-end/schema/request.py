@@ -20,6 +20,6 @@ class ResponseSchema(GenericModel, Generic[T]):
     result: Optional[T] = None
     
 class TokenResponse(BaseModel):
-    role: int
+    user: object
     access_token :str
     token_type: str

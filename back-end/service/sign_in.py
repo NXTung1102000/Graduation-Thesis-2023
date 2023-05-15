@@ -1,126 +1,43 @@
 from sqlalchemy.orm import Session
-from model import account as model_account
-from schema import account as schema_account
-from passlib.context import CryptContext
-from service import account as service_account
+from model import models
+from schema import user as scheme_user
+from service import user as service_user
+from util.jwt import hash_password
 
-# encrypt password
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def register_student(student: schema_account.AccountCreate, db: Session):
-    exist_admin = service_account.get_admin_by_email(student.email, db)
-    if(exist_admin is not None):
-        return False
-    
-    exist_account = service_account.get_account_by_email(student.email, db)
-    if(exist_account is not None):
+def register(user: scheme_user.UserCreate, role_user: int, db: Session):
+    exit_user = service_user.get_user_by_email(user.email, db)
+    if(exit_user is not None):
         return False
 
-    db_account = model_account.Account(
-        email = student.email,
-        password = pwd_context.hash(student.password),
-        name = student.name,
+    db_user = models.User(
+        email = user.email,
+        password = hash_password(user.password),
+        name = user.name,
+        role = role_user,
         is_blocked = False
     )
-    db.add(db_account)
+    db.add(db_user)
     db.commit()
-    
-    db_student = model_account.Student(account_id = db_account.account_id)
-    db.add(db_student)
-    
-    db.commit()
-    db.refresh(db_account)
-    db.refresh(db_student)
+    db.refresh(db_user)
     return True
 
-def register_teacher(teacher: schema_account.AccountCreate, db: Session):
-    exist_admin = service_account.get_admin_by_email(teacher.email, db)
-    if(exist_admin is not None):
-        return False
-    
-    exist_account = service_account.get_account_by_email(teacher.email, db)
-    if(exist_account is not None):
-        return False
-    
-    db_account = model_account.Account(
-        email = teacher.email,
-        password = pwd_context.hash(teacher.password),
-        name = teacher.name,
-        is_blocked = False
-    )
-    db.add(db_account)
-    db.commit()
-    
-    db_teacher = model_account.Teacher(account_id = db_account.account_id)
-    db.add(db_teacher)
-    
-    db.commit()
-    db.refresh(db_account)
-    db.refresh(db_teacher)
-    return True
-
-def register_admin(admin: schema_account.AccountCreate, db: Session):
-    exist_admin = service_account.get_admin_by_email(admin.email, db)
-    if(exist_admin is not None):
-        return False
-    
-    exist_account = service_account.get_account_by_email(admin.email, db)
-    if(exist_account is not None):
-        return False
-    
-    db_admin = model_account.Admin(
-        email = admin.email,
-        password = pwd_context.hash(admin.password),
-    )
-    db.add(db_admin)
-    db.commit()
-    db.refresh(db_admin)
-    return True
-
-def get_role(id: int, db: Session):
-    try:
-        student = db.query(model_account.Student).filter(model_account.Student.account_id == id).first()
-        if student != None:
-            return 1
-        
-        teacher = db.query(model_account.Teacher).filter(model_account.Teacher.account_id == id).first()
-        if teacher != None:
-            return 2
-    except Exception as error:
-        error_message = str(error.args)
-        print(error_message)
-    return -1
-        
-
-def login(account: schema_account.AccountLogin, db: Session):
+def login(user: scheme_user.UserLogin, db: Session):
     code = "200"
     message = ""
     role = -1
 
-    admin = service_account.get_admin_by_email(account.email, db)
-    if admin != None:
-        if not pwd_context.verify(account.password, admin.password):
-            code = "400"
-            message = "Mật khẩu không chính xác"
-            return (code, message, role)
-        else:
-            code = "200"
-            message = "Đăng nhập thành công !"
-            role = 0
-            return (code, message, role)
-
-    res_acc = service_account.get_account_by_email(account.email, db)
-    if res_acc == None:
+    user = service_user.get_user_by_email(user.email, db)
+    if user == None:
         code = "400"
         message = "Không tồn tại email"
         return (code, message, role)
     
-    if not pwd_context.verify(account.password, res_acc.password):
+    if not pwd_context.verify(user.password, user.password):
         code = "400"
         message = "Mật khẩu không chính xác"
         return (code, message, role)
     
-    role = get_role(res_acc.account_id, db)
+    role = user.role
     code = "200"
     message = "Đăng nhập thành công !"
-    return (code, message, role)
+    return (code, message, role, user)
