@@ -31,7 +31,7 @@ class TypeExam(Enum):
   Demo = 'Thi thử THPTQG',
 #   Advanced = 'Học sinh giỏi',
 
-class ClassExam(Enum):
-  Class10 = 'Lớp 10',
-  Class11 = 'Lớp 11',
-  Class12 = 'Lớp 12',
+class GradeExam(Enum):
+  Grade10 = 'Lớp 10',
+  Grade11 = 'Lớp 11',
+  Grade12 = 'Lớp 12',

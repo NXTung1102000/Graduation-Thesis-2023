@@ -33,6 +33,7 @@ class Class(Base):
 
     users_join = relationship("User", secondary="user_class", back_populates="class_list")
     exam_list = relationship("Exam", secondary="exam_class", back_populates="class_list")
+    owner = relationship("User", foreign_keys=[created_by])
 
 class Exam(Base):
     __tablename__ = "exam"
@@ -80,7 +81,7 @@ class User_Class(Base):
 
     user_id = Column(Integer, ForeignKey("user.user_id"), primary_key=True)
     class_id = Column(Integer, ForeignKey("class.class_id"), primary_key=True)
-    status = Column(String(255))
+    status = Column(Integer)
 
 class User_Exam(Base):
     __tablename__ = "user_exam"

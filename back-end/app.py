@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from controller.user import API_user
 from controller.sign_in import API_SignIn
+from controller.classes.student_class import API_Class_Student
+from controller.classes.teacher_class import API_Class_Teacher
 from config import db
 db.Base.metadata.create_all(bind=db.engine)
 
@@ -18,8 +20,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(API_user)
 app.include_router(API_SignIn)
+app.include_router(API_Class_Student)
+app.include_router(API_Class_Teacher)
+app.include_router(API_user)
 
 @app.get("/")
 async def root():

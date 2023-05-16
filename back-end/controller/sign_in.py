@@ -15,6 +15,37 @@ API_SignIn = APIRouter(prefix="", tags=["Sign in, Sign up"])
     Authentication Router
 """
 
+@API_SignIn.post('/login')
+async def login(account: schema_user.UserLogin, db: Session = Depends(get_db)):
+    try:
+        result = sign_in.login(account, db)
+        code = result[0]
+        message = result[1]
+        role = result[2]
+        if(code == "200"):
+            token = generate_token({"sub": account.email, "role": role})
+            user = result[3]
+            detail_user = {
+                "user_id": user.user_id,
+                "email": user.email,
+                "name": user.name,
+                "role": role
+            }
+            return ResponseSchema(
+                code = code, status="Ok", message = message,
+                result = TokenResponse(access_token=token, token_type="Bearer", user=detail_user)
+            ).dict(exclude_none=True)
+        
+        return ResponseSchema(
+                code = code, status="Bad request", message = message
+            ).dict(exclude_none=True)
+    
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(code="500", status="Internal Server Error", message="Lỗi hệ thống").dict(exclude_none=True)
+
+
 @API_SignIn.post('/register_student')
 async def register_student(student: schema_user.UserCreate, db: Session = Depends(get_db)):
     role_student = 1
@@ -85,32 +116,3 @@ async def register_admin(admin: schema_user.UserCreate, db: Session = Depends(ge
             code="500", status="Internal Server Error", 
             message="Lỗi hệ thống"
         ).dict(exclude_none=True)
-
-@API_SignIn.post('/login')
-async def login(account: schema_user.UserLogin, db: Session = Depends(get_db)):
-    try:
-        result = sign_in.login(account, db)
-        code = result[0]
-        message = result[1]
-        role = result[2]
-        if(code == "200"):
-            token = generate_token({"sub": account.email, "role": role})
-            user = result[3]
-            detail_user = {
-                "email": user.email,
-                "name": user.name,
-                "role": role
-            }
-            return ResponseSchema(
-                code = code, status="Ok", message = message,
-                result = TokenResponse(access_token=token, token_type="Bearer", user=detail_user)
-            ).dict(exclude_none=True)
-        
-        return ResponseSchema(
-                code = code, status="Bad request", message = message
-            ).dict(exclude_none=True)
-    
-    except Exception as error:
-        error_message = str(error.args)
-        print(error_message)
-        return ResponseSchema(code="500", status="Internal Server Error", message="Lỗi hệ thống").dict(exclude_none=True)

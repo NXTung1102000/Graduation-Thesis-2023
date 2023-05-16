@@ -18,9 +18,9 @@ def get_all_admins(skip: int, limit: int, db: Session):
     return result
 
 def get_user_by_email(email: str, db: Session):
-    admin = db.query(models.User).filter(models.User.email == email).first()
-    return admin
+    user = db.query(models.User).filter(models.User.email == email).first()
+    return user
 
 def get_user_by_id(id: int, db: Session):
-    admin = db.query(models.User).filter(models.User.user_id == id).first()
-    return admin
+    user = db.query(models.User).filter(models.User.user_id == id).first()
+    return user
