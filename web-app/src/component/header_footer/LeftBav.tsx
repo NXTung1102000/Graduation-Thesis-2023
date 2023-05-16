@@ -56,74 +56,80 @@ export default function LeftBav(props: IProps) {
           ))}
         </List>
         <Divider />
-        <>
-          <List>
-            {listStudentTab.map((tab) => (
-              <ListItem
-                key={tab.name}
-                disablePadding
-                sx={{ display: 'block' }}
-                onClick={() => props.navigate(tab.route)}
-              >
+        {auth.access_token && (
+          <>
+            <List>
+              {listStudentTab.map((tab) => (
+                <ListItem
+                  key={tab.name}
+                  disablePadding
+                  sx={{ display: 'block' }}
+                  onClick={() => props.navigate(tab.route)}
+                >
+                  <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
+                    <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
+                      {tab.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={tab.name} sx={{ opacity: props.open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+          </>
+        )}
+        {auth.access_token && auth.user.role === 2 && (
+          <>
+            <List>
+              {listTeacherTab.map((tab) => (
+                <ListItem
+                  key={tab.name}
+                  disablePadding
+                  sx={{ display: 'block' }}
+                  onClick={() => props.navigate(tab.route)}
+                >
+                  <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
+                    <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
+                      {tab.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={tab.name} sx={{ opacity: props.open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+            <Divider />
+          </>
+        )}
+        {auth.access_token && auth.user.role === 0 && (
+          <>
+            <List>
+              {listAdminTab.map((tab) => (
+                <ListItem
+                  key={tab.name}
+                  disablePadding
+                  sx={{ display: 'block' }}
+                  onClick={() => props.navigate(tab.route)}
+                >
+                  <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
+                    <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
+                      {tab.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={tab.name} sx={{ opacity: props.open ? 1 : 0 }} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+              <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenCreate(true)}>
                 <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
                   <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
-                    {tab.icon}
+                    <PersonAddIcon />
                   </ListItemIcon>
-                  <ListItemText primary={tab.name} sx={{ opacity: props.open ? 1 : 0 }} />
+                  <ListItemText primary="Tạo tài khoản giáo viên" sx={{ opacity: props.open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </>
-        <>
-          <List>
-            {listTeacherTab.map((tab) => (
-              <ListItem
-                key={tab.name}
-                disablePadding
-                sx={{ display: 'block' }}
-                onClick={() => props.navigate(tab.route)}
-              >
-                <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
-                  <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
-                    {tab.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={tab.name} sx={{ opacity: props.open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-        </>
-        <>
-          <List>
-            {listAdminTab.map((tab) => (
-              <ListItem
-                key={tab.name}
-                disablePadding
-                sx={{ display: 'block' }}
-                onClick={() => props.navigate(tab.route)}
-              >
-                <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
-                  <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
-                    {tab.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={tab.name} sx={{ opacity: props.open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-            <ListItem disablePadding sx={{ display: 'block' }} onClick={() => setOpenCreate(true)}>
-              <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
-                <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
-                  <PersonAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Tạo tài khoản giáo viên" sx={{ opacity: props.open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          </List>
-          <Divider />
-        </>
+            </List>
+            <Divider />
+          </>
+        )}
       </Menu>
     </>
   );

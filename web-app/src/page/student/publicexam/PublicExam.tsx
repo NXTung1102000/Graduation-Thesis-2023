@@ -1,12 +1,14 @@
+import './index.css';
+
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { Box, Button, MenuItem, TextField } from '@mui/material';
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { ContentHeader, PageTitle } from '../../../component';
 import { IExam } from '../../../constant';
-import { StudentRoute } from '../../../constant/route/name';
-import { Link } from 'react-router-dom';
-import { Button, MenuItem, TextField } from '@mui/material';
 import { ClassExam, TypeExam } from '../../../constant/name';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import './index.css';
+import { StudentRoute } from '../../../constant/route/name';
 
 interface IPublicExamProps {}
 
@@ -65,15 +67,15 @@ class PublicExam extends React.Component<IPublicExamProps> {
               </TextField>
             </div>
           </div>
-          <Button size="small" variant="contained">
-            {'Tìm kiếm'}
-          </Button>
-        </div>
-        <div className="a-student-publicexam-list a-student-publicexam-container">
+          <Box sx={{ display: 'flex', width: '100%', justifyContent: 'center', margin: '0 0 1rem 0' }}>
+            <Button size="small" variant="contained">
+              {'Tìm kiếm'}
+            </Button>
+          </Box>
           <ContentHeader content="Kết Quả Tìm Kiếm" />
-          {data.map((item) => {
+          {data.map((item, index) => {
             return (
-              <div className="a-publicexam-list-exam">
+              <div className="a-publicexam-list-exam" key={index}>
                 <Link to={StudentRoute.DO_EXAM}>{item.title}</Link>
                 <div className="a-publicexam-exam-createddate">
                   <AccessTimeIcon fontSize="small" />

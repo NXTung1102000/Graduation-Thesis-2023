@@ -1,13 +1,22 @@
-import { Box, Link } from '@mui/material';
+import { Box, Button, Link, MenuItem, TextField } from '@mui/material';
 
+import { ContentHeader, PageTitle } from '../../component';
 import TableComponent from '../../component/table/TableComponent';
-import { NameSourceExam, UrlSourceExam } from '../../constant/name';
+import { ClassExam, NameSourceExam, TypeExam, UrlSourceExam } from '../../constant/name';
 
 const header = ['Tên đề thi', 'Nguồn', 'Thời gian'];
 const randomDate = (start: Date, end: Date) => {
   const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   return date.toDateString();
 };
+
+const examTypeOptions = Object.values(TypeExam).map((type) => {
+  return { value: type, label: type };
+});
+
+const examGradeOptions = Object.values(ClassExam).map((grade) => {
+  return { value: grade, label: grade };
+});
 
 const getUrlSource = (name: NameSourceExam) => {
   switch (name) {
@@ -102,5 +111,38 @@ export default function SearchExamIntegration() {
       };
     });
   };
-  return <TableComponent header={header} data={mapData()} />;
+  return (
+    <div>
+      <PageTitle content="Tìm kiếm đề thi tích hợp" />
+      <div className="a-student-publicexam-filter a-student-publicexam-container">
+        <ContentHeader content="Bộ Lọc" />
+        <div className="a-publicexam-filters">
+          <TextField fullWidth label="Từ khóa" />
+          <div className="a-publicexam-filters-option">
+            <TextField select fullWidth label="Loại đề thi">
+              {examTypeOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField fullWidth select label="Khối">
+              {examGradeOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </div>
+        </div>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: ' center', margin: '0 0 1rem 0' }}>
+          <Button size="small" variant="contained">
+            {'Tìm kiếm'}
+          </Button>
+        </Box>
+        <ContentHeader content="Kết Quả Tìm Kiếm" />
+        <TableComponent header={header} data={mapData()} />
+      </div>
+    </div>
+  );
 }

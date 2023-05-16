@@ -6,14 +6,14 @@ import loadingSlice from '../component/loading_notice/loadingSlide';
 import noticeSlice from '../component/loading_notice/noticeSlice';
 import AuthSlice from '../page/account/AuthSlice';
 
-// const authPersistConfig = {
-//   key: "auth",
-//   storage,
-// };
+const authPersistConfig = {
+  key: 'auth',
+  storage,
+};
 
 const reducer = combineReducers({
-  // auth: persistReducer(authPersistConfig, AuthSlice),
-  auth: AuthSlice,
+  auth: persistReducer(authPersistConfig, AuthSlice),
+  // auth: AuthSlice,
   isLoading: loadingSlice,
   notice: noticeSlice,
 });

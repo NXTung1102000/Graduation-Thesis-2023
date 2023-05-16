@@ -28,7 +28,7 @@ export default function Notice() {
         <DialogContentText color={colorText(nowNotice.type)}>{nowNotice.message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => dispatch(clearNotice())}>Close</Button>
+        <Button onClick={() => dispatch(clearNotice())}>đóng</Button>
       </DialogActions>
     </Dialog>
   );

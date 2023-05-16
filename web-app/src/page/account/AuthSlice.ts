@@ -5,11 +5,12 @@ import { IAuthState, ICreateUser, IInputUser } from '../../constant/interface/us
 import { RootState } from '../../store/store';
 
 const initialState: IAuthState = {
-  token: null,
+  access_token: null,
   user: {
     id: 0,
     email: '',
     name: '',
+    role: -1,
   },
 };
 
@@ -28,8 +29,8 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     LogInUser: (state, action) => {
-      state.token = action.payload.token;
-      state.user.email = action.payload.email;
+      state.access_token = action.payload.access_token;
+      state.user = action.payload.user;
     },
     LogOutUser: () => {
       return initialState;

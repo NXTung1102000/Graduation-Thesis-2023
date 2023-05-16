@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 
 import { registerAPI } from '../../api/auth';
-// import { changeNotice } from "../../component/LoadingAndNotice/noticeSlice";
+import { changeNotice } from '../../component/loading_notice/noticeSlice';
 import {
   handleChangeState,
   IState,
@@ -63,26 +63,26 @@ export default function Register({ open, setOpen }: IOpenDialog) {
 
   const register = () => {
     const credentials = {
-      full_name: fullName.value,
+      name: fullName.value,
       email: email.value,
       password: password.value,
     };
-    // registerAPI(credentials)
-    //   .then((req) => {
-    //     return req.data;
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 0) {
-    //       setOpen(false);
-    //       dispatch(changeNotice({ message: "sign up successfully", open: true, type: "success" }));
-    //     } else {
-    //       dispatch(changeNotice({ message: response.error, open: true, type: "error" }));
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     dispatch(changeNotice({ message: err.message, open: true, type: "error" }));
-    //   });
+    registerAPI(credentials)
+      .then((req) => {
+        return req.data;
+      })
+      .then((response) => {
+        if (response.code === '200') {
+          setOpen(false);
+          dispatch(changeNotice({ message: 'Đăng ký thành công', open: true, type: 'success' }));
+        } else {
+          dispatch(changeNotice({ message: response.message, open: true, type: 'error' }));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(changeNotice({ message: err.message, open: true, type: 'error' }));
+      });
   };
 
   return (

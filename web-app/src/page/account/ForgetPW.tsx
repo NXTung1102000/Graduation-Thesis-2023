@@ -56,7 +56,7 @@ export default function ForgetPW({ open, setOpen }: IOpenDialog) {
     //       setOpen(false);
     //       dispatch(changeNotice({ message: "New password was sent into your mail", open: true, type: "success" }));
     //     } else {
-    //       dispatch(changeNotice({ message: response.error, open: true, type: "error" }));
+    //       dispatch(changeNotice({ message: response.message, open: true, type: "error" }));
     //     }
     //   })
     //   .catch((err) => {

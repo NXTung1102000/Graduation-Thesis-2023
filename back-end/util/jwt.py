@@ -2,14 +2,8 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from config.variable import config_jwt
 from typing import TypeVar, Generic, Optional
-from passlib.context import CryptContext
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Request, HTTPException
-
-# encrypt password
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-def hash_password(pw: str):
-    return pwd_context.hash(pw)
 
 def generate_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

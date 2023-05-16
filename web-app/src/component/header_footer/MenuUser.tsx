@@ -31,16 +31,18 @@ export function MenuUser(props: IProps) {
       open={Boolean(props.anchorEl)}
       onClose={props.handleMenuClose}
     >
-      <MenuItem onClick={props.openProfile}>Tài khoản</MenuItem>
-      <MenuItem onClick={props.signOut}>Đăng xuất</MenuItem>
-      <MenuItem
-        onClick={() => {
-          props.setOpenLogin(true);
-          props.handleMenuClose();
-        }}
-      >
-        Đăng nhập
-      </MenuItem>
+      {auth.access_token && <MenuItem onClick={props.openProfile}>Tài khoản</MenuItem>}
+      {auth.access_token && <MenuItem onClick={props.signOut}>Đăng xuất</MenuItem>}
+      {!auth.access_token && (
+        <MenuItem
+          onClick={() => {
+            props.setOpenLogin(true);
+            props.handleMenuClose();
+          }}
+        >
+          Đăng nhập
+        </MenuItem>
+      )}
     </Menu>
   );
 }

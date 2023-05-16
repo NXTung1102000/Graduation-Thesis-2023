@@ -41,7 +41,7 @@ export default function Profile() {
     //       setEmail({ ...email, value: result.email });
     //       setPhoneNumber({ ...phoneNumber, value: result.phone });
     //     } else {
-    //       dispatch(changeNotice({ message: response.error, open: true, type: "error" }));
+    //       dispatch(changeNotice({ message: response.message, open: true, type: "error" }));
     //     }
     //   })
     //   .catch((err) => {
@@ -62,7 +62,7 @@ export default function Profile() {
     //     if (response.status === 0) {
     //       dispatch(changeNotice({ message: "sign up successfully", open: true, type: "success" }));
     //     } else {
-    //       dispatch(changeNotice({ message: response.error, open: true, type: "error" }));
+    //       dispatch(changeNotice({ message: response.message, open: true, type: "error" }));
     //     }
     //   })
     //   .catch((err) => {

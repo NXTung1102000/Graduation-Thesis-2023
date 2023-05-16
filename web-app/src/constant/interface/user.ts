@@ -17,9 +17,10 @@ export interface IUser {
   id: number;
   email: string;
   name: string;
+  role: number;
 }
 
 export interface IAuthState {
-  token: string | null;
+  access_token: string | null;
   user: IUser;
 }

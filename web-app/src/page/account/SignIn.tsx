@@ -1,9 +1,9 @@
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { FormControlLabel } from '@mui/material';
+// import { FormControlLabel } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
+// import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Grid from '@mui/material/Grid';
@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 
 import { loginAPI } from '../../api/auth';
+import { changeNotice } from '../../component/loading_notice/noticeSlice';
 import { handleChangeState, IState, messageOfFieldIsNotEmpty, validateState } from '../../constant/validate/message';
 import { regexForNotEmpty } from '../../constant/validate/regex';
 import { useAppDispatch } from '../../store/hook';
@@ -53,23 +54,27 @@ export default function SignIn({ open, setOpen }: IOpenDialog) {
     const errPW = validateState(password, setPassword, regexForNotEmpty);
     if (errUsername || errPW) return;
     const credentials = { email: email.value, password: password.value };
-    // loginAPI(credentials)
-    //   .then((req) => {
-    //     return req.data;
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 0) {
-    //       const user = response.data;
-    //       dispatch(LogInUser(user));
-    //       setOpen(false);
-    //     } else {
-    //       dispatch(changeNotice({ message: response.error, open: true, type: "error" }));
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     dispatch(changeNotice({ message: err.message, open: true, type: "error" }));
-    //   });
+    loginAPI(credentials)
+      .then((req) => {
+        return req.data;
+      })
+      .then((response) => {
+        if (response.code === '200') {
+          const result = response.result;
+          const detail_user = {
+            access_token: result?.access_token,
+            user: result?.user,
+          };
+          dispatch(LogInUser(detail_user));
+          setOpen(false);
+        } else {
+          dispatch(changeNotice({ message: response.message, open: true, type: 'error' }));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(changeNotice({ message: err.message, open: true, type: 'error' }));
+      });
   };
 
   return (
@@ -127,7 +132,7 @@ export default function SignIn({ open, setOpen }: IOpenDialog) {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2" onClick={() => setOpenForgetPW(true)}>
+                  <Link href="#" onClick={() => setOpenForgetPW(true)}>
                     Quên mật khẩu
                   </Link>
                 </Grid>

@@ -13,12 +13,13 @@ import { HeaderApp } from '../component/header_footer/HeaderApp';
 import LeftBav from '../component/header_footer/LeftBav';
 import { ResponsiveMenu } from '../component/header_footer/Menu';
 import { MenuUser, MenuUserMobile } from '../component/header_footer/MenuUser';
+import Loading from '../component/loading_notice/Loading';
+import { selectLoading } from '../component/loading_notice/loadingSlide';
+import Notice from '../component/loading_notice/Notice';
 import { name } from '../constant/name';
-// import Loading from '../component/LoadingAndNotice/Loading';
-// import { selectLoading } from '../component/LoadingAndNotice/loadingSlice';
-// import Notice from '../component/LoadingAndNotice/Notice';
 import { AccountRoute, GuestRoute } from '../constant/route/name';
 import { useAppDispatch, useAppSelector } from '../store/hook';
+import { LogOutUser, selectAuth } from './account/AuthSlice';
 import SignIn from './account/SignIn';
 
 interface Props {
@@ -28,6 +29,8 @@ interface Props {
 export default function Layout(props: Props) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const loading = useAppSelector(selectLoading);
+  const auth = useAppSelector(selectAuth);
 
   const [open, setOpen] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState(false);
@@ -37,7 +40,7 @@ export default function Layout(props: Props) {
 
   const signOut = () => {
     navigate(GuestRoute.HOME);
-    // dispatch(LogOutUser());
+    dispatch(LogOutUser());
     handleMenuClose();
   };
 
@@ -74,8 +77,8 @@ export default function Layout(props: Props) {
 
   return (
     <>
-      {/* <Notice /> */}
-      {/* <Loading open={loading.isLoading} /> */}
+      <Notice />
+      <Loading open={loading.isLoading} />
       <SignIn open={openLogin} setOpen={setOpenLogin} />
       <Box sx={{ display: 'flex' }}>
         <HeaderApp position="fixed" open={open}>
@@ -99,7 +102,10 @@ export default function Layout(props: Props) {
                   {name}
                 </Typography>
               </Box>
-              <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+              <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant="h6" noWrap>
+                  {auth.access_token && `Chào ${auth.user.name}`}
+                </Typography>
                 <IconButton
                   size="large"
                   edge="end"
@@ -109,6 +115,12 @@ export default function Layout(props: Props) {
                   color="inherit"
                 >
                   <AccountCircle />
+
+                  {!auth.access_token && (
+                    <Typography noWrap sx={{ marginLeft: '0.5rem' }}>
+                      Đăng nhập
+                    </Typography>
+                  )}
                 </IconButton>
               </Box>
               <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
