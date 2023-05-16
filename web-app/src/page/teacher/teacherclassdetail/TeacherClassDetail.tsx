@@ -1,21 +1,32 @@
-import { CommonTableTab, InfoBox } from '../../../component';
+import './index.css';
+
 import { useLocation } from 'react-router-dom';
+
+import { CommonTableTab, InfoBox } from '../../../component';
 import ExamList from './ExamList';
 import StudentList from './StudentList';
 import TeacherList from './TeacherList';
-import './index.css';
 
-interface ITeacherClassDetailProps {}
+// interface ITeacherClassDetailProps {}
 
 const tabTitles = ['Danh sách đề thi', 'Danh sách học sinh', 'Danh sách giáo viên'];
 
-function TeacherClassDetail(props: ITeacherClassDetailProps) {
+function TeacherClassDetail() {
   const params = useLocation().state;
+
+  const customParams = {
+    name: params?.name,
+    description: params?.description,
+    teacherName: params?.owner?.name,
+  };
   return (
     <div className="a-teacher-teacherclassdetail">
-      <InfoBox detail={params} />
+      <InfoBox detail={customParams} />
       <div className="a-teacher-teacherclassdetail-table">
-        <CommonTableTab tabTitles={tabTitles} tabContent={[<ExamList />, <StudentList />, <TeacherList />]} />
+        <CommonTableTab
+          tabTitles={tabTitles}
+          tabContent={[<ExamList key={'exam'} />, <StudentList key={'student'} />, <TeacherList key={'teacher'} />]}
+        />
       </div>
     </div>
   );

@@ -1,55 +1,42 @@
-import React from 'react';
-import { TableComponent } from '../../../component';
-import { ITeacher } from '../../../constant';
-import { Button } from '@mui/material';
 import './index.css';
 
-interface ITeacherListProps {}
+import { Button } from '@mui/material';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+
+import { getAllTeachersOfClass } from '../../../api/classes';
+import { TableComponent } from '../../../component';
+import { ITeacher } from '../../../constant';
+import { useAppSelector } from '../../../store/hook';
+import { selectAuth } from '../../account/AuthSlice';
+
+// interface ITeacherListProps {}
 
 const header = ['Tên học sinh', 'Email'];
 
-const data: ITeacher[] = [
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-];
+export default function TeacherList() {
+  const auth = useAppSelector(selectAuth);
+  const [data, setData] = React.useState<ITeacher[]>([]);
+  const params = useLocation().state;
 
-class TeacherList extends React.Component<ITeacherListProps> {
-  public constructor(props: ITeacherListProps) {
-    super(props);
-  }
+  React.useEffect(() => {
+    getAllTeachersOfClass(params.class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+          setData(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-  public render(): React.ReactNode {
-    return (
-      <div className="a-teacherclass-teacherlist">
-        <Button size="small" variant="contained">
-          {'Thêm giáo viên mới'}
-        </Button>
-        <TableComponent header={header} data={this.renderData()} />
-      </div>
-    );
-  }
-
-  private renderData = () => {
+  const renderData = () => {
     return data.map((item) => ({
-      ...item,
+      name: item.name,
       email: (
         <div className="a-teacherclass-teacherlist-email">
           <div className="a-teacherlist-email-detail">{item.email?.toString()}</div>
@@ -60,6 +47,13 @@ class TeacherList extends React.Component<ITeacherListProps> {
       ),
     }));
   };
-}
 
-export default TeacherList;
+  return (
+    <div className="a-teacherclass-teacherlist">
+      <Button size="small" variant="contained">
+        {'Thêm giáo viên mới'}
+      </Button>
+      <TableComponent header={header} data={renderData()} />
+    </div>
+  );
+}

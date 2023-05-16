@@ -69,7 +69,7 @@ async def create_class(class_create: schema_class.ClassCreate, db: Session = Dep
 async def get_all_students_of_class(class_id: int, db: Session = Depends(get_db)):
     try:
         result = service_class.get_all_students_of_class(class_id, db)
-        return ResponseSchema[list[schema_user.UserInfo]](
+        return ResponseSchema[list[schema_user.UserClassStatus]](
             code="200", status="Ok", message="thành công", result=result
         ).dict(exclude_none=True)
     

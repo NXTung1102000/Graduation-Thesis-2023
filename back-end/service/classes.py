@@ -22,13 +22,24 @@ def get_all_classes_user_joined(user_id: int, db: Session):
     return result
 
 def get_all_students_of_class(class_id, db: Session):
-    result = db.query(models.User) \
+    student_list = db.query(models.User, models.User_Class.status) \
     .join(models.User_Class, (models.User.user_id == models.User_Class.user_id) & (models.User_Class.class_id == class_id))  \
     .filter(
         models.User.role == 1
     ) \
     .order_by(models.User_Class.status.desc()) \
     .all()
+    
+    result = []
+    for _student_obj, status in student_list:
+        if status is None:
+            status = ClassStatus.Not.value[0]
+        result.append({
+            'user_id': _student_obj.user_id,
+            'email': _student_obj.email,
+            'name': _student_obj.name,
+            'status': status
+        })
     return result
 
 def get_all_teachers_of_class(class_id, db: Session):
@@ -49,18 +60,21 @@ def get_class_student_can_see(student_id: int, db:Session):
     classes = db.query(models.Class, models.User_Class.status) \
         .outerjoin(models.User_Class, (models.Class.class_id == models.User_Class.class_id) & (models.User_Class.user_id == student_id)) \
         .filter(models.Class.is_deleted == False) \
+        .order_by(models.User_Class.status.desc()) \
         .all()
     
     result = []
     for class_obj, status in classes:
         if status is None:
             status = ClassStatus.Not.value[0]
+        owner = db.query(models.User).filter(models.User.user_id == class_obj.created_by).first()
         result.append({
             'class_id': class_obj.class_id,
             'created_by': class_obj.created_by,
             'name': class_obj.name,
             'description': class_obj.description,
-            'status': status
+            'status': status,
+            'owner': owner
         })
     return result
 

@@ -1,8 +1,8 @@
-import * as React from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
 
 interface ICommonTableTabProps {
   tabTitles: string[];
@@ -54,13 +54,13 @@ export default function CommonTableTab(props: ICommonTableTabProps) {
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
           {props.tabTitles.map((item, index) => {
-            return <Tab label={item} {...a11yProps(index)} />;
+            return <Tab key={index} label={item} {...a11yProps(index)} />;
           })}
         </Tabs>
       </Box>
       {props.tabContent.map((item, index) => {
         return (
-          <TabPanel value={value} index={index}>
+          <TabPanel key={index} value={value} index={index}>
             {item}
           </TabPanel>
         );

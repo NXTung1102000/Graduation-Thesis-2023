@@ -1,5 +1,6 @@
-import React from 'react';
 import './index.css';
+
+import React from 'react';
 
 interface IInfoBoxProps {
   detail: { [key: string]: string };
@@ -22,23 +23,23 @@ class InfoBox extends React.Component<IInfoBoxProps> {
 
   private getInfoDetail: (key: string) => React.ReactNode = (key) => {
     switch (key) {
-      case 'className':
+      case 'name':
         return (
-          <div className="a-infobox-info">
+          <div className="a-infobox-info" key={key}>
             <div className="a-infobox-info-title">{'Lớp: '}</div>
             {this.props.detail[key]}
           </div>
         );
       case 'description':
         return (
-          <div className="a-infobox-info">
+          <div className="a-infobox-info" key={key}>
             <div className="a-infobox-info-title">{'Mô tả:'}</div>
             {this.props.detail[key]}
           </div>
         );
       case 'teacherName':
         return (
-          <div className="a-infobox-info">
+          <div className="a-infobox-info" key={key}>
             <div className="a-infobox-info-title">{'Tên giáo viên:'}</div>
             {this.props.detail[key]}
           </div>

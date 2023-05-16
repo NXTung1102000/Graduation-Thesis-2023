@@ -14,7 +14,7 @@ export interface ICreateUser {
 }
 
 export interface IUser {
-  id: number;
+  user_id: number;
   email: string;
   name: string;
   role: number;

@@ -1,8 +1,10 @@
+import './index.css';
+
+import { Button } from '@mui/material';
+import { useLocation } from 'react-router-dom';
+
 import { ContentHeader, InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
-import { useLocation } from 'react-router-dom';
-import { Button } from '@mui/material';
-import './index.css';
 
 interface IStudentExamClassProps {}
 
@@ -41,6 +43,12 @@ const data: IExam[] = [
 
 function StudentExamClass(props: IStudentExamClassProps) {
   const params = useLocation().state;
+  console.log(params);
+  const customParams = {
+    name: params?.name,
+    description: params?.description,
+    teacherName: params?.owner?.name,
+  };
   const renderData = () => {
     return data.map((item) => ({
       ...item,
@@ -56,7 +64,7 @@ function StudentExamClass(props: IStudentExamClassProps) {
   };
   return (
     <div className="a-student-studentexamclass">
-      <InfoBox detail={params} />
+      <InfoBox detail={customParams} />
       <div className="a-student-studentexamclass-table">
         <ContentHeader content="Danh Sách Đề Thi" />
         <TableComponent header={header} data={renderData()} />

@@ -1,15 +1,16 @@
-import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import * as React from 'react';
 
 interface ICommonDialogProps {
   title: string;
   content: string;
   buttonText: string;
+  action: () => unknown;
 }
 
 export default function CommonDialog(props: ICommonDialogProps) {
@@ -21,6 +22,11 @@ export default function CommonDialog(props: ICommonDialogProps) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const doAction = () => {
+    setOpen(false);
+    props.action();
   };
 
   return (
@@ -39,10 +45,10 @@ export default function CommonDialog(props: ICommonDialogProps) {
           <DialogContentText id="alert-dialog-description">{props.content}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
+          <Button onClick={handleClose} color="error">
+            Hủy
           </Button>
+          <Button onClick={doAction}>Tham gia</Button>
         </DialogActions>
       </Dialog>
     </div>

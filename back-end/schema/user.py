@@ -16,3 +16,11 @@ class UserInfo(UserBase):
 
     class Config():
         orm_mode = True
+
+class UserClassStatus(UserBase):
+    user_id: int
+    name: str
+    status: int
+
+    class Config():
+        orm_mode = True

@@ -14,8 +14,8 @@ class ClassInfo(ClassBase):
     created_by: int
 
     owner: UserInfo
-    exam_list: list[ExamInfo]
-    users_join: list[UserInfo]
+    # exam_list: list[ExamInfo]
+    # users_join: list[UserInfo]
 
     class Config():
         orm_mode = True
@@ -23,6 +23,7 @@ class ClassInfo(ClassBase):
 class ClassStatus(ClassCreate):
     class_id: int
     status: int
+    owner: UserInfo
 
     class Config():
         orm_mode = True

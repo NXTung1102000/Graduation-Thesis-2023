@@ -1,59 +1,56 @@
-import React from 'react';
-import { ContentHeader, PageTitle, TableComponent } from '../../../component';
-import { IClass } from '../../../constant';
-import { Link } from 'react-router-dom';
-import { TeacherRoute } from '../../../constant/route/name';
 import './index.css';
 
-interface ITeacherClassProps {}
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const header = ['Tên lớp', 'Mô tả', 'Môn học'];
+import { getAllClassesTeacherJoined } from '../../../api/classes';
+import { ContentHeader, PageTitle, TableComponent } from '../../../component';
+import { IClass } from '../../../constant';
+import { TeacherRoute } from '../../../constant/route/name';
+import { useAppSelector } from '../../../store/hook';
+import { selectAuth } from '../../account/AuthSlice';
 
-const data: IClass[] = [
-  {
-    className: 'Lớp 12A1 THPT Lương Sơn',
-    description: 'Ôn tập Toán 12',
-    subject: 'Toán',
-  },
-  {
-    className: 'Lớp 12A1 THPT Lương Sơn',
-    description: 'Ôn tập Toán 11',
-    subject: 'Toán',
-  },
-  {
-    className: 'Lớp 12A1 THPT Lương Sơn',
-    description: 'Ôn tập Toán 10',
-    subject: 'Toán',
-  },
-];
+// interface ITeacherClassProps {}
 
-class TeacherClass extends React.Component<ITeacherClassProps> {
-  public constructor(props: ITeacherClassProps) {
-    super(props);
-  }
+const header = ['Tên lớp', 'Mô tả'];
 
-  public render(): React.ReactNode {
-    return (
-      <div className="a-teacher-teacherclass">
-        <PageTitle content="Quản Lý Lớp" />
-        <div className="a-teacher-teacherclass-table">
-          <ContentHeader content="Danh Sách Lớp Quản Lý" />
-          <TableComponent header={header} data={this.renderData()} />
-        </div>
-      </div>
-    );
-  }
+export default function TeacherClass() {
+  const auth = useAppSelector(selectAuth);
+  const [data, setData] = React.useState<IClass[]>([]);
 
-  private renderData = () => {
+  React.useEffect(() => {
+    getAllClassesTeacherJoined(auth.user.user_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+          setData(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const renderData = () => {
     return data.map((item) => ({
-      ...item,
-      className: (
+      name: (
         <Link to={TeacherRoute.MANAGE_CLASS_DETAIL} state={item}>
-          {item.className}
+          {item.name}
         </Link>
       ),
+      description: item.description,
     }));
   };
-}
 
-export default TeacherClass;
+  return (
+    <div className="a-teacher-teacherclass">
+      <PageTitle content="Quản Lý Lớp" />
+      <div className="a-teacher-teacherclass-table">
+        <ContentHeader content="Danh Sách Lớp Quản Lý" />
+        <TableComponent header={header} data={renderData()} />
+      </div>
+    </div>
+  );
+}

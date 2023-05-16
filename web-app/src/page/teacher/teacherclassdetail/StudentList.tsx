@@ -1,65 +1,66 @@
-import React from 'react';
-import { TableComponent } from '../../../component';
-import { IStudent } from '../../../constant';
-import { Button } from '@mui/material';
 import './index.css';
 
-interface IStudentListProps {}
+import { Box, Button } from '@mui/material';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 
-const header = ['Tên học sinh', 'Email'];
+import { getAllStudentsOfClass } from '../../../api/classes';
+import { TableComponent } from '../../../component';
+import { ClassStatus, IStudent } from '../../../constant';
+import { useAppSelector } from '../../../store/hook';
+import { selectAuth } from '../../account/AuthSlice';
 
-const data: IStudent[] = [
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-  {
-    name: 'Ng Văn A',
-    email: 'ngvana@gmail.com',
-  },
-];
+const header = ['Tên học sinh', 'Email', 'Hành động'];
 
-class StudentList extends React.Component<IStudentListProps> {
-  public constructor(props: IStudentListProps) {
-    super(props);
-  }
+export default function StudentList() {
+  const auth = useAppSelector(selectAuth);
+  const [data, setData] = React.useState<IStudent[]>([]);
+  const params = useLocation().state;
 
-  public render(): React.ReactNode {
-    return (
-      <div className="a-teacherclass-studentlist">
-        <Button size="small" variant="contained">
-          {'Thêm học sinh mới'}
-        </Button>
-        <TableComponent header={header} data={this.renderData()} />
-      </div>
-    );
-  }
+  React.useEffect(() => {
+    getAllStudentsOfClass(params.class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+          setData(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-  private renderData = () => {
+  const renderData = () => {
     return data.map((item) => ({
-      ...item,
+      name: item.name,
       email: (
         <div className="a-teacherclass-studentlist-email">
           <div className="a-studentlist-email-detail">{item.email?.toString()}</div>
+        </div>
+      ),
+      action: (
+        <Box>
+          {item.status === ClassStatus.Pending && (
+            <Button color="success" size="small" variant="contained" sx={{ margin: '0 1rem 0 0' }}>
+              {'Xác nhận'}
+            </Button>
+          )}
           <Button color="error" size="small" variant="contained">
             {'Xóa'}
           </Button>
-        </div>
+        </Box>
       ),
     }));
   };
-}
 
-export default StudentList;
+  return (
+    <div className="a-teacherclass-studentlist">
+      <Button size="small" variant="contained">
+        {'Thêm học sinh mới'}
+      </Button>
+      <TableComponent header={header} data={renderData()} />
+    </div>
+  );
+}

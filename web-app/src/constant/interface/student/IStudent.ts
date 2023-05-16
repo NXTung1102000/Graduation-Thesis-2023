@@ -1,3 +1,5 @@
+import { ClassStatus } from '../../enum/ClassStatus';
+
 export interface IStudentClassModel extends IClassModel {
   status?: number;
 }
@@ -8,9 +10,9 @@ export interface IExamHistoryModel extends IExamModel {
 }
 
 export interface IClassModel {
-  className?: string;
+  class_id: number;
+  name?: string;
   description?: string;
-  subject?: string;
 }
 
 export interface IExamModel {
@@ -18,6 +20,7 @@ export interface IExamModel {
   type?: string;
   grade?: number;
   time?: number;
+  subject?: string;
   createdDate?: Date | string;
 }
 
@@ -26,6 +29,8 @@ export interface IHumanModel {
   email?: string;
 }
 
-export interface IStudentModel extends IHumanModel {}
+export interface IStudentModel extends IHumanModel {
+  status?: ClassStatus;
+}
 
 export interface ITeacherModel extends IHumanModel {}

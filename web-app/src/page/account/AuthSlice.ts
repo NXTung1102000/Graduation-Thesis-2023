@@ -7,7 +7,7 @@ import { RootState } from '../../store/store';
 const initialState: IAuthState = {
   access_token: null,
   user: {
-    id: 0,
+    user_id: 0,
     email: '',
     name: '',
     role: -1,
