@@ -10,6 +10,7 @@ class ExamCreate(ExamBase):
     created_by: int
 
 class ExamUpdate(ExamCreate):
+    exam_id: int
     time: int
 
 class ExamInfo(ExamUpdate):
@@ -17,7 +18,15 @@ class ExamInfo(ExamUpdate):
     subject: str
     created_at: str
 
-    question_list: list[QuestionInfo]
+    # question_list: list[QuestionInfo]
 
     class Config():
         orm_mode = True
+
+    @classmethod
+    def from_orm(cls, exam):
+        exam.created_at = exam.created_at.strftime('%d-%m-%Y %H:%M:%S')
+        return super().from_orm(exam)
+    
+class ExamDetail(ExamInfo):
+    question_list: list[QuestionInfo]

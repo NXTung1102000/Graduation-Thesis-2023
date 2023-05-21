@@ -43,7 +43,7 @@ async def login(account: schema_user.UserLogin, db: Session = Depends(get_db)):
     except Exception as error:
         error_message = str(error.args)
         print(error_message)
-        return ResponseSchema(code="500", status="Internal Server Error", message="Lỗi hệ thống").dict(exclude_none=True)
+        return ResponseSchema(code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message).dict(exclude_none=True)
 
 
 @API_SignIn.post('/register_student')

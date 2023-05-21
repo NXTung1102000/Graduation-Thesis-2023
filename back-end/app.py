@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from controller.user import API_user
 from controller.sign_in import API_SignIn
+from controller.exam import API_exam
 from controller.classes.student_class import API_Class_Student
 from controller.classes.teacher_class import API_Class_Teacher
 from config import db
@@ -23,6 +24,7 @@ app.add_middleware(
 app.include_router(API_SignIn)
 app.include_router(API_Class_Student)
 app.include_router(API_Class_Teacher)
+app.include_router(API_exam)
 app.include_router(API_user)
 
 @app.get("/")

@@ -77,6 +77,11 @@ class Answer(Base):
     question = relationship("Question", back_populates="answer_list", foreign_keys=[question_id])
 
 class User_Class(Base):
+    """
+        status = 0: Not
+        status = 1: Joined
+        status = 2: Pending
+    """
     __tablename__ = "user_class"
 
     user_id = Column(Integer, ForeignKey("user.user_id"), primary_key=True)

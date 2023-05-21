@@ -111,3 +111,32 @@ class JWTBearerForAdmin(HTTPBearer):
         except Exception as error:
             print(error)
         return True
+    
+class JWTBearerForTeacherAndAdmin(HTTPBearer):
+    def __init__(self, auto_error: bool = True):
+        super(JWTBearerForTeacherAndAdmin, self).__init__(auto_error=auto_error)
+
+    async def __call__(self, request: Request):
+        credentials: HTTPAuthorizationCredentials = await super(JWTBearerForTeacherAndAdmin, self).__call__(request)
+
+        if credentials:
+            if not credentials.scheme == "Bearer":
+                raise HTTPException(
+                    status_code=403, detail="Sai định dạng Token.")
+            if self.verify_jwt(credentials.credentials):
+                raise HTTPException(
+                    status_code=403, detail="Sai token hoặc hết hạn token hoặc bạn không phải admin")
+            return credentials.credentials
+        else:
+            raise HTTPException(
+                status=403, detail="Lỗi Token")
+        
+    
+    def verify_jwt(Self, jwt_token: str):
+        try:
+            payload = decode_token(jwt_token)
+            role = payload["role"]
+            if(int(role) == 0 or int(role == 2)): return False
+        except Exception as error:
+            print(error)
+        return True
