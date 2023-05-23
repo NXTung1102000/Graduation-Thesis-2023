@@ -7,14 +7,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as React from 'react';
 
 interface ICommonDialogProps {
+  isOpen?: boolean;
+  cancelButtonText?: string;
+  primaryButtonText?: string;
   title: string;
   content: string;
-  buttonText: string;
-  action: () => unknown;
+  buttonText?: string;
+  action?: () => unknown;
 }
 
 export default function CommonDialog(props: ICommonDialogProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(props.isOpen != undefined ? props.isOpen : false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,16 +29,18 @@ export default function CommonDialog(props: ICommonDialogProps) {
 
   const doAction = () => {
     setOpen(false);
-    props.action();
+    props.action!();
   };
 
   return (
     <div>
-      <Button size="small" variant="contained" onClick={handleClickOpen}>
-        {props.buttonText}
-      </Button>
+      {props.isOpen == undefined && (
+        <Button size="small" variant="contained" onClick={handleClickOpen}>
+          {props.buttonText}
+        </Button>
+      )}
       <Dialog
-        open={open}
+        open={props.isOpen != undefined ? props.isOpen : open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -45,10 +50,12 @@ export default function CommonDialog(props: ICommonDialogProps) {
           <DialogContentText id="alert-dialog-description">{props.content}</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="error">
-            Hủy
-          </Button>
-          <Button onClick={doAction}>Tham gia</Button>
+          {props.cancelButtonText != undefined && (
+            <Button onClick={handleClose} color="error">
+              {props.cancelButtonText}
+            </Button>
+          )}
+          {props.primaryButtonText != undefined && <Button onClick={doAction}>{props.primaryButtonText}</Button>}
         </DialogActions>
       </Dialog>
     </div>

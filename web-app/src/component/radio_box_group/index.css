@@ -1,0 +1,9 @@
+.a-radioboxgroup img{
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+}
+
+.a-radioboxgroup .MuiFormGroup-root.MuiFormGroup-row{
+  justify-content: space-between;
+}
