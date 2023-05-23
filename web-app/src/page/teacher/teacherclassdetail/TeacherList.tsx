@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getAllTeachersOfClass, getTeacherListCanAddToClass } from '../../../api/classes';
+import { addUserListToClass, getAllTeachersOfClass, getTeacherListCanAddToClass } from '../../../api/classes';
 import { ChipMultiSelect, CommonDialog, TableComponent } from '../../../component';
 import { ITeacher } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
@@ -51,6 +51,20 @@ export default function TeacherList() {
       });
   };
 
+  const addTeacherList = (user_id: number[], teacher_id: number, class_id: number) => {
+    addUserListToClass(user_id, teacher_id, class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const renderData = () => {
     return data.map((item) => ({
       name: item.name,
@@ -86,6 +100,7 @@ export default function TeacherList() {
         className="a-teacherclass-teacherlist-dialog"
         onOpenButtonClick={getTeacherListCanAddToClassList}
         primaryButtonText="Thêm"
+        action={() => addTeacherList(teacherAddList, auth.user.user_id, params.class_id)}
       />
       <TableComponent header={header} data={renderData()} />
     </div>

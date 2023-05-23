@@ -57,6 +57,15 @@ const getStudentListCanAddToClass = async (class_id: number) => {
   return result;
 };
 
+const addUserListToClass = async (user_id_list: number[], teacher_id: number, class_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `class/teacher/teacheradduser`,
+    data: { user_id_list, teacher_id, class_id },
+  });
+  return result;
+};
+
 export {
   getAllClassesStudentCanSee,
   getAllClassesTeacherJoined,
@@ -65,4 +74,5 @@ export {
   studentRegisterClass,
   getTeacherListCanAddToClass,
   getStudentListCanAddToClass,
+  addUserListToClass,
 };

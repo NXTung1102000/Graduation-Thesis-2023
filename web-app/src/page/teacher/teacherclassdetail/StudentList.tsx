@@ -4,7 +4,7 @@ import { Box, Button } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getAllStudentsOfClass, getStudentListCanAddToClass } from '../../../api/classes';
+import { addUserListToClass, getAllStudentsOfClass, getStudentListCanAddToClass } from '../../../api/classes';
 import { ChipMultiSelect, CommonDialog, TableComponent } from '../../../component';
 import { ClassStatus, IStudent } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
@@ -16,6 +16,7 @@ export default function StudentList() {
   const auth = useAppSelector(selectAuth);
   const [data, setData] = React.useState<IStudent[]>([]);
   const [studentCanAddList, setStudentCanAddList] = React.useState<IStudent[]>([]);
+  const [studentAddList, setStudentAddList] = React.useState<number[]>([]);
   const params = useLocation().state;
 
   React.useEffect(() => {
@@ -41,6 +42,20 @@ export default function StudentList() {
       .then((res) => {
         if (res.code === '200') {
           setStudentCanAddList(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const addStudentList = (user_id: number[], teacher_id: number, class_id: number) => {
+    addUserListToClass(user_id, teacher_id, class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
         }
       })
       .catch((error) => {
@@ -82,12 +97,16 @@ export default function StudentList() {
               title: item.name + ' (' + item.email + ')',
               id: item.user_id!,
             }))}
+            onChange={(value) => {
+              setStudentAddList(value);
+            }}
           />
         }
         cancelButtonText="Hủy"
         className="a-teacherclass-studentlist-dialog"
         onOpenButtonClick={getStudentListCanAddToClassList}
         primaryButtonText="Thêm"
+        action={() => addStudentList(studentAddList, auth.user.user_id, params.class_id)}
       />
       <TableComponent header={header} data={renderData()} />
     </div>
