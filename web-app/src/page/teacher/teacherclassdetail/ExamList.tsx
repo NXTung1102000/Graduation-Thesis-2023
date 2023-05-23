@@ -1,10 +1,10 @@
-import React from 'react';
-import { TableComponent } from '../../../component';
-import { IExam } from '../../../constant';
-import { Button } from '@mui/material';
 import './index.css';
 
-interface IExamListProps {}
+import { Button } from '@mui/material';
+import React from 'react';
+
+import { TableComponent } from '../../../component';
+import { IExam } from '../../../constant';
 
 const header = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 
@@ -14,46 +14,31 @@ const data: IExam[] = [
     type: 'Giữa kỳ 1',
     grade: 12,
     time: 30,
-    createdDate: '28/11/2022',
+    created_at: '28/11/2022',
   },
   {
     title: 'Ôn tập tích phân xác định',
     type: 'Giữa kỳ 1',
     grade: 12,
     time: 30,
-    createdDate: '28/11/2022',
+    created_at: '28/11/2022',
   },
   {
     title: 'Ôn tập tích phân xác định',
     type: 'Giữa kỳ 1',
     grade: 12,
     time: 30,
-    createdDate: '28/11/2022',
+    created_at: '28/11/2022',
   },
 ];
 
-class ExamList extends React.Component<IExamListProps> {
-  public constructor(props: IExamListProps) {
-    super(props);
-  }
-
-  public render(): React.ReactNode {
-    return (
-      <div className="a-teacherclass-examlist">
-        <Button size="small" variant="contained">
-          {'Thêm đề mới'}
-        </Button>
-        <TableComponent header={header} data={this.renderData()} />
-      </div>
-    );
-  }
-
-  private renderData = () => {
+export default function ExamList() {
+  const renderData = () => {
     return data.map((item) => ({
       ...item,
-      createdDate: (
+      created_at: (
         <div className="a-teacherclass-examlist-createddate">
-          <div className="a-examlist-createddate-detail">{item.createdDate?.toString()}</div>
+          <div className="a-examlist-createddate-detail">{item.created_at?.toString()}</div>
           <Button color="warning" size="small" variant="contained">
             {'Sửa'}
           </Button>
@@ -64,6 +49,12 @@ class ExamList extends React.Component<IExamListProps> {
       ),
     }));
   };
+  return (
+    <div className="a-teacherclass-examlist">
+      <Button size="small" variant="contained">
+        {'Thêm đề mới'}
+      </Button>
+      <TableComponent header={header} data={renderData()} />
+    </div>
+  );
 }
-
-export default ExamList;

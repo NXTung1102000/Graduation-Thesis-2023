@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from .question import QuestionInfo
+from .question import QuestionInfo, QuestionInfoHasTrueAnswer, DoQuestion, EditQuestion
 
 class ExamBase(BaseModel):
     title: str
@@ -14,7 +14,6 @@ class ExamUpdate(ExamCreate):
     time: int
 
 class ExamInfo(ExamUpdate):
-    exam_id: int
     subject: str
     created_at: str
 
@@ -30,3 +29,15 @@ class ExamInfo(ExamUpdate):
     
 class ExamDetail(ExamInfo):
     question_list: list[QuestionInfo]
+
+class ExamDetailHasTrueAnswer(ExamInfo):
+    question_list: list[QuestionInfoHasTrueAnswer]
+
+class DoExam:
+    exam_id: int
+    question_list: list[DoQuestion]
+
+class EditExam:
+    exam_id: int
+    time: int
+    question_list: list[EditQuestion]

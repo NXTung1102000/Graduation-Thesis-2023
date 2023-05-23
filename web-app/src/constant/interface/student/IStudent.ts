@@ -22,18 +22,20 @@ export interface IExamModel {
   grade?: number;
   time?: number;
   subject?: string;
-  createdDate?: Date | string;
+  created_at?: Date | string;
 }
 
 export interface IQuestionModel {
+  question_id?: number;
   content?: string;
-  questionNumber?: number;
-  trueAnswer?: number;
-  answerList?: IAnswerModel[];
+  question_number?: number;
+  true_answer_id?: number;
+  answer_list?: IAnswerModel[];
 }
 
 export interface IAnswerModel {
-  answerNumber?: number;
+  answer_id?: number;
+  answer_number?: number;
   content?: string;
 }
 

@@ -1,13 +1,14 @@
-import * as React from 'react';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import './index.css';
 
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import * as React from 'react';
+
 interface IRadioBoxGroup {
-  options: { key: number; label: string }[];
+  options: { key?: number; content?: string }[];
   questionNumber: number;
   answerArray: number[];
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,7 +25,14 @@ export default function RadioBoxGroup(props: IRadioBoxGroup) {
         onChange={props.onChange}
       >
         {props.options.map((item) => {
-          return <FormControlLabel value={item.key} control={<Radio />} label={<img src={item.label} />} />;
+          return (
+            <FormControlLabel
+              key={item.key}
+              value={item.key}
+              control={<Radio />}
+              label={<img src={`data:image/jpeg;base64,${item.content}`} alt="" />}
+            />
+          );
         })}
       </RadioGroup>
     </FormControl>

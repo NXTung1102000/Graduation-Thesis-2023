@@ -1,11 +1,12 @@
-import * as React from 'react';
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import './index.css';
+
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
-import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import './index.css';
+import * as React from 'react';
 
 interface IQuestionListProps {
   answerArray: number[];
@@ -30,6 +31,7 @@ export default function QuestionList(props: IQuestionListProps) {
       {props.answerArray.map((item, index) => {
         return (
           <ToggleButton
+            key={index}
             className={item != 0 ? 'a-question-completed' : 'a-question-uncompleted'}
             value={index}
             onClick={props.onClick}

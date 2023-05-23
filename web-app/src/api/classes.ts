@@ -25,6 +25,14 @@ const getAllClassesTeacherJoined = async (teacher_id: number) => {
   return result;
 };
 
+const getAllExamsOfClass = async (class_id: number) => {
+  const result = await api({
+    method: 'GET',
+    url: `/class/teacher/allexamofclass?class_id=${class_id}`,
+  });
+  return result;
+};
+
 const getAllStudentsOfClass = async (class_id: number) => {
   const result = await api({
     method: 'GET',
@@ -69,6 +77,7 @@ const addUserListToClass = async (user_id_list: number[], teacher_id: number, cl
 export {
   getAllClassesStudentCanSee,
   getAllClassesTeacherJoined,
+  getAllExamsOfClass,
   getAllStudentsOfClass,
   getAllTeachersOfClass,
   studentRegisterClass,

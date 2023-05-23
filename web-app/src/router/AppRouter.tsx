@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { AccountRouter, AdminRouter, GuestRouter, StudentRouter, TeacherRouter } from '../constant/route/route';
 import { selectAuth } from '../page/account/AuthSlice';
-import { Counter } from '../page/counter/Counter';
 import Layout from '../page/Layout';
 import { useAppSelector } from '../store/hook';
 
@@ -32,8 +31,6 @@ const AppRouter = () => {
           AdminRouter.map((router) => (
             <Route key={router.router} path={router.router} element={<Layout>{router.component}</Layout>} />
           ))}
-
-        <Route path="/counter" element={<Counter />} />
       </Routes>
     </BrowserRouter>
   );

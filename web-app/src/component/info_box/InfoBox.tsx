@@ -1,11 +1,12 @@
-import Countdown from 'react-countdown';
-import { CommonDialog, TimerCountdown } from '..';
-import { formatDateTime } from '../../util/localStorage';
 import './index.css';
 
 import React from 'react';
-import { StudentRoute } from '../../constant/route/name';
+import Countdown from 'react-countdown';
 import { useNavigate } from 'react-router-dom';
+
+import { StudentRoute } from '../../constant/route/name';
+import { formatDateTime } from '../../util/localStorage';
+import { CommonDialog, TimerCountdown } from '..';
 
 interface IInfoBoxProps {
   detail: { [key: string]: string };

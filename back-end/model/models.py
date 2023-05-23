@@ -60,6 +60,7 @@ class Question(Base):
     content = Column(TEXT)
     question_number = Column(Integer)
     true_answer_id = Column(Integer, ForeignKey("answer.answer_id"))
+    is_deleted = Column(Boolean, default=False)
 
     exam = relationship("Exam", back_populates="question_list", foreign_keys=[exam_id])
     answer_list = relationship("Answer", back_populates="question", primaryjoin="Question.question_id == Answer.question_id")

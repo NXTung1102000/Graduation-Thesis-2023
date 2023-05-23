@@ -1,62 +1,51 @@
 import './index.css';
 
 import { Button } from '@mui/material';
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { getAllExamsOfClass } from '../../../api/classes';
 import { ContentHeader, InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { StudentRoute } from '../../../constant/route/name';
 
-interface IStudentExamClassProps {}
-
 const header = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian làm', 'Ngày tạo'];
 
-const data: IExam[] = [
-  {
-    title: 'Ôn tập tích phân xác định',
-    type: 'Giữa kỳ 1',
-    grade: 12,
-    time: 30,
-    createdDate: '28/11/2022',
-  },
-  {
-    title: 'Ôn tập tích phân xác định',
-    type: 'Giữa kỳ 1',
-    grade: 12,
-    time: 30,
-    createdDate: '28/11/2022',
-  },
-  {
-    title: 'Ôn tập tích phân xác định',
-    type: 'Giữa kỳ 1',
-    grade: 12,
-    time: 30,
-    createdDate: '28/11/2022',
-  },
-  {
-    title: 'Ôn tập tích phân xác định',
-    type: 'Giữa kỳ 1',
-    grade: 12,
-    time: 30,
-    createdDate: '28/11/2022',
-  },
-];
-
-function StudentExamClass(props: IStudentExamClassProps) {
+function StudentExamClass() {
+  const [data, setData] = React.useState<IExam[]>([]);
   const navigate = useNavigate();
   const params = useLocation().state;
-  console.log(params);
   const customParams = {
     name: params?.name,
     description: params?.description,
     teacherName: params?.owner?.name,
   };
+
+  const refreshData = () => {
+    console.log(params);
+    getAllExamsOfClass(params.class_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          setData(res.result);
+        } else {
+          setData([]);
+        }
+      })
+      .catch((error) => console.log(error));
+    return;
+  };
+
+  React.useEffect(() => {
+    refreshData();
+  }, []);
+
   const renderData = () => {
     return data.map((item) => ({
       ...item,
-      createdDate: (
+      created_at: (
         <div className="a-studentexamclass-table-createddate">
-          <div className="a-studentexamclass-createddate-detail">{item.createdDate?.toString()}</div>
+          <div className="a-studentexamclass-createddate-detail">{item.created_at?.toString()}</div>
           <Button
             size="small"
             variant="contained"

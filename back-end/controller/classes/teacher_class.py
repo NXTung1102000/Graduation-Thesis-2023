@@ -151,9 +151,9 @@ async def teacher_add_user(user_id_list: Annotated[list[int], Body()], \
         ).dict(exclude_none=True)
     
 @API_Class_Teacher.get('/allexamofclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
-async def get_all_exams_of_class(teacher_id: int, db: Session = Depends(get_db)):
+async def get_all_exams_of_class(class_id: int, db: Session = Depends(get_db)):
     try:
-        result = service_class.get_all_exams_of_class(teacher_id, db)
+        result = service_class.get_all_exams_of_class(class_id, db)
         return ResponseSchema[list[schema_exam.ExamInfo]](
             code="200", status="Ok", message="thành công", result=result
         ).dict(exclude_none=True)

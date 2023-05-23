@@ -12,7 +12,7 @@ import { selectAuth } from '../../account/AuthSlice';
 
 // interface ITeacherClassProps {}
 
-const header = ['Tên lớp', 'Mô tả'];
+const header = ['Tên lớp', 'Mô tả', 'Chủ sở hữu'];
 
 export default function TeacherClass() {
   const auth = useAppSelector(selectAuth);
@@ -41,6 +41,7 @@ export default function TeacherClass() {
         </Link>
       ),
       description: item.description,
+      owner: item.owner?.name,
     }));
   };
 

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from model import models
 from schema import exam as schema_exam
 from sqlalchemy import or_
@@ -18,16 +19,13 @@ def get_all_public_exams(skip: int, limit: int, db: Session):
         .offset(skip).limit(limit).all()
     return public_exams
 
-def get_all_exam_created_by_teacher(teacher_id: int, skip: int, limit: int, db: Session):
-    teacher_exams = db.query(models.Exam).filter(models.Exam.created_by == teacher_id).offset(skip).limit(limit).all()
+def get_all_exam_created_by_user(user_id: int, skip: int, limit: int, db: Session):
+    teacher_exams = db.query(models.Exam).filter(models.Exam.created_by == user_id).offset(skip).limit(limit).all()
     return teacher_exams
 
-def search_exam(keyword: str, grade: int, type: str, skip: int, limit: int, db: Session):
-    query = db.query(models.Exam).filter(
-        or_(
-            models.Exam.title.ilike(f"%{keyword}%"),
-            models.Exam.subject.ilike(f"%{keyword}%"),
-        )
+def search_exam_public(keyword: str, grade: int, type: str, skip: int, limit: int, db: Session):
+    query = db.query(models.Exam).join(models.User).filter(models.User.role == 0).filter(
+        func.lower(models.Exam.title).contains(keyword.lower())
     )
 
     if grade is not None:
@@ -54,7 +52,7 @@ def create_exam(exam: schema_exam.ExamCreate, db: Session):
     db.refresh(db_exam)
     return True
 
-def update_exam(update_exam: schema_exam.ExamUpdate, db: search_exam):
+def update_exam(update_exam: schema_exam.ExamUpdate, db: Session):
     code = "200"
     message = "thành công"
     db_exam = get_exam_by_id(update_exam.exam_id, db)

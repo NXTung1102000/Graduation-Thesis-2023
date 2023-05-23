@@ -13,7 +13,7 @@ import { selectAuth } from '../../account/AuthSlice';
 
 // interface IStudentClassProps {}
 
-const header = ['Tên lớp', 'Mô tả', 'Trạng thái'];
+const header = ['Tên lớp', 'Mô tả', 'Chủ sở hữu', 'Trạng thái'];
 
 const getClassStatus: (status?: ClassStatus) => string = (status) => {
   switch (status) {
@@ -78,6 +78,7 @@ export default function StudentClass() {
         </Link>
       ),
       description: item.description,
+      owner: item.owner?.name,
       status: (
         <div className="a-studentclass-table-status">
           <div className="a-studentclass-status-detail">{getClassStatus(item.status)}</div>

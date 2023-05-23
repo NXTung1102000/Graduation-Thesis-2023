@@ -11,10 +11,21 @@ class QuestionUpdateTrueAnswer(BaseModel):
     question_id: int
     exam_id: int
     question_number: int
-    true_answer_id: int
 
 class QuestionInfo(QuestionBase, QuestionUpdateTrueAnswer):
     answer_list: list[AnswerInfo]
 
     class Config():
         orm_mode = True
+
+class QuestionInfoHasTrueAnswer(QuestionInfo):
+    true_answer_id: int
+
+
+class DoQuestion(BaseModel):
+    question_id: int
+    true_answer_id: int
+
+class EditQuestion(DoQuestion):
+    question_number: int
+    is_delete: bool

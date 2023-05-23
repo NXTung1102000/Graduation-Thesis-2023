@@ -35,9 +35,9 @@ export const typeExamList = [
 ];
 
 export enum ClassExam {
-  Class10 = 'Lớp 10',
-  Class11 = 'Lớp 11',
-  Class12 = 'Lớp 12',
+  Class10 = '10',
+  Class11 = '11',
+  Class12 = '12',
 }
 
 export const classList = [ClassExam.Class10, ClassExam.Class11, ClassExam.Class12];

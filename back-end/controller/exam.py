@@ -24,10 +24,10 @@ async def get_all_public_exams(skip: int = 0, limit: int = 100, db: Session = De
         ).dict(exclude_none=True)
     
 @API_exam.get('/searchexam', response_model=ResponseSchema)
-async def search_exam(keyword: str = "", grade: int = None, type: str = None, skip: int = 0, limit: int = 100, \
+async def search_exam_public(keyword: str = "", grade: int = None, type: str = None, skip: int = 0, limit: int = 100, \
                       db: Session = Depends(get_db)):
     try:
-        result = service_exam.search_exam(keyword, grade, type, skip, limit, db)
+        result = service_exam.search_exam_public(keyword, grade, type, skip, limit, db)
         return ResponseSchema[list[schema_exam.ExamInfo]](
             code="200", status="Ok", message="thành công", result=result
         ).dict(exclude_none=True)
@@ -39,10 +39,10 @@ async def search_exam(keyword: str = "", grade: int = None, type: str = None, sk
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_exam.get('/examcreatedbyteacher', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
-async def get_all_exam_created_by_teacher(teacher_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@API_exam.get('/examcreatedbyuser', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
+async def get_all_exam_created_by_user(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     try:
-        result = service_exam.get_all_exam_created_by_teacher(teacher_id, skip, limit, db)
+        result = service_exam.get_all_exam_created_by_user(user_id, skip, limit, db)
         return ResponseSchema[list[schema_exam.ExamInfo]](
             code="200", status="Ok", message="thành công", result=result
         ).dict(exclude_none=True)
@@ -54,11 +54,26 @@ async def get_all_exam_created_by_teacher(teacher_id: int, skip: int = 0, limit:
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_exam.get('/getdetailexam', response_model=ResponseSchema)
+@API_exam.get('/getdetailexamfordo', response_model=ResponseSchema)
 async def get_detail_exam_for_do_exam(exam_id: int, db: Session = Depends(get_db)):
     try:
         result = service_exam.get_exam_by_id(exam_id, db)
         return ResponseSchema[schema_exam.ExamDetail](
+            code="200", status="Ok", message="thành công", result=result
+        ).dict(exclude_none=True)
+    
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
+    
+@API_exam.get('/getdetailexamforedit', response_model=ResponseSchema)
+async def get_detail_exam_for_edit_exam(exam_id: int, db: Session = Depends(get_db)):
+    try:
+        result = service_exam.get_exam_by_id(exam_id, db)
+        return ResponseSchema[schema_exam.ExamDetailHasTrueAnswer](
             code="200", status="Ok", message="thành công", result=result
         ).dict(exclude_none=True)
     
