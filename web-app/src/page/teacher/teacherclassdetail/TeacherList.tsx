@@ -92,7 +92,6 @@ export default function TeacherList() {
             }))}
             onChange={(value) => {
               setTeacherAddList(value);
-              console.log(value);
             }}
           />
         }
