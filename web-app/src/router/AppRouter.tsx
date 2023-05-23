@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Routes } from 'react-router-dom';
 
 import { AccountRouter, AdminRouter, GuestRouter, StudentRouter, TeacherRouter } from '../constant/route/route';
 import { selectAuth } from '../page/account/AuthSlice';
@@ -8,7 +8,7 @@ import { useAppSelector } from '../store/hook';
 const AppRouter = () => {
   const auth = useAppSelector(selectAuth);
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {GuestRouter.map((router) => (
           <Route key={router.router} path={router.router} element={<Layout>{router.component}</Layout>} />
@@ -32,7 +32,7 @@ const AppRouter = () => {
             <Route key={router.router} path={router.router} element={<Layout>{router.component}</Layout>} />
           ))}
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
