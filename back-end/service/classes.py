@@ -1,11 +1,17 @@
 from sqlalchemy.orm import Session
 from model import models
+from . import exam as service_exam
 from schema import classes as schema_class
 from schema.constant import ClassStatus
+from sqlalchemy import and_
 
 def get_class_by_id(class_id: int, db: Session):
     _class = db.query(models.Class).filter(models.Class.class_id == class_id).first()
     return _class
+
+def is_teacher_taking_class(teacher_id, class_id, db: Session):
+    user_class = db.query(models.User_Class).filter_by(user_id=teacher_id, class_id=class_id).first()
+    return user_class is not None
 
 def get_all_classes(db: Session):
     result = db.query(models.Class).all()
@@ -77,6 +83,132 @@ def get_class_student_can_see(student_id: int, db:Session):
             'owner': owner
         })
     return result
+
+def get_students_list_can_add_into_class(class_id: int, db: Session):
+    students_not_joined = (
+        db.query(models.User)
+        .filter(models.User.role == 1)  # Filter for students
+        .filter(~models.User.class_list.any(and_(models.User_Class.class_id == class_id, models.User_Class.status == 1)))  # Exclude students joined the class
+        .all()
+    )
+    return students_not_joined
+
+def get_teachers_list_can_add_into_class(class_id: int, db: Session):
+    teachers_not_joined = (
+        db.query(models.User)
+        .filter(models.User.role == 2)  # Filter for teachers
+        .filter(~models.User.class_list.any(and_(models.User_Class.class_id == class_id, models.User_Class.status == 1)))  # Exclude teachers joined the class
+        .all()
+    )
+    return teachers_not_joined
+
+def get_class_list_can_add_exam(exam_id: int, db: Session):
+    classes_without_exam  = db.query(models.Class).filter(
+        ~models.Class.exam_list.any(exam_id=exam_id)
+    ).all()
+    return classes_without_exam 
+
+def teacher_add_exam_into_class(teacher_id:int, exam_id: int, class_id: int, db: Session):
+    code = "200"
+    message = "thêm đề thi {} vào lớp {} thành công".format(exam_id, class_id)
+    db_exam = service_exam.get_exam_by_id(exam_id)
+    if db_exam is None:
+        code = "404"
+        message = "không tìm thấy đề thi có id là {}".format(exam_id)
+        return(code, message)
+    
+    db_class = get_class_by_id(class_id)
+    if db_class is None:
+        code = "404"
+        message = "không tìm thấy lớp có id là {}".format(class_id)
+        return(code, message)
+    
+    exist_db_exam_class = db.query(models.Exam_Class).filter_by(exam_id=exam_id, class_id=class_id).first()
+    if exist_db_exam_class is not None:
+        code = "400"
+        message = "đề thi {} đã có trong lớp {}".format(exam_id, class_id)
+        return(code, message)
+    if service_exam.is_teacher_owns_exam(teacher_id, exam_id) == False:
+        code = "400"
+        message = "giáo viên {} không sở hữu đề thi {}".format(teacher_id, exam_id)
+        return(code, message)
+
+    if is_teacher_taking_class(teacher_id, class_id) == False:
+        code = "400"
+        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+        return(code, message)
+    
+    db_exam_class = models.Exam_Class(
+        exam_id = exam_id,
+        class_id = class_id
+    )
+    db.add(db_exam_class)
+    db.commit()
+    db.refresh(db_exam_class)
+    return (code, message)
+
+def remove_exam_from_class(teacher_id: int, exam_id: int, class_id: int, db: Session):
+    code = "200"
+    message = "xóa đề thi {} khỏi lớp {} thành công".format(exam_id, class_id)
+    if is_teacher_taking_class(teacher_id, class_id) == False:
+        code = "400"
+        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+        return(code, message)
+    if service_exam.is_teacher_owns_exam(teacher_id, exam_id) == False:
+        code = "400"
+        message = "giáo viên {} không sở hữu đề thi {}".format(teacher_id, exam_id)
+        return(code, message)
+
+    exam_class_entry = db.query(models.Exam_Class).filter_by(exam_id=exam_id, class_id=class_id).first()
+
+    if exam_class_entry is None:
+        code = "400"
+        message = "đề thi {} chưa có trong lớp {}".format(exam_id, class_id)
+        return(code, message)
+    
+    db.delete(exam_class_entry)
+    db.commit()
+    return(code, message)
+
+def remove_student_from_class(teacher_id: int, student_id: int, class_id: int, db: Session):
+    code = "200"
+    message = "xóa học sinh {} khỏi lớp {} thành công".format(student_id, class_id)
+    if is_teacher_taking_class(teacher_id, class_id) == False:
+        code = "400"
+        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+        return(code, message)
+    
+    student_class_entry = db.query(models.User_Class).filter_by(user_id=student_id, class_id=class_id).first()
+
+    if student_class_entry is None or student_class_entry.status != 1:
+        code = "400"
+        message = "học sinh {} không tham gia lớp {}".format(student_id, class_id)
+        return(code, message)
+    
+    student_class_entry.status = 0
+    db.commit()
+    db.refresh(student_class_entry)
+    return(code, message)
+
+def remove_teacher_from_class(teacher_owner_id: int, teacher_id: int, class_id: int, db: Session):
+    code = "200"
+    message = "xóa giáo viên {} khỏi lớp {} thành công".format(teacher_id, class_id)
+    if db.query(models.Class).filter_by(created_by=teacher_owner_id).first() is None:
+        code = "400"
+        message = "giáo viên {} không phải chủ lớp {}".format(teacher_owner_id, class_id)
+        return(code, message)
+    
+    teacher_class_entry = db.query(models.User_Class).filter_by(user_id=teacher_id, class_id=class_id).first()
+
+    if teacher_class_entry is None or teacher_class_entry.status != 1:
+        code = "400"
+        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+        return(code, message)
+    
+    teacher_class_entry.status = 0
+    db.commit()
+    db.refresh(teacher_class_entry)
+    return(code, message)
 
 def create_class(class_create: schema_class.ClassCreate, db: Session):
     db_class = models.Class(

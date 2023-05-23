@@ -21,7 +21,7 @@ async def get_class_student_can_see(student_id: int, db: Session = Depends(get_d
         error_message = str(error.args)
         print(error_message)
         return ResponseSchema(
-            code="500", status="Internal Server Error", message="Lỗi hệ thống"
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
 @API_Class_Student.post("/studentregisterclass", response_model=ResponseSchema, dependencies=[Depends(JWTBearer())])
@@ -41,5 +41,5 @@ async def student_register_class(student_id: Annotated[int, Body()], class_id: A
         error_message = str(error.args)
         print(error_message)
         return ResponseSchema(
-            code="500", status="Internal Server Error", message="Lỗi hệ thống"
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
