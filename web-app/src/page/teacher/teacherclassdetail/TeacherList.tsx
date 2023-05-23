@@ -4,8 +4,8 @@ import { Button } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getAllTeachersOfClass } from '../../../api/classes';
-import { TableComponent } from '../../../component';
+import { addUserListToClass, getAllTeachersOfClass, getTeacherListCanAddToClass } from '../../../api/classes';
+import { ChipMultiSelect, CommonDialog, TableComponent } from '../../../component';
 import { ITeacher } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { selectAuth } from '../../account/AuthSlice';
@@ -17,6 +17,8 @@ const header = ['Tên học sinh', 'Email'];
 export default function TeacherList() {
   const auth = useAppSelector(selectAuth);
   const [data, setData] = React.useState<ITeacher[]>([]);
+  const [teacherCanAddList, setTeacherCanAddList] = React.useState<ITeacher[]>([]);
+  const [teacherAddList, setTeacherAddList] = React.useState<number[]>([]);
   const params = useLocation().state;
 
   React.useEffect(() => {
@@ -34,6 +36,35 @@ export default function TeacherList() {
       });
   }, []);
 
+  const getTeacherListCanAddToClassList = () => {
+    getTeacherListCanAddToClass(params.class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+          setTeacherCanAddList(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const addTeacherList = (user_id: number[], teacher_id: number, class_id: number) => {
+    addUserListToClass(user_id, teacher_id, class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const renderData = () => {
     return data.map((item) => ({
       name: item.name,
@@ -50,9 +81,26 @@ export default function TeacherList() {
 
   return (
     <div className="a-teacherclass-teacherlist">
-      <Button size="small" variant="contained">
-        {'Thêm giáo viên mới'}
-      </Button>
+      <CommonDialog
+        buttonText={'Thêm giáo viên mới'}
+        title={'Thêm giáo viên'}
+        content={
+          <ChipMultiSelect
+            options={teacherCanAddList.map((item) => ({
+              title: item.name + ' (' + item.email + ')',
+              id: item.user_id!,
+            }))}
+            onChange={(value) => {
+              setTeacherAddList(value);
+            }}
+          />
+        }
+        cancelButtonText="Hủy"
+        className="a-teacherclass-teacherlist-dialog"
+        onOpenButtonClick={getTeacherListCanAddToClassList}
+        primaryButtonText="Thêm"
+        action={() => addTeacherList(teacherAddList, auth.user.user_id, params.class_id)}
+      />
       <TableComponent header={header} data={renderData()} />
     </div>
   );

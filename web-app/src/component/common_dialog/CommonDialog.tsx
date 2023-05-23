@@ -11,9 +11,11 @@ interface ICommonDialogProps {
   cancelButtonText?: string;
   primaryButtonText?: string;
   title: string;
-  content: string;
+  content: string | React.ReactNode;
   buttonText?: string;
   action?: () => unknown;
+  className?: string;
+  onOpenButtonClick?: () => void;
 }
 
 export default function CommonDialog(props: ICommonDialogProps) {
@@ -21,6 +23,7 @@ export default function CommonDialog(props: ICommonDialogProps) {
 
   const handleClickOpen = () => {
     setOpen(true);
+    props.onOpenButtonClick!();
   };
 
   const handleClose = () => {
@@ -44,6 +47,7 @@ export default function CommonDialog(props: ICommonDialogProps) {
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        className={'a-commondialog' + props.className ? ' ' + props.className : ''}
       >
         <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
         <DialogContent>
