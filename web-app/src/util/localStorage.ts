@@ -36,4 +36,14 @@ const combineClassName: (preClassName: string, propsClassName?: string) => strin
   return [preClassName, propsClassName].filter((preClassName) => !!preClassName).join(' ');
 };
 
-export { combineClassName, getAccessToken, getRefreshToken, getUserId, refreshTokens };
+const formatDateTime: (date: Date) => string = (date) => {
+  var day: string | number, month: string | number, year: any;
+  day = date.getDate();
+  month = date.getMonth() + 1;
+  year = date.getFullYear();
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+  return `${day}/${month}/${year}`;
+};
+
+export { combineClassName, getAccessToken, getRefreshToken, getUserId, refreshTokens, formatDateTime };

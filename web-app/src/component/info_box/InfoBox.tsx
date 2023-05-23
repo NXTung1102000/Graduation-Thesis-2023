@@ -1,53 +1,65 @@
+import Countdown from 'react-countdown';
+import { CommonDialog, TimerCountdown } from '..';
+import { formatDateTime } from '../../util/localStorage';
 import './index.css';
 
 import React from 'react';
+import { StudentRoute } from '../../constant/route/name';
+import { useNavigate } from 'react-router-dom';
 
 interface IInfoBoxProps {
   detail: { [key: string]: string };
 }
 
-class InfoBox extends React.Component<IInfoBoxProps> {
-  public constructor(props: IInfoBoxProps) {
-    super(props);
-  }
-
-  public render(): React.ReactNode {
-    return (
-      <div className="a-infobox">
-        {Object.keys(this.props.detail).map((key) => {
-          return this.getInfoDetail(key);
-        })}
-      </div>
-    );
-  }
-
-  private getInfoDetail: (key: string) => React.ReactNode = (key) => {
+function InfoBox(props: IInfoBoxProps) {
+  const getInfoDetail: (key: string) => React.ReactNode = (key) => {
     switch (key) {
       case 'name':
         return (
           <div className="a-infobox-info" key={key}>
             <div className="a-infobox-info-title">{'Lớp: '}</div>
-            {this.props.detail[key]}
+            {props.detail[key]}
           </div>
         );
       case 'description':
         return (
           <div className="a-infobox-info" key={key}>
             <div className="a-infobox-info-title">{'Mô tả:'}</div>
-            {this.props.detail[key]}
+            {props.detail[key]}
           </div>
         );
       case 'teacherName':
         return (
           <div className="a-infobox-info" key={key}>
             <div className="a-infobox-info-title">{'Tên giáo viên:'}</div>
-            {this.props.detail[key]}
+            {props.detail[key]}
           </div>
+        );
+      case 'title':
+        return (
+          <>
+            <div className="a-infobox-info" key={key}>
+              <div className="a-infobox-info-title">{'Đề:'}</div>
+              {props.detail[key]}
+            </div>
+            <div className="a-infobox-info" key={key + 'date'}>
+              <div className="a-infobox-info-title">{'Ngày:'}</div>
+              {formatDateTime(new Date())}
+            </div>
+          </>
         );
       default:
         break;
     }
   };
+
+  return (
+    <div className="a-infobox">
+      {Object.keys(props.detail).map((key) => {
+        return getInfoDetail(key);
+      })}
+    </div>
+  );
 }
 
 export default InfoBox;

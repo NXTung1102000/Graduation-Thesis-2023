@@ -1,10 +1,11 @@
 import './index.css';
 
 import { Button } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { ContentHeader, InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
+import { StudentRoute } from '../../../constant/route/name';
 
 interface IStudentExamClassProps {}
 
@@ -42,6 +43,7 @@ const data: IExam[] = [
 ];
 
 function StudentExamClass(props: IStudentExamClassProps) {
+  const navigate = useNavigate();
   const params = useLocation().state;
   console.log(params);
   const customParams = {
@@ -55,7 +57,13 @@ function StudentExamClass(props: IStudentExamClassProps) {
       createdDate: (
         <div className="a-studentexamclass-table-createddate">
           <div className="a-studentexamclass-createddate-detail">{item.createdDate?.toString()}</div>
-          <Button size="small" variant="contained">
+          <Button
+            size="small"
+            variant="contained"
+            onClick={() => {
+              navigate(StudentRoute.DO_EXAM, { state: item });
+            }}
+          >
             {'Làm đề'}
           </Button>
         </div>

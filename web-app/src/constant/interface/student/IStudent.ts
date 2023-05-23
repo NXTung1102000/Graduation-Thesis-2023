@@ -13,6 +13,7 @@ export interface IClassModel {
   class_id: number;
   name?: string;
   description?: string;
+  owner?: ITeacherModel;
 }
 
 export interface IExamModel {
@@ -22,6 +23,18 @@ export interface IExamModel {
   time?: number;
   subject?: string;
   createdDate?: Date | string;
+}
+
+export interface IQuestionModel {
+  content?: string;
+  questionNumber?: number;
+  trueAnswer?: number;
+  answerList?: IAnswerModel[];
+}
+
+export interface IAnswerModel {
+  answerNumber?: number;
+  content?: string;
 }
 
 export interface IHumanModel {

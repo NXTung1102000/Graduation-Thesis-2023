@@ -87,6 +87,8 @@ export default function StudentClass() {
               content="Gửi yêu cầu tham gia?"
               title="Xác nhận"
               action={() => registerClass(auth.user.user_id, item.class_id)}
+              cancelButtonText="Hủy"
+              primaryButtonText="Tham gia"
             />
           )}
         </div>
