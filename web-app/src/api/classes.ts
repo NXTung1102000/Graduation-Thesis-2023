@@ -41,10 +41,28 @@ const getAllTeachersOfClass = async (class_id: number) => {
   return result;
 };
 
+const getTeacherListCanAddToClass = async (class_id: number) => {
+  const result = await api({
+    method: 'GET',
+    url: `/class/teacher/allteachersnotjoin?class_id=${class_id}`,
+  });
+  return result;
+};
+
+const getStudentListCanAddToClass = async (class_id: number) => {
+  const result = await api({
+    method: 'GET',
+    url: `/class/teacher/allstudentsnotjoin?class_id=${class_id}`,
+  });
+  return result;
+};
+
 export {
   getAllClassesStudentCanSee,
   getAllClassesTeacherJoined,
   getAllStudentsOfClass,
   getAllTeachersOfClass,
   studentRegisterClass,
+  getTeacherListCanAddToClass,
+  getStudentListCanAddToClass,
 };

@@ -4,8 +4,8 @@ import { Box, Button } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { getAllStudentsOfClass } from '../../../api/classes';
-import { TableComponent } from '../../../component';
+import { getAllStudentsOfClass, getStudentListCanAddToClass } from '../../../api/classes';
+import { ChipMultiSelect, CommonDialog, TableComponent } from '../../../component';
 import { ClassStatus, IStudent } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { selectAuth } from '../../account/AuthSlice';
@@ -15,6 +15,7 @@ const header = ['Tên học sinh', 'Email', 'Hành động'];
 export default function StudentList() {
   const auth = useAppSelector(selectAuth);
   const [data, setData] = React.useState<IStudent[]>([]);
+  const [studentCanAddList, setStudentCanAddList] = React.useState<IStudent[]>([]);
   const params = useLocation().state;
 
   React.useEffect(() => {
@@ -31,6 +32,21 @@ export default function StudentList() {
         console.log(error);
       });
   }, []);
+
+  const getStudentListCanAddToClassList = () => {
+    getStudentListCanAddToClass(params.class_id)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+          setStudentCanAddList(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const renderData = () => {
     return data.map((item) => ({
@@ -57,9 +73,22 @@ export default function StudentList() {
 
   return (
     <div className="a-teacherclass-studentlist">
-      <Button size="small" variant="contained">
-        {'Thêm học sinh mới'}
-      </Button>
+      <CommonDialog
+        buttonText={'Thêm học sinh mới'}
+        title={'Thêm học sinh'}
+        content={
+          <ChipMultiSelect
+            options={studentCanAddList.map((item) => ({
+              title: item.name + ' (' + item.email + ')',
+              id: item.user_id!,
+            }))}
+          />
+        }
+        cancelButtonText="Hủy"
+        className="a-teacherclass-studentlist-dialog"
+        onOpenButtonClick={getStudentListCanAddToClassList}
+        primaryButtonText="Thêm"
+      />
       <TableComponent header={header} data={renderData()} />
     </div>
   );

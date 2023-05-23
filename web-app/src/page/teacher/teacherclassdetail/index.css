@@ -31,3 +31,8 @@
   display: flex;
   align-items: center;
 }
+
+.a-teacherclass-teacherlist-dialog .MuiPaper-root.MuiPaper-elevation, .a-teacherclass-studentlist-dialog .MuiPaper-root.MuiPaper-elevation{
+  width: 700px;
+  height: 450px;
+}

@@ -40,6 +40,7 @@ export interface IAnswerModel {
 export interface IHumanModel {
   name?: string;
   email?: string;
+  user_id?: number;
 }
 
 export interface IStudentModel extends IHumanModel {
