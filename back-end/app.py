@@ -5,6 +5,7 @@ from controller.sign_in import API_SignIn
 from controller.exam import API_exam
 from controller.classes.student_class import API_Class_Student
 from controller.classes.teacher_class import API_Class_Teacher
+from controller.search_integration import API_integration
 from config import db
 db.Base.metadata.create_all(bind=db.engine)
 
@@ -22,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(API_SignIn)
+app.include_router(API_integration)
 app.include_router(API_Class_Student)
 app.include_router(API_Class_Teacher)
 app.include_router(API_exam)

@@ -1,5 +1,30 @@
 import { axiosAPI as api } from './configAPI';
 
+const searchIntegrationOneWeb = async (
+  web: string,
+  requestBody: { keyword: string; type?: string; grade?: number, page:number },
+) => {
+  const url = `/integration/search/${web}`;
+  const result = await api({
+    method: 'POST',
+    data: requestBody,
+    url: url,
+  });
+
+  return result;
+};
+
+const searchIntegration = async (requestBody: { keyword: string; type?: string; grade?: number, page: number }) => {
+  const url = `/integration/searchintegration`;
+  const result = await api({
+    method: 'POST',
+    data: requestBody,
+    url: url,
+  });
+
+  return result;
+};
+
 const getAllPublicExams = async () => {
   const result = await api({
     method: 'GET',
@@ -51,4 +76,12 @@ const getDetailExamForEdit = async (exam_id: number) => {
   return result;
 };
 
-export { getAllExamsOfUser, getAllPublicExams, getDetailExamForDo, getDetailExamForEdit, searchPublicExams };
+export {
+  getAllExamsOfUser,
+  getAllPublicExams,
+  getDetailExamForDo,
+  getDetailExamForEdit,
+  searchIntegration,
+  searchIntegrationOneWeb,
+  searchPublicExams,
+};

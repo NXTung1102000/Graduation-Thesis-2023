@@ -1,29 +1,29 @@
 from enum import Enum
 
 # class syntax
-class Role(Enum):
+class Role(int, Enum):
     Admin = 0
     Student = 1
     Teacher = 2
 
-class ClassStatus(Enum):
+class ClassStatus(int, Enum):
     Not = 0,
     Joined = 1,
     Pending = 2,
 
-class NameSourceExam(Enum):
+class NameSourceExam(str, Enum):
   TOAN_MATH = 'toanmath',
   MATH_VN = 'mathvn',
   ON_LUYEN = 'onluyen',
   TIM_DAP_AN = 'timdapan',
 
-class UrlSourceExam(Enum):
+class UrlSourceExam(str, Enum):
   TOAN_MATH = 'https://toanmath.com/',
   MATH_VN = 'https://www.mathvn.com/',
   ON_LUYEN = 'https://www.onluyen.vn/',
   TIM_DAP_AN = 'https://timdapan.com/',
 
-class TypeExam(Enum):
+class TypeExam(str, Enum):
   MidTerm1 = 'Giữa kỳ 1',
   MidTerm2 = 'Giữa kỳ 2',
   EndTerm1 = 'Cuối kỳ 1',
@@ -31,7 +31,7 @@ class TypeExam(Enum):
   Demo = 'Thi thử THPTQG',
 #   Advanced = 'Học sinh giỏi',
 
-class GradeExam(Enum):
-  Grade10 = 'Lớp 10',
-  Grade11 = 'Lớp 11',
-  Grade12 = 'Lớp 12',
+class GradeExam(int, Enum):
+  Grade10 = 10,
+  Grade11 = 11,
+  Grade12 = 12,
