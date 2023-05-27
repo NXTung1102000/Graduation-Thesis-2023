@@ -26,7 +26,7 @@ async def search_one_web(req: RequestSearchIntegration, web:NameSourceExam):
 async def search_integration(req: RequestSearchIntegration):
     try:
         results = []
-        for _source in (NameSourceExam.TOAN_MATH, NameSourceExam.ON_LUYEN):
+        for _source in (NameSourceExam.TOAN_MATH, NameSourceExam.ON_LUYEN, NameSourceExam.TIM_DAP_AN, ):
             engine = FACTORY[_source.value]()
             _result = await engine.full_process(req)
             results += _result
