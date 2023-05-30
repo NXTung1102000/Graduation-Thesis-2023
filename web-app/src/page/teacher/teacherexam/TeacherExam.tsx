@@ -8,12 +8,14 @@ import { InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { selectAuth } from '../../account/AuthSlice';
+import DialogCreateExam from './DialogCreateExam';
 
 const tableColumn = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 
 export default function TeacherExam() {
   const [data, setData] = React.useState<IExam[]>([]);
   const auth = useAppSelector(selectAuth);
+  const [openDialogCreateExam, setOpenDialogCreateExam] = React.useState(false);
 
   const refreshData = () => {
     getAllExamsOfUser(auth.user.user_id)
@@ -53,14 +55,17 @@ export default function TeacherExam() {
     }));
   };
   return (
-    <div className="a-teacher-teacherexam">
-      <InfoBox detail={{ teacherName: auth.user.name }} />
-      <div className="a-teacher-teacherexam-table">
-        <Button size="small" variant="contained">
-          {'Tải lên đề mới'}
-        </Button>
-        <TableComponent header={tableColumn} data={renderData()} />
+    <>
+      <DialogCreateExam open={openDialogCreateExam} setOpen={setOpenDialogCreateExam} />
+      <div className="a-teacher-teacherexam">
+        <InfoBox detail={{ teacherName: auth.user.name }} />
+        <div className="a-teacher-teacherexam-table">
+          <Button size="small" variant="contained" onClick={() => setOpenDialogCreateExam(true)}>
+            {'Tải lên đề mới'}
+          </Button>
+          <TableComponent header={tableColumn} data={renderData()} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

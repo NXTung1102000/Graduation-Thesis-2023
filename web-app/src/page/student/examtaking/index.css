@@ -26,26 +26,28 @@
 }
 
 .a-exam-container-questionanswer{
+  width: 100%;
   display: flex;
   justify-content: center;
   gap: 16px;
+  flex-grow: 1;
 }
 
 .a-exam-container-questionanswer > div {
-  max-width: min-content;
+  /* max-width: min-content; */
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
 }
 
+.a-exam-container-questionanswer > div > img{
+  width: 100%;
+}
+
 .a-exam-container-questionnumber{
   width: 80px;
 }
-
-/* .a-exam-container-questionanswer img{
-  width: ;
-} */
 
 .a-examtaking-examlist-container{
   width: 30%;

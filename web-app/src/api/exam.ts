@@ -2,7 +2,7 @@ import { axiosAPI as api } from './configAPI';
 
 const searchIntegrationOneWeb = async (
   web: string,
-  requestBody: { keyword: string; type?: string; grade?: number, page:number },
+  requestBody: { keyword: string; type?: string; grade?: number; page: number },
 ) => {
   const url = `/integration/search/${web}`;
   const result = await api({
@@ -14,7 +14,7 @@ const searchIntegrationOneWeb = async (
   return result;
 };
 
-const searchIntegration = async (requestBody: { keyword: string; type?: string; grade?: number, page: number }) => {
+const searchIntegration = async (requestBody: { keyword: string; type?: string; grade?: number; page: number }) => {
   const url = `/integration/searchintegration`;
   const result = await api({
     method: 'POST',
@@ -76,7 +76,20 @@ const getDetailExamForEdit = async (exam_id: number) => {
   return result;
 };
 
+const createExamAPIv1 = async (formData: FormData) => {
+  const result = await api({
+    method: 'POST',
+    url: `/exam/apiv1/createexam`,
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 30000 * 1000,
+  });
+
+  return result;
+};
+
 export {
+  createExamAPIv1,
   getAllExamsOfUser,
   getAllPublicExams,
   getDetailExamForDo,

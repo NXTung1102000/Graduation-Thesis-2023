@@ -5,10 +5,12 @@
 }
 
 .a-radioboxgroup img{
-  display: flex;
-  justify-content: center;
+  width: 60%;
+  /* height: 32px; */
 }
 
 .a-radioboxgroup .MuiFormGroup-root.MuiFormGroup-row{
   justify-content: space-between;
+  display: flex;
+  flex-direction: column;
 }
