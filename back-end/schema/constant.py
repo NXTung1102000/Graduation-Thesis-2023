@@ -1,12 +1,12 @@
 from enum import Enum
 
 # class syntax
-class Role(int, Enum):
+class Role(Enum):
     Admin = 0
     Student = 1
     Teacher = 2
 
-class ClassStatus(int, Enum):
+class ClassStatus(Enum):
     Not = 0,
     Joined = 1,
     Pending = 2,

@@ -3,6 +3,7 @@ from sqlalchemy.types import NVARCHAR, TEXT
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from config.db import Base
+from sqlalchemy.dialects.mysql import LONGTEXT
 
 class User(Base):
     """
@@ -57,7 +58,7 @@ class Question(Base):
 
     question_id = Column(Integer, primary_key=True, index=True)
     exam_id = Column(Integer, ForeignKey("exam.exam_id"))
-    content = Column(TEXT)
+    content = Column(LONGTEXT)
     question_number = Column(Integer)
     true_answer_id = Column(Integer, ForeignKey("answer.answer_id"))
     is_deleted = Column(Boolean, default=False)
@@ -73,7 +74,7 @@ class Answer(Base):
     answer_id = Column(Integer, primary_key=True, index=True)
     question_id = Column(Integer, ForeignKey("question.question_id"))
     answer_number = Column(Integer)
-    content = Column(TEXT)
+    content = Column(LONGTEXT)
 
     question = relationship("Question", back_populates="answer_list", foreign_keys=[question_id])
 

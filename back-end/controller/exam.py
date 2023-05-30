@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile, Body, Form
 from service import exam as service_exam
 from sqlalchemy.orm import Session
 from config.db import get_db
 from schema import exam as schema_exam
 from util.jwt import JWTBearer, JWTBearerForTeacher, JWTBearerForAdmin, JWTBearerForTeacherAndAdmin
 from schema.request import RequestSchema, ResponseSchema, TokenResponse
+from typing import Annotated
+from schema.constant import TypeExam, GradeExam
 
 API_exam = APIRouter(prefix="/exam", tags=["Exam"])
 
@@ -84,14 +86,18 @@ async def get_detail_exam_for_edit_exam(exam_id: int, db: Session = Depends(get_
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
 
-@API_exam.post("/apiv1/createexam", response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
-async def create_exam(exam_create: schema_exam.ExamCreate, db: Session = Depends(get_db)):
+@API_exam.post("/apiv1/createexam", dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
+async def create_exam(file: UploadFile, title: Annotated[str, Form()], \
+                      type: Annotated[TypeExam, Form()], grade: Annotated[int, Form()], \
+                        created_by: Annotated[int, Form()], db: Session = Depends(get_db)):
     try:
-        result = service_exam.create_exam(exam_create, db)
+        exam_create = schema_exam.ExamCreate(title=title, type=type, grade=grade, created_by=created_by)
+        result = service_exam.create_exam(file, exam_create, db)
         if result:
             return ResponseSchema(
                 code="200", status="Ok", 
-                message="Tạo mới đề thi thành công"
+                message="Tạo mới đề thi thành công",
+                result=result
             ).dict(exclude_none=True)
         
         return ResponseSchema(
