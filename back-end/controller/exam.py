@@ -94,9 +94,9 @@ async def create_exam(file: UploadFile, title: Annotated[str, Form()], \
         exam_create = schema_exam.ExamCreate(title=title, type=type, grade=grade, created_by=created_by)
         result = service_exam.create_exam(file, exam_create, db)
         if result:
-            return ResponseSchema(
+            return ResponseSchema[schema_exam.ExamInfo](
                 code="200", status="Ok", 
-                message="Tạo mới đề thi thành công",
+                message="Tạo đề thi thành công, hệ thống đang trích xuất đề, bạn hãy quay lại sau để chỉnh sửa đề thi nhé !",
                 result=result
             ).dict(exclude_none=True)
         

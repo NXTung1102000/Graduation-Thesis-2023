@@ -36,18 +36,14 @@ export default function DialogCreateExam({ open, setOpen }: IOpenDialog) {
       form.append('type', type);
       form.append('grade', grade);
       form.append('created_by', String(auth.user.user_id));
-      dispatch(
-        changeNotice({
-          message:
-            'Chúng tôi đã ghi nhận tệp đề thi của bạn, việc trích xuất sẽ mất nhiều thời gian, bạn quay lại sửa đề thi khi trích xuất hoàn thành nhé',
-          open: true,
-          type: 'success',
-        }),
-      );
       createExamAPIv1(form)
         .then((res) => res.data)
         .then((res) => {
-          console.log(res);
+          if (res.code === '200') {
+            dispatch(changeNotice({ message: res.message, open: true, type: 'success' }));
+          } else {
+            dispatch(changeNotice({ message: res.message, open: true, type: 'error' }));
+          }
         })
         .catch((error) => {
           console.log(error);
