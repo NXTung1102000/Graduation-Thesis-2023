@@ -9,6 +9,70 @@ from . import question as question_service
 from util.base64 import convert_to_base64, resize_img
 import pandas as pd
 from model import models
+import http3, random
+from bs4 import BeautifulSoup
+import asyncio
+from schema.constant import NameSourceExam
+import requests
+
+#region
+def asyncQuery(url):
+    client = http3.AsyncClient()
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    htmlText = loop.run_until_complete(client.get(url, verify=False,headers={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"}))
+    # htmlText= await client.get(url, verify=False,headers={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"})
+    soup = BeautifulSoup(htmlText.text, 'html.parser')
+    loop.close()
+    return soup
+
+def get_url_download(source_url: str, source: NameSourceExam):
+        soup = asyncQuery(source_url)
+        try:
+            href = None
+            if (source == NameSourceExam.TOAN_MATH) :
+                content = soup.find("div", class_="entry-content clearfix")
+                btn_download = content.find("center").find("a")
+                href = btn_download.get("href")
+                return href
+
+            
+            if (source == NameSourceExam.ON_LUYEN) :
+                btn_download = soup.find("a", class_="btn btn-primary mb-3 btn_doc")
+                href = btn_download.get("href")
+                return href
+            print(href)
+            return href
+        except Exception as e:
+            print(e.args)
+            return None
+        
+def download_file_and_convert_to_img(url: str):
+    print(url)
+    response = requests.get(url)
+    file_name = "dethi.pdf"
+    file = open(file_name, "wb")
+    file.write(response.content)
+    file.close()
+    dir_path = os.getcwd()
+    dir_path = dir_path.replace("\\", "\\\\")
+    poppler_path = 'poppler-0.68.0\\bin'
+    full_path = f"{dir_path}\\{poppler_path}"
+    pages = convert_from_path(file_name, 500, poppler_path=full_path)
+    os.remove(file_name)
+    return pages
+
+def process_download_file_and_get_full_img(source_url: str, source: NameSourceExam):
+    try:
+        url = get_url_download(source_url, source)
+        pages = download_file_and_convert_to_img(url)
+        result = create_img_full(pages)
+        return result
+    except Exception as error:
+        print(f"error when getting full img: {str(error.args)}")
+#endregion
+
 
 #region
 # create image_full
@@ -70,6 +134,7 @@ def process_get_full_img(file):
         print(f"error when getting full img: {str(error.args)}")
 
 #endregion
+
 
 
 #region

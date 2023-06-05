@@ -6,7 +6,7 @@ from schema import exam as schema_exam
 from util.jwt import JWTBearer, JWTBearerForTeacher, JWTBearerForAdmin, JWTBearerForTeacherAndAdmin
 from schema.request import RequestSchema, ResponseSchema, TokenResponse
 from typing import Annotated
-from schema.constant import TypeExam, GradeExam
+from schema.constant import TypeExam, GradeExam, NameSourceExam
 
 API_exam = APIRouter(prefix="/exam", tags=["Exam"])
 
@@ -93,6 +93,32 @@ async def create_exam(file: UploadFile, title: Annotated[str, Form()], \
     try:
         exam_create = schema_exam.ExamCreate(title=title, type=type, grade=grade, created_by=created_by)
         result = service_exam.create_exam(file, exam_create, db)
+        if result:
+            return ResponseSchema[schema_exam.ExamInfo](
+                code="200", status="Ok", 
+                message="Tạo đề thi thành công, hệ thống đang trích xuất đề, bạn hãy quay lại sau để chỉnh sửa đề thi nhé !",
+                result=result
+            ).dict(exclude_none=True)
+        
+        return ResponseSchema(
+            code="400", status="Bad Request", 
+            message="Lỗi service"
+        ).dict(exclude_none=True)
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
+    
+
+@API_exam.post("/apiv1/createexamfromurl", dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
+async def create_exam_from_url(source_url: Annotated[str, Body()], \
+                               source: Annotated[NameSourceExam, Body()], title: Annotated[str, Body()], \
+                      type: Annotated[TypeExam, Body()], grade: Annotated[int, Body()], \
+                        created_by: Annotated[int, Body()], db: Session = Depends(get_db)):
+    try:
+        result = service_exam.create_exam_from_url(source_url, source, title, grade, type, created_by, db)
         if result:
             return ResponseSchema[schema_exam.ExamInfo](
                 code="200", status="Ok", 
