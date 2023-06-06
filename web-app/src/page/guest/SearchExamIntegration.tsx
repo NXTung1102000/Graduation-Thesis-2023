@@ -1,10 +1,13 @@
 import { Box, Button, CircularProgress, Link, MenuItem, TextField } from '@mui/material';
 import React from 'react';
 
-import { searchIntegration, searchIntegrationOneWeb } from '../../api/exam';
+import { createExamFromUrlAPIv1, searchIntegration, searchIntegrationOneWeb } from '../../api/exam';
 import { ContentHeader, PageTitle } from '../../component';
+import { changeNotice } from '../../component/loading_notice/noticeSlice';
 import TableComponent from '../../component/table/TableComponent';
 import { ClassExam, NameSourceExam, TypeExam, UrlSourceExam } from '../../constant/name';
+import { useAppDispatch, useAppSelector } from '../../store/hook';
+import { selectAuth } from '../account/AuthSlice';
 
 interface IExamFromSource {
   title: string;
@@ -16,6 +19,7 @@ interface IExamFromSource {
 }
 
 const header = ['Tên đề thi', 'Nguồn', 'Loại', 'Khối', 'Thời gian'];
+const header_create = ['Tên đề thi', 'Nguồn', 'Loại', 'Khối', 'Thời gian', 'Tạo đề thi'];
 
 const examSourceOptions = Object.values(NameSourceExam).map((type) => {
   return { value: type, label: type };
@@ -43,6 +47,9 @@ const getUrlSource = (name: NameSourceExam) => {
 };
 
 export default function SearchExamIntegration() {
+  const auth = useAppSelector(selectAuth);
+  const dispatch = useAppDispatch();
+
   const [data, setData] = React.useState<IExamFromSource[]>([]);
 
   const [keyword, setKeyword] = React.useState('');
@@ -51,6 +58,13 @@ export default function SearchExamIntegration() {
   const [type, setType] = React.useState('');
   const [page, setPage] = React.useState(1);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const getHeader = () => {
+    if (auth.user.role == 2 || auth.user.role == 0) {
+      return header_create;
+    }
+    return header;
+  };
 
   const search = () => {
     const requestBody = {
@@ -89,28 +103,81 @@ export default function SearchExamIntegration() {
     }
   };
 
+  const handleCreateExam = (item: IExamFromSource) => {
+    console.log(item);
+    const source_url = item.link;
+    const source = item.source;
+    const title = item.title;
+    const type = item.type;
+    const grade = item.grade;
+    const created_by = auth.user.user_id;
+    createExamFromUrlAPIv1(source_url, source, title, type, grade, created_by)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code === '200') {
+          dispatch(changeNotice({ message: res.message, open: true, type: 'success' }));
+        } else {
+          dispatch(changeNotice({ message: res.message, open: true, type: 'error' }));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(changeNotice({ message: 'lỗi hệ thống, bạn quay lại khi khác nhé', open: true, type: 'error' }));
+      });
+  };
+
   const mapData = () => {
     return data.map((item) => {
-      return {
-        // ...item,
-        title: (
-          <Box>
-            <Link href={item.link} target="_blank">
-              {item.title}
-            </Link>
-          </Box>
-        ),
-        source: (
-          <Box>
-            <Link href={getUrlSource(item.source as NameSourceExam)} target="_blank">
-              {item.source}
-            </Link>
-          </Box>
-        ),
-        type: item.type,
-        grade: item.grade,
-        time: item.date,
-      };
+      if (
+        (auth.user.role == 2 || auth.user.role == 0) &&
+        (item.source == NameSourceExam.TOAN_MATH || item.source == NameSourceExam.ON_LUYEN)
+      ) {
+        return {
+          // ...item,
+          title: (
+            <Box>
+              <Link href={item.link} target="_blank">
+                {item.title}
+              </Link>
+            </Box>
+          ),
+          source: (
+            <Box>
+              <Link href={getUrlSource(item.source as NameSourceExam)} target="_blank">
+                {item.source}
+              </Link>
+            </Box>
+          ),
+          type: item.type,
+          grade: item.grade,
+          time: item.date,
+          action: (
+            <Button variant="contained" color="success" onClick={() => handleCreateExam(item)}>
+              Tạo
+            </Button>
+          ),
+        };
+      } else
+        return {
+          // ...item,
+          title: (
+            <Box>
+              <Link href={item.link} target="_blank">
+                {item.title}
+              </Link>
+            </Box>
+          ),
+          source: (
+            <Box>
+              <Link href={getUrlSource(item.source as NameSourceExam)} target="_blank">
+                {item.source}
+              </Link>
+            </Box>
+          ),
+          type: item.type,
+          grade: item.grade,
+          time: item.date,
+        };
     });
   };
 
@@ -128,7 +195,7 @@ export default function SearchExamIntegration() {
         </Box>
       );
 
-    return <TableComponent header={header} data={mapData()} />;
+    return <TableComponent header={getHeader()} data={mapData()} />;
   };
 
   return (

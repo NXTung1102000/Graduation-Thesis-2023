@@ -82,7 +82,23 @@ const createExamAPIv1 = async (formData: FormData) => {
     url: `/exam/apiv1/createexam`,
     data: formData,
     headers: { 'Content-Type': 'multipart/form-data' },
-    timeout: 30000 * 1000,
+  });
+
+  return result;
+};
+
+const createExamFromUrlAPIv1 = async (
+  source_url: string,
+  source: string,
+  title: string,
+  type: string,
+  grade: number,
+  created_by: number,
+) => {
+  const result = await api({
+    method: 'POST',
+    url: `/exam/apiv1/createexamfromurl`,
+    data: { source_url, source, title, type, grade, created_by },
   });
 
   return result;
@@ -90,6 +106,7 @@ const createExamAPIv1 = async (formData: FormData) => {
 
 export {
   createExamAPIv1,
+  createExamFromUrlAPIv1,
   getAllExamsOfUser,
   getAllPublicExams,
   getDetailExamForDo,
