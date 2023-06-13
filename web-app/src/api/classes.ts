@@ -65,11 +65,28 @@ const getStudentListCanAddToClass = async (class_id: number) => {
   return result;
 };
 
+const getExamListOfUser = async (user_id: number) => {
+  const result = await api({
+    method: 'GET',
+    url: `/exam/examcreatedbyuser?user_id=${user_id}`,
+  });
+  return result;
+};
+
 const addUserListToClass = async (user_id_list: number[], teacher_id: number, class_id: number) => {
   const result = await api({
     method: 'POST',
     url: `class/teacher/teacheradduser`,
     data: { user_id_list, teacher_id, class_id },
+  });
+  return result;
+};
+
+const addExamToClass = async (exam_id: number, teacher_id: number, class_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/class/teacher/addexamintoclass`,
+    data: { exam_id, teacher_id, class_id },
   });
   return result;
 };
@@ -84,4 +101,6 @@ export {
   getTeacherListCanAddToClass,
   getStudentListCanAddToClass,
   addUserListToClass,
+  getExamListOfUser,
+  addExamToClass,
 };

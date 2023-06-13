@@ -1,4 +1,4 @@
-import ChipMultiSelect from './chip_multi_select/ChipMultiSelect';
+import AutoComplete from './auto-complete/AutoComplete';
 import CommonDialog from './common_dialog/CommonDialog';
 import CommonTableTab from './common_table_tab/CommonTableTab';
 import ContentHeader from './content_header/ContentHeader';
@@ -19,5 +19,5 @@ export {
   TimerCountdown,
   RadioBoxGroup,
   QuestionList,
-  ChipMultiSelect,
+  AutoComplete,
 };

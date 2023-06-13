@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import './index.css';
+import { CircularProgress } from '@mui/material';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -143,12 +144,14 @@ const Listbox = styled('ul')(
 `,
 );
 
-interface IChipMultiSelect {
+interface IAutoCompleteProps {
+  multiple?: boolean;
+  loading?: boolean;
   options: { title: string; id: number }[];
-  onChange: (value: number[]) => void;
+  onChange: (value: number[] | number) => void;
 }
 
-export default function ChipMultiSelect(props: IChipMultiSelect) {
+export default function AutoComplete(props: IAutoCompleteProps) {
   const {
     getRootProps,
     getInputProps,
@@ -160,40 +163,51 @@ export default function ChipMultiSelect(props: IChipMultiSelect) {
     setAnchorEl,
   } = useAutocomplete({
     id: 'customized-hook-demo',
-    defaultValue: [],
-    multiple: true,
+    multiple: props.multiple,
     options: props.options,
     getOptionLabel: (option) => option.title,
+    onChange: (event, newValue) => {
+      props.onChange(
+        props.multiple
+          ? (newValue as { title: string; id: number }[]).map(({ id }) => id)
+          : (newValue as { title: string; id: number }).id,
+      );
+    },
+    isOptionEqualToValue: (option, value) => option.id === value.id,
   });
 
-  React.useEffect(() => {
-    props.onChange(
-      value.map((item) => {
-        return item.id;
-      }),
-    );
-  }, [value]);
-
   return (
-    <Root>
-      <div {...getRootProps()}>
-        <InputWrapper ref={setAnchorEl} className={'a-chipmultiselect-selection'}>
-          {value.map((option: { title: string; id: number }, index: number) => (
-            <StyledTag label={option.title} {...getTagProps({ index })} />
-          ))}
-          <input {...getInputProps()} />
-        </InputWrapper>
-      </div>
-      {groupedOptions.length > 0 ? (
-        <Listbox className="a-chipmultiselect-list" {...getListboxProps()}>
-          {(groupedOptions as typeof props.options).map((option, index) => (
-            <li {...getOptionProps({ option, index })}>
-              <span>{option.title}</span>
-              <CheckIcon fontSize="small" />
-            </li>
-          ))}
-        </Listbox>
-      ) : null}
+    <Root className="a-common-autocomplete">
+      {props.loading ? (
+        <CircularProgress />
+      ) : (
+        <div className="a-common-autocomplete-selection">
+          <div {...getRootProps()}>
+            <InputWrapper ref={setAnchorEl} className="focused a-autocomplete-selection">
+              {props.multiple ? (
+                (value as { title: string; id: number }[]).map(
+                  (option: { title: string; id: number }, index: number) => (
+                    <StyledTag label={option.title} {...getTagProps({ index })} />
+                  ),
+                )
+              ) : (
+                <></>
+              )}
+              <input {...getInputProps()} />
+            </InputWrapper>
+          </div>
+          {groupedOptions.length > 0 ? (
+            <Listbox className="a-autocomplete-list" {...getListboxProps()}>
+              {(groupedOptions as typeof props.options).map((option, index) => (
+                <li {...getOptionProps({ option, index })}>
+                  <span>{option.title}</span>
+                  <CheckIcon fontSize="small" />
+                </li>
+              ))}
+            </Listbox>
+          ) : null}
+        </div>
+      )}
     </Root>
   );
 }

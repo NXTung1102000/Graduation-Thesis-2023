@@ -17,6 +17,7 @@ export interface IClassModel {
 }
 
 export interface IExamModel {
+  exam_id?: number;
   title?: string;
   type?: string;
   grade?: number;

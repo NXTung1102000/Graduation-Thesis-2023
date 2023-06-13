@@ -1,0 +1,16 @@
+.a-common-autocomplete{
+  display: flex;
+  justify-content: center;
+}
+
+.a-common-autocomplete-selection{
+  width: 100%;
+}
+
+.a-autocomplete-selection{
+  width: 100% !important;
+}
+
+.a-autocomplete-list{
+  width: 92% !important;
+}

@@ -14,3 +14,8 @@ a{
   font-size: 14px;
   color: #323E4D;
 }
+
+.a-table-loading{
+  display: flex;
+  justify-content: center;
+}
