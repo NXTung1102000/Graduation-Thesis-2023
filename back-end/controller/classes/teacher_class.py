@@ -72,6 +72,21 @@ async def get_teachers_list_can_add_into_class(class_id: int, db: Session = Depe
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
+@API_Class_Teacher.get('/allexamsnotin', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
+async def get_exams_list_of_teacher_can_add_into_class(class_id: int, teacher_id, db: Session = Depends(get_db)):
+    try:
+        result = service_class.get_exams_list_of_teacher_can_add_into_class(class_id, teacher_id, db)
+        return ResponseSchema[list[schema_exam.ExamInfo]](
+            code="200", status="Ok", message="thành công", result=result
+        ).dict(exclude_none=True)
+    
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
+    
 @API_Class_Teacher.post('/createclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
 async def create_class(class_create: schema_class.ClassCreate, db: Session = Depends(get_db)):
     try:
@@ -150,7 +165,7 @@ async def teacher_add_user(user_id_list: Annotated[list[int], Body()], \
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_Class_Teacher.get('/allexamofclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
+@API_Class_Teacher.get('/allexamofclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearer())])
 async def get_all_exams_of_class(class_id: int, db: Session = Depends(get_db)):
     try:
         result = service_class.get_all_exams_of_class(class_id, db)
@@ -182,10 +197,10 @@ async def get_class_list_can_add_exam(exam_id: int, db: Session = Depends(get_db
     
 @API_Class_Teacher.post('/addexamintoclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
 async def teacher_add_exam_into_class(teacher_id: Annotated[int, Body()], \
-                            exam_id: Annotated[int, Body()], class_id: Annotated[int, Body()], \
+                            exams_id_list: Annotated[list[int], Body()], class_id: Annotated[int, Body()], \
                             db: Session = Depends(get_db)):
     try:
-        result = service_class.teacher_add_exam_into_class(teacher_id, exam_id, class_id, db)
+        result = service_class.teacher_add_exam_into_class(teacher_id, exams_id_list, class_id, db)
         code = result[0]
         message = result[1]
         if code == "200":

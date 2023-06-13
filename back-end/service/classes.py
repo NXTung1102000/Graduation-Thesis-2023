@@ -102,59 +102,80 @@ def get_teachers_list_can_add_into_class(class_id: int, db: Session):
     )
     return teachers_not_joined
 
+def get_exams_list_of_teacher_can_add_into_class(class_id: int, teacher_id: int, db: Session):
+    exams_not_in = (
+        db.query(models.Exam)
+        .filter(models.Exam.created_by == teacher_id)
+        .outerjoin(models.Exam_Class)
+        .filter(models.Exam_Class.class_id != class_id)
+        .all()
+    )
+    return exams_not_in
+    
+
 def get_class_list_can_add_exam(exam_id: int, db: Session):
     classes_without_exam  = db.query(models.Class).filter(
         ~models.Class.exam_list.any(exam_id=exam_id)
     ).all()
     return classes_without_exam 
 
-def teacher_add_exam_into_class(teacher_id:int, exam_id: int, class_id: int, db: Session):
+def teacher_add_exam_into_class(teacher_id:int, exams_id_list: list[int], class_id: int, db: Session):
+    _is_teacher_join_class = db.query(models.User_Class).filter(
+        models.User_Class.class_id == class_id,
+        models.User_Class.user_id == teacher_id
+    ).first()
+    if _is_teacher_join_class is None:
+        code = "403"
+        message = "giáo viên {} chưa tham gia lớp này".format(teacher_id)
+        return (code, message)
+    
     code = "200"
-    message = "thêm đề thi {} vào lớp {} thành công".format(exam_id, class_id)
-    db_exam = service_exam.get_exam_by_id(exam_id)
-    if db_exam is None:
-        code = "404"
-        message = "không tìm thấy đề thi có id là {}".format(exam_id)
-        return(code, message)
-    
-    db_class = get_class_by_id(class_id)
-    if db_class is None:
-        code = "404"
-        message = "không tìm thấy lớp có id là {}".format(class_id)
-        return(code, message)
-    
-    exist_db_exam_class = db.query(models.Exam_Class).filter_by(exam_id=exam_id, class_id=class_id).first()
-    if exist_db_exam_class is not None:
-        code = "400"
-        message = "đề thi {} đã có trong lớp {}".format(exam_id, class_id)
-        return(code, message)
-    if service_exam.is_teacher_owns_exam(teacher_id, exam_id) == False:
-        code = "400"
-        message = "giáo viên {} không sở hữu đề thi {}".format(teacher_id, exam_id)
-        return(code, message)
+    message = "thêm các đề thi vào lớp {} thành công".format(class_id)
+    for exam_id in exams_id_list:
+        db_exam = service_exam.get_exam_by_id(exam_id)
+        if db_exam is None:
+            code = "404"
+            message = "không tìm thấy đề thi có id là {}".format(exam_id)
+            return(code, message)
+        
+        db_class = get_class_by_id(class_id, db)
+        if db_class is None:
+            code = "404"
+            message = "không tìm thấy lớp có id là {}".format(class_id)
+            return(code, message)
+        
+        exist_db_exam_class = db.query(models.Exam_Class).filter_by(exam_id=exam_id, class_id=class_id).first()
+        if exist_db_exam_class is not None:
+            code = "400"
+            message = "đề thi {} đã có trong lớp {}".format(exam_id, class_id)
+            return(code, message)
+        if service_exam.is_teacher_owns_exam(teacher_id, exam_id, db) == False:
+            code = "400"
+            message = "giáo viên {} không sở hữu đề thi {}".format(teacher_id, exam_id)
+            return(code, message)
 
-    if is_teacher_taking_class(teacher_id, class_id) == False:
-        code = "400"
-        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
-        return(code, message)
-    
-    db_exam_class = models.Exam_Class(
-        exam_id = exam_id,
-        class_id = class_id
-    )
-    db.add(db_exam_class)
-    db.commit()
-    db.refresh(db_exam_class)
+        if is_teacher_taking_class(teacher_id, class_id, db) == False:
+            code = "400"
+            message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+            return(code, message)
+        
+        db_exam_class = models.Exam_Class(
+            exam_id = exam_id,
+            class_id = class_id
+        )
+        db.add(db_exam_class)
+        db.commit()
+        db.refresh(db_exam_class)
     return (code, message)
 
 def remove_exam_from_class(teacher_id: int, exam_id: int, class_id: int, db: Session):
     code = "200"
     message = "xóa đề thi {} khỏi lớp {} thành công".format(exam_id, class_id)
-    if is_teacher_taking_class(teacher_id, class_id) == False:
+    if is_teacher_taking_class(teacher_id, class_id, db) == False:
         code = "400"
         message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
         return(code, message)
-    if service_exam.is_teacher_owns_exam(teacher_id, exam_id) == False:
+    if service_exam.is_teacher_owns_exam(teacher_id, exam_id, db) == False:
         code = "400"
         message = "giáo viên {} không sở hữu đề thi {}".format(teacher_id, exam_id)
         return(code, message)
@@ -173,7 +194,7 @@ def remove_exam_from_class(teacher_id: int, exam_id: int, class_id: int, db: Ses
 def remove_student_from_class(teacher_id: int, student_id: int, class_id: int, db: Session):
     code = "200"
     message = "xóa học sinh {} khỏi lớp {} thành công".format(student_id, class_id)
-    if is_teacher_taking_class(teacher_id, class_id) == False:
+    if is_teacher_taking_class(teacher_id, class_id, db) == False:
         code = "400"
         message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
         return(code, message)
@@ -234,7 +255,7 @@ def create_class(class_create: schema_class.ClassCreate, db: Session):
 def delete_class(teacher_id: int, class_id: int, db: Session):
     code = "200"
     message = "thành công"
-    db_class = get_class_by_id(class_id)
+    db_class = get_class_by_id(class_id, db)
     if db_class is None:
         code = "404"
         message = "không tìm thấy lớp có id là {}".format(class_id)
