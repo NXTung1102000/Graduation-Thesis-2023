@@ -150,7 +150,7 @@ async def teacher_add_user(user_id_list: Annotated[list[int], Body()], \
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_Class_Teacher.get('/allexamofclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
+@API_Class_Teacher.get('/allexamofclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearer())])
 async def get_all_exams_of_class(class_id: int, db: Session = Depends(get_db)):
     try:
         result = service_class.get_all_exams_of_class(class_id, db)
