@@ -105,9 +105,10 @@ def get_teachers_list_can_add_into_class(class_id: int, db: Session):
 def get_exams_list_of_teacher_can_add_into_class(class_id: int, teacher_id: int, db: Session):
     exams_not_in = (
         db.query(models.Exam)
-        .filter(models.Exam.created_by == teacher_id)
-        .outerjoin(models.Exam_Class)
-        .filter(models.Exam_Class.class_id != class_id)
+        .join(models.User, models.Exam.created_by == models.User.user_id)
+        .outerjoin(models.Exam_Class, (models.Exam_Class.exam_id == models.Exam.exam_id) & (models.Exam_Class.class_id == class_id))
+        .filter(models.User.user_id == teacher_id)
+        .filter(models.Exam_Class.exam_id == None)
         .all()
     )
     return exams_not_in
@@ -132,7 +133,7 @@ def teacher_add_exam_into_class(teacher_id:int, exams_id_list: list[int], class_
     code = "200"
     message = "thêm các đề thi vào lớp {} thành công".format(class_id)
     for exam_id in exams_id_list:
-        db_exam = service_exam.get_exam_by_id(exam_id)
+        db_exam = service_exam.get_exam_by_id(exam_id, db)
         if db_exam is None:
             code = "404"
             message = "không tìm thấy đề thi có id là {}".format(exam_id)
