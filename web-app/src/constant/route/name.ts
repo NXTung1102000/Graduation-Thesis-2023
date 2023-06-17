@@ -23,4 +23,6 @@ export enum TeacherRoute {
 
 export enum AdminRoute {
   DASHBOARD = '/admin',
+  MANAGE_USER = '/manage_user',
+  MANAGE_PUBLIC_EXAM = '/manage_public_exam',
 }

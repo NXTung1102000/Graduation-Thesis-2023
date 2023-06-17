@@ -1,0 +1,39 @@
+.a-teacher-teacherclassdetail{
+    display: flex;
+    flex-flow: column;
+    gap: 24px;
+  }
+  
+  .a-teacher-teacherclassdetail-table{
+    padding: 24px;
+    background: #FFF 0% 0% no-repeat padding-box;
+    border: 1px solid #DAE0E2;
+    border-radius: 8px;
+  }
+  
+  .a-teacherclass-examlist, .a-teacherclass-studentlist, .a-teacherclass-teacherlist{
+    display: flex;
+    flex-flow: column;
+    gap: 16px;
+  }
+  
+  .a-teacher-teacherclassdetail-table .MuiButton-containedPrimary{
+    width: 170px;
+  }
+  
+  .a-teacherclass-examlist-createddate, .a-teacherclass-studentlist-email, .a-teacherclass-teacherlist-email{
+    display: flex;
+    flex-flow: row;
+    gap: 16px;
+  }
+  
+  .a-examlist-createddate-detail, .a-studentlist-email-detail, .a-teacherlist-email-detail{
+    display: flex;
+    align-items: center;
+  }
+  
+  .a-teacherclass-teacherlist-dialog .MuiPaper-root.MuiPaper-elevation, .a-teacherclass-studentlist-dialog .MuiPaper-root.MuiPaper-elevation, .a-teacherclass-examlist-dialog .MuiPaper-root.MuiPaper-elevation{
+    width: 700px;
+    height: 450px;
+  }
+  

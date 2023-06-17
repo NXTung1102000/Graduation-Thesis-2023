@@ -8,6 +8,7 @@ import { getAllExamsOfClass } from '../../../api/classes';
 import { ContentHeader, InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { StudentRoute } from '../../../constant/route/name';
+import { getDateFromString } from '../../../util/datetime';
 
 const header = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian làm', 'Ngày tạo'];
 
@@ -49,7 +50,7 @@ function StudentExamClass() {
       time: item.time,
       created_at: (
         <div className="a-studentexamclass-table-createddate">
-          <div className="a-studentexamclass-createddate-detail">{item.created_at?.toString()}</div>
+          <div className="a-studentexamclass-createddate-detail">{getDateFromString(item.created_at as string)}</div>
           <Button
             size="small"
             variant="contained"

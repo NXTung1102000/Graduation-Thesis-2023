@@ -8,6 +8,7 @@ import { addExamToClass, getAllExamsOfClass, getExamListCanAddToClass } from '..
 import { AutoComplete, CommonDialog, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
+import { getDateFromString } from '../../../util/datetime';
 import { selectAuth } from '../../account/AuthSlice';
 
 const header = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
@@ -83,7 +84,7 @@ export default function ExamList() {
       time: item.time,
       created_at: (
         <div className="a-teacherclass-examlist-createddate">
-          <div className="a-examlist-createddate-detail">{item.created_at?.toString()}</div>
+          <div className="a-examlist-createddate-detail">{getDateFromString(item.created_at as string)}</div>
           <Button color="warning" size="small" variant="contained">
             {'Sửa'}
           </Button>

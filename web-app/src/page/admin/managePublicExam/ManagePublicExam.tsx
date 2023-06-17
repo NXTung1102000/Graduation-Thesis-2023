@@ -9,11 +9,11 @@ import { IExam } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { getDateFromString } from '../../../util/datetime';
 import { selectAuth } from '../../account/AuthSlice';
-import DialogCreateExam from './DialogCreateExam';
+import DialogCreateExam from '../../teacher/teacherexam/DialogCreateExam';
 
 const tableColumn = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 
-export default function TeacherExam() {
+export default function ManagePublicExam() {
   const [data, setData] = React.useState<IExam[]>([]);
   const auth = useAppSelector(selectAuth);
   const [openDialogCreateExam, setOpenDialogCreateExam] = React.useState(false);

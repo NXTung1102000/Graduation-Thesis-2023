@@ -23,7 +23,7 @@ async def get_all_users(skip: int = 0, limit: int = 100, db: Session = Depends(g
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_user.get('/allstudent', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForAdmin())])
+@API_user.get('/allstudents', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForAdmin())])
 async def get_all_students(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     try:
         result = service_user.get_all_students(skip, limit, db)
@@ -38,7 +38,7 @@ async def get_all_students(skip: int = 0, limit: int = 100, db: Session = Depend
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_user.get('/allteacher', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForAdmin())])
+@API_user.get('/allteachers', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForAdmin())])
 async def get_all_teachers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     try:
         result = service_user.get_all_teachers(skip, limit, db)
@@ -53,7 +53,7 @@ async def get_all_teachers(skip: int = 0, limit: int = 100, db: Session = Depend
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
     
-@API_user.get('/alladmin', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForAdmin())])
+@API_user.get('/alladmins', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForAdmin())])
 async def get_all_admins(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     try:
         result = service_user.get_all_admins(skip, limit, db)

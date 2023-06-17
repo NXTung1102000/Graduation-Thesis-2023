@@ -13,6 +13,7 @@ class UserInfo(UserBase):
     user_id: int
     name: str
     role: int
+    is_blocked: bool
 
     class Config():
         orm_mode = True
