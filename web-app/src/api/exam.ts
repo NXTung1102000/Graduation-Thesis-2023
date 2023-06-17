@@ -66,6 +66,15 @@ const getDetailExamForDo = async (exam_id: number) => {
   return result;
 };
 
+const getHistoryDoExam = async (user_id: number) => {
+  const result = await api({
+    method: 'GET',
+    url: `/exam/gethisorydoexam?user_id=${user_id}`,
+  });
+
+  return result;
+};
+
 const getDetailExamForEdit = async (exam_id: number) => {
   // has true answer for question
   const result = await api({
@@ -111,6 +120,7 @@ export {
   getAllPublicExams,
   getDetailExamForDo,
   getDetailExamForEdit,
+  getHistoryDoExam,
   searchIntegration,
   searchIntegrationOneWeb,
   searchPublicExams,

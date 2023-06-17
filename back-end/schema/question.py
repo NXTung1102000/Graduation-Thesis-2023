@@ -1,6 +1,11 @@
 from pydantic import BaseModel
 from .answer import AnswerInfo
 from typing import Optional
+
+class QuestionTrueAnswer(BaseModel):
+    question_id: int
+    true_answer: int
+
 class QuestionBase(BaseModel):
     content: str
 

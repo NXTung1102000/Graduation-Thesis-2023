@@ -7,6 +7,7 @@ from util.jwt import JWTBearer, JWTBearerForTeacher, JWTBearerForAdmin, JWTBeare
 from schema.request import RequestSchema, ResponseSchema, TokenResponse
 from typing import Annotated
 from schema.constant import TypeExam, GradeExam, NameSourceExam
+from schema.question import QuestionTrueAnswer
 
 API_exam = APIRouter(prefix="/exam", tags=["Exam"])
 
@@ -86,6 +87,40 @@ async def get_detail_exam_for_edit_exam(exam_id: int, db: Session = Depends(get_
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
 
+@API_exam.get('/gethisorydoexam', response_model=ResponseSchema, dependencies=[Depends(JWTBearer())])
+async def get_history_do_exam(user_id: int, db: Session = Depends(get_db)):
+    try:
+        result = service_exam.get_history_do_exam(user_id, db)
+        return ResponseSchema(
+            code="200", status="Ok", message="thành công", result=result
+        ).dict(exclude_none=True)
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
+
+@API_exam.post('/doexam', response_model=ResponseSchema, dependencies=[Depends(JWTBearer())])
+async def user_do_exam(user_id: Annotated[int, Body()], exam_id: Annotated[int, Body()], list_questions: list[QuestionTrueAnswer], \
+                              db: Session = Depends(get_db)):
+    try:
+        result = service_exam.user_do_exam(user_id, exam_id, list_questions, db)
+        if result is not None:
+            return ResponseSchema(
+                code="200", status="Ok", message="thành công", result=result
+            ).dict(exclude_none=True)
+        else:
+            return ResponseSchema(
+                code="400", status="Error", message="người dùng, đề thi không tìm thấy, hãy quay lại sau !", result=result
+            ).dict(exclude_none=True)
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
+
 @API_exam.post("/apiv1/createexam", dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
 async def create_exam(file: UploadFile, title: Annotated[str, Form()], \
                       type: Annotated[TypeExam, Form()], grade: Annotated[int, Form()], \
@@ -130,6 +165,26 @@ async def create_exam_from_url(source_url: Annotated[str, Body()], \
             code="400", status="Bad Request", 
             message="Lỗi service"
         ).dict(exclude_none=True)
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
+    
+@API_exam.post("updateanswerofexam", dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
+async def user_update_answer_of_exam(user_id: Annotated[int, Body()], exam_id: Annotated[int, Body()], list_questions: list[QuestionTrueAnswer], \
+                              list_delete_questions: list[int], db: Session = Depends(get_db)):
+    try:
+        result = service_exam.user_update_answer_of_exam(user_id, exam_id, list_questions, list_delete_questions, db)
+        if result == True:
+            return ResponseSchema(
+                code="200", status="Ok", message="bạn đã chỉnh sửa đáp án thành công", result=result
+            ).dict(exclude_none=True)
+        else:
+            return ResponseSchema(
+                code="400", status="Error", message="người dùng, đề thi không tìm thấy, hãy quay lại sau !", result=result
+            ).dict(exclude_none=True)
     except Exception as error:
         error_message = str(error.args)
         print(error_message)

@@ -109,6 +109,7 @@ def convert_pdf_to_img(file):
         temp_file.write(file.file.read())
         
     # content = await file.read()
+    print(platform)
     if platform == "win32":
         dir_path = os.getcwd()
         dir_path = dir_path.replace("\\", "\\\\")

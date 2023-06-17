@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Float
 from sqlalchemy.types import NVARCHAR, TEXT
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -95,7 +95,9 @@ class User_Exam(Base):
 
     user_id = Column(Integer, ForeignKey("user.user_id"), primary_key=True)
     exam_id = Column(Integer, ForeignKey("exam.exam_id"), primary_key=True)
-    score = Column(Integer)
+    score = Column(Float)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    exam_detail = relationship("Exam",foreign_keys=[exam_id], viewonly=True)
 
 class Exam_Class(Base):
     __tablename__ = "exam_class"
