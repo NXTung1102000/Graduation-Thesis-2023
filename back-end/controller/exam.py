@@ -173,10 +173,10 @@ async def create_exam_from_url(source_url: Annotated[str, Body()], \
         ).dict(exclude_none=True)
     
 @API_exam.post("updateanswerofexam", dependencies=[Depends(JWTBearerForTeacherAndAdmin())])
-async def user_update_answer_of_exam(user_id: Annotated[int, Body()], exam_id: Annotated[int, Body()], list_questions: list[QuestionTrueAnswer], \
+async def user_update_answer_of_exam(user_id: Annotated[int, Body()], exam_id: Annotated[int, Body()], time: Annotated[int, Body()],list_questions: list[QuestionTrueAnswer], \
                               list_delete_questions: list[int], db: Session = Depends(get_db)):
     try:
-        result = service_exam.user_update_answer_of_exam(user_id, exam_id, list_questions, list_delete_questions, db)
+        result = service_exam.user_update_answer_of_exam(user_id, exam_id, time, list_questions, list_delete_questions, db)
         if result == True:
             return ResponseSchema(
                 code="200", status="Ok", message="bạn đã chỉnh sửa đáp án thành công", result=result

@@ -2,6 +2,8 @@ import { AccountCircle } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Badge } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,19 +11,21 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { getUnreadNotification } from '../api/notification';
 import { HeaderApp } from '../component/header_footer/HeaderApp';
 import LeftBav from '../component/header_footer/LeftBav';
 import { ResponsiveMenu } from '../component/header_footer/Menu';
 import { MenuUser, MenuUserMobile } from '../component/header_footer/MenuUser';
+import Notification from '../component/header_footer/Notification';
 import Loading from '../component/loading_notice/Loading';
 import { selectLoading } from '../component/loading_notice/loadingSlide';
 import Notice from '../component/loading_notice/Notice';
+import { INotification } from '../constant/interface/notification';
 import { name } from '../constant/name';
 import { AccountRoute, GuestRoute } from '../constant/route/name';
 import { useAppDispatch, useAppSelector } from '../store/hook';
 import { LogOutUser, selectAuth } from './account/AuthSlice';
 import SignIn from './account/SignIn';
-
 interface Props {
   children?: JSX.Element;
 }
@@ -32,16 +36,25 @@ export default function Layout(props: Props) {
   const loading = useAppSelector(selectLoading);
   const auth = useAppSelector(selectAuth);
 
-  const [open, setOpen] = React.useState(false);
+  const [notifications, setNotifications] = React.useState<INotification[]>([]);
+
+  const [open, setOpen] = React.useState(true);
   const [openLogin, setOpenLogin] = React.useState(false);
 
+  const [anchorElNotification, setAnchorElNotification] = React.useState<null | HTMLElement>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
-  const signOut = () => {
+  const signOut = async () => {
     navigate(GuestRoute.HOME);
     dispatch(LogOutUser());
     handleMenuClose();
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      webSocket.close();
+      console.log(webSocket);
+      setWebSocket(null);
+    }
   };
 
   const returnHome = () => {
@@ -62,6 +75,14 @@ export default function Layout(props: Props) {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleNotificationMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNotification(event.currentTarget);
+  };
+
+  const handleNotificationMenuClose = () => {
+    setAnchorElNotification(null);
+  };
+
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -74,6 +95,30 @@ export default function Layout(props: Props) {
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  const refreshNotification = () => {
+    if (auth.access_token) {
+      getUnreadNotification(auth.user.user_id)
+        .then((response) => response.data)
+        .then((res) => {
+          if (res.code == '200') {
+            setNotifications(res.result);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  React.useEffect(() => {
+    refreshNotification();
+    const interval = setInterval(() => refreshNotification(), 15000);
+    return () => {
+      clearInterval(interval);
+      setNotifications([]);
+    };
+  }, [auth]);
 
   return (
     <>
@@ -103,9 +148,13 @@ export default function Layout(props: Props) {
                 </Typography>
               </Box>
               <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center' }}>
-                <Typography variant="h6" noWrap>
-                  {auth.access_token && `Chào ${auth.user.name}`}
-                </Typography>
+                {auth.access_token && (
+                  <IconButton size="large" color="inherit" onClick={handleNotificationMenuOpen}>
+                    <Badge badgeContent={notifications.length} color="error">
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                )}
                 <IconButton
                   size="large"
                   edge="end"
@@ -116,12 +165,11 @@ export default function Layout(props: Props) {
                 >
                   <AccountCircle />
 
-                  {!auth.access_token && (
-                    <Typography noWrap sx={{ marginLeft: '0.5rem' }}>
-                      Đăng nhập
-                    </Typography>
-                  )}
+                  {!auth.access_token && <Typography noWrap>Đăng nhập</Typography>}
                 </IconButton>
+                <Typography variant="h6" noWrap>
+                  {auth.access_token && `${auth.user.name}`}
+                </Typography>
               </Box>
               <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
@@ -137,6 +185,11 @@ export default function Layout(props: Props) {
             </Box>
           </Toolbar>
         </HeaderApp>
+        <Notification
+          anchorEl={anchorElNotification}
+          handleMenuClose={handleNotificationMenuClose}
+          notifications={notifications}
+        />
         <MenuUser
           anchorEl={anchorEl}
           signOut={signOut}

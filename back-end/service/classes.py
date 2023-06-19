@@ -4,6 +4,8 @@ from . import exam as service_exam
 from schema import classes as schema_class
 from schema.constant import ClassStatus
 from sqlalchemy import and_
+from . import notification as notification_service
+from . import user as servicer_user
 
 def get_class_by_id(class_id: int, db: Session):
     _class = db.query(models.Class).filter(models.Class.class_id == class_id).first()
@@ -193,43 +195,49 @@ def remove_exam_from_class(teacher_id: int, exam_id: int, class_id: int, db: Ses
     return(code, message)
 
 def remove_student_from_class(teacher_id: int, student_id: int, class_id: int, db: Session):
+    _class_in_db = get_class_by_id(class_id, db)
     code = "200"
-    message = "xóa học sinh {} khỏi lớp {} thành công".format(student_id, class_id)
+    message = "xóa học sinh {} khỏi lớp {} thành công".format(student_id, _class_in_db.name)
     if is_teacher_taking_class(teacher_id, class_id, db) == False:
         code = "400"
-        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, _class_in_db.name)
         return(code, message)
     
     student_class_entry = db.query(models.User_Class).filter_by(user_id=student_id, class_id=class_id).first()
 
     if student_class_entry is None or student_class_entry.status != 1:
         code = "400"
-        message = "học sinh {} không tham gia lớp {}".format(student_id, class_id)
+        message = "học sinh {} không tham gia lớp {}".format(student_id, _class_in_db.name)
         return(code, message)
     
     student_class_entry.status = 0
     db.commit()
     db.refresh(student_class_entry)
+    notification_service.add_notification(user_id=student_id,\
+            content=f"Bạn đã bị xóa khỏi lớp {_class_in_db.name}", db=db)
     return(code, message)
 
 def remove_teacher_from_class(teacher_owner_id: int, teacher_id: int, class_id: int, db: Session):
+    _class_in_db = get_class_by_id(class_id, db)
     code = "200"
-    message = "xóa giáo viên {} khỏi lớp {} thành công".format(teacher_id, class_id)
+    message = "xóa giáo viên {} khỏi lớp {} thành công".format(teacher_id, _class_in_db.name)
     if db.query(models.Class).filter_by(created_by=teacher_owner_id).first() is None:
         code = "400"
-        message = "giáo viên {} không phải chủ lớp {}".format(teacher_owner_id, class_id)
+        message = "giáo viên {} không phải chủ lớp {}".format(teacher_owner_id, _class_in_db.name)
         return(code, message)
     
     teacher_class_entry = db.query(models.User_Class).filter_by(user_id=teacher_id, class_id=class_id).first()
 
     if teacher_class_entry is None or teacher_class_entry.status != 1:
         code = "400"
-        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, class_id)
+        message = "giáo viên {} không tham gia lớp {}".format(teacher_id, _class_in_db.name)
         return(code, message)
     
     teacher_class_entry.status = 0
     db.commit()
     db.refresh(teacher_class_entry)
+    notification_service.add_notification(user_id=teacher_id,\
+            content=f"Bạn đã bị xóa khỏi lớp {_class_in_db.name}", db=db)
     return(code, message)
 
 def create_class(class_create: schema_class.ClassCreate, db: Session):
@@ -289,6 +297,10 @@ def student_register_class(student_id: int, class_id: int, db: Session):
         db.refresh(db_student_class)
         code = "200"
         message = "đăng ký lớp thành công"
+        _class_in_db = get_class_by_id(class_id, db)
+        _student = servicer_user.get_user_by_id(student_id, db)
+        notification_service.add_notification(user_id=_class_in_db.owner.user_id,\
+            content=f"Lớp {_class_in_db.name} có học sinh {_student.name} xin tham gia", db=db)
         return(code, message) 
     
     if _exist_student_class.status == ClassStatus.Not.value[0]:
@@ -297,6 +309,10 @@ def student_register_class(student_id: int, class_id: int, db: Session):
         db.refresh(_exist_student_class)
         code = "200"
         message = "đăng ký lớp thành công"
+        _class_in_db = get_class_by_id(class_id, db)
+        _student = servicer_user.get_user_by_id(student_id, db)
+        notification_service.add_notification(user_id=_class_in_db.owner.name,\
+            content=f"Lớp {_class_in_db.name} có học sinh {_student.name} xin tham gia", db=db)
         return(code, message)
     
     code = "400"
@@ -346,6 +362,9 @@ def teacher_accept_student(student_id: int, teacher_id: int, class_id: int, db: 
         db.refresh(_exist_student_class)
         code = "200"
         message = "thêm học sinh {} thành công".format(student_id)
+        _class_in_db = get_class_by_id(class_id, db)
+        notification_service.add_notification(user_id=student_id,\
+            content=f"Bạn đã được tham gia lớp {_class_in_db.name}", db=db)
         return (code, message)
     
     code = "500"
@@ -384,6 +403,10 @@ def teacher_add_user(user_id_list: list[int], teacher_id: int, class_id: int, db
             _exist_user_class.status = ClassStatus.Joined.value[0]
             db.commit()
             db.refresh(_exist_user_class)
+        
+        _class_in_db = get_class_by_id(class_id, db)
+        notification_service.add_notification(user_id=_user_id,\
+        content=f"Bạn đã được tham gia lớp {_class_in_db.name}", db=db)
 
     code = "200"
     message = "thêm thành công"

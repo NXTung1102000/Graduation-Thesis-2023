@@ -22,6 +22,7 @@ class User(Base):
 
     class_list = relationship("Class", secondary="user_class", back_populates="users_join")
     exam_list = relationship("Exam", secondary="user_exam", back_populates="users_do")
+    noti_list = relationship("Notification", back_populates="user_detail")
 
 class Class(Base):
     __tablename__ = "class"
@@ -104,3 +105,13 @@ class Exam_Class(Base):
 
     class_id = Column(Integer, ForeignKey("class.class_id"), primary_key=True)
     exam_id = Column(Integer, ForeignKey("exam.exam_id"), primary_key=True)
+
+class Notification(Base):
+    __tablename__ = "notification"
+
+    noti_id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("user.user_id"))
+    is_read = Column(Boolean, default=False)
+    content = Column(String(255))
+
+    user_detail = relationship("User", back_populates="noti_list", foreign_keys=[user_id])

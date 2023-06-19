@@ -7,16 +7,16 @@ from schema.constant import NameSourceExam, TypeExam
 from schema.question import QuestionTrueAnswer
 import threading
 import datetime
-
 # from sqlalchemy import or_
 # from . import classes as service_class
 # from . import user as service_user
 from . import extract as service_extract
 from fastapi import UploadFile
 from util.base64 import convert_to_base64, resize_img
+from . import notification as notification_service
 
 def get_exam_by_id(exam_id: int, db: Session):
-    _exam = db.query(models.Exam).filter(models.Exam.exam_id == exam_id).first()
+    _exam = db.query(models.Exam).filter(models.Exam.exam_id == exam_id).filter(models.Exam.is_deleted == False).first()
     if _exam:
         _exam.question_list = [question for question in _exam.question_list if not question.is_deleted]
     # Check if the exam exists
@@ -28,11 +28,11 @@ def is_teacher_owns_exam(teacher_id: int, exam_id: int, db: Session):
 
 def get_all_public_exams(skip: int, limit: int, db: Session):
     public_exams = db.query(models.Exam).join(models.User).filter(models.User.role == 0) \
-        .offset(skip).limit(limit).all()
+        .filter(models.Exam.is_deleted == False).offset(skip).limit(limit).all()
     return public_exams
 
 def get_all_exam_created_by_user(user_id: int, skip: int, limit: int, db: Session):
-    teacher_exams = db.query(models.Exam).filter(models.Exam.created_by == user_id).offset(skip).limit(limit).all()
+    teacher_exams = db.query(models.Exam).filter(models.Exam.created_by == user_id).filter(models.Exam.is_deleted == False).offset(skip).limit(limit).all()
     return teacher_exams
 
 def get_history_do_exam(user_id: int, db: Session):
@@ -56,9 +56,8 @@ def get_history_do_exam(user_id: int, db: Session):
     return history
 
 def search_exam_public(keyword: str, grade: int, type: str, skip: int, limit: int, db: Session):
-    query = db.query(models.Exam).join(models.User).filter(models.User.role == 0).filter(
-        func.lower(models.Exam.title).contains(keyword.lower())
-    )
+    query = db.query(models.Exam).join(models.User).filter(models.User.role == 0).filter(models.Exam.is_deleted == False)\
+        .filter(func.lower(models.Exam.title).contains(keyword.lower()))
 
     if grade is not None:
         query = query.filter(models.Exam.grade == grade)
@@ -77,6 +76,7 @@ def create_exam(file: UploadFile, exam: schema_exam.ExamCreate, db: Session):
         type = exam.type,
         grade = exam.grade,
         created_by = exam.created_by ,
+        is_deleted = True,
         time = 60
     )
     db.add(db_exam)
@@ -85,6 +85,9 @@ def create_exam(file: UploadFile, exam: schema_exam.ExamCreate, db: Session):
     
     thread_1 = threading.Thread(target=extract_from_file_thread, args=(file, db_exam.exam_id, db, ))
     thread_1.start()
+
+    notification_service.add_notification(user_id= exam.created_by, \
+            content=f"Đề thi'{exam.title}' đã được tìm thấy, bạn hãy quay lại sau khi đề thi trích xuất xong nhé", db=db)
     return db_exam
 
 def extract_from_file_thread(file: UploadFile, exam_id: int, db: Session):
@@ -94,6 +97,17 @@ def extract_from_file_thread(file: UploadFile, exam_id: int, db: Session):
     (answer_A,answer_B,answer_C,answer_D) = service_extract.extract_ABCD(list_img_questions[img_question_h_min], img_text_question)
     service_extract.extract_answer(list_img_questions, exam_id, answer_A, answer_B, answer_C, answer_D, db)
 
+    # update status
+    print("exam_id: ", exam_id)
+    db_exam = db.query(models.Exam).filter(models.Exam.exam_id == exam_id).first()
+    db_exam.is_deleted = False
+    db.commit()
+    db.refresh(db_exam)
+
+    # push notification
+    notification_service.add_notification(user_id=db_exam.created_by,\
+            content=f"Đề thi'{db_exam.title}' đã trích xuất xong, bạn hãy vào danh sách đề thi quản lý và chỉnh sửa lại nhé", db=db)
+
 def extract_from_url_thread(source_url: str, source: NameSourceExam, exam_id: int, db: Session):
     (img_full, img_page_1) = service_extract.process_download_file_and_get_full_img(source_url, source)
     (column, img_text_question) = service_extract.extract_cau_(img_page_1)
@@ -101,13 +115,24 @@ def extract_from_url_thread(source_url: str, source: NameSourceExam, exam_id: in
     (answer_A,answer_B,answer_C,answer_D) = service_extract.extract_ABCD(list_img_questions[img_question_h_min], img_text_question)
     service_extract.extract_answer(list_img_questions, exam_id, answer_A, answer_B, answer_C, answer_D, db)
 
+    # update status
+    db_exam = db.query(models.Exam).filter(models.Exam.exam_id == exam_id).first()
+    db_exam.is_deleted = False
+    db.commit()
+    db.refresh(db_exam)
+
+    # push notification
+    notification_service.add_notification(user_id=db_exam.created_by,\
+            content=f"Đề thi'{db_exam.title}' đã trích xuất xong, bạn hãy vào danh sách đề thi quản lý và chỉnh sửa lại nhé", db=db)
+
 def create_exam_from_url(source_url: str, source: NameSourceExam, title: str, grade: int, type: TypeExam, created_by: int, db: Session):
     db_exam = models.Exam(
         title = title,
         subject = "Toán",
         type = type,
         grade = grade,
-        created_by = created_by ,
+        created_by = created_by,
+        is_deleted = True,
         time = 60
     )
     db.add(db_exam)
@@ -116,6 +141,9 @@ def create_exam_from_url(source_url: str, source: NameSourceExam, title: str, gr
     
     thread_2 = threading.Thread(target=extract_from_url_thread, args=(source_url, source, db_exam.exam_id, db, ))
     thread_2.start()
+
+    notification_service.add_notification(user_id= created_by, \
+            content=f"Đề thi'{title}' đã được tạo, bạn hãy quay lại sau khi đề thi trích xuất xong nhé", db=db)
     return db_exam
 
 
@@ -189,10 +217,11 @@ def user_do_exam(user_id: int, exam_id: int, list_questions: list[QuestionTrueAn
     return score_percentage
 
 
-def user_update_answer_of_exam(user_id: int, exam_id: int, \
+def user_update_answer_of_exam(user_id: int, exam_id: int, time: int,\
                                list_questions: list[QuestionTrueAnswer], list_delete_questions: list[int], db: Session):
     user = db.query(models.User).filter(models.User.user_id == user_id).first()
     exam = db.query(models.Exam).filter(models.Exam.exam_id == exam_id).first()
+    exam.time = time
     questions = db.query(models.Question).filter(models.Question.exam_id == exam_id).filter(models.Question.is_deleted == False).all()
     if not user or not exam or not questions:
         return False
