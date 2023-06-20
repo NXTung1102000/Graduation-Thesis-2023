@@ -50,5 +50,6 @@ export const AdminRouter: Router_Component[] = [
   { router: AdminRoute.DASHBOARD, component: <Statistic /> },
   { router: AdminRoute.MANAGE_PUBLIC_EXAM, component: <ManagePublicExam /> },
   { router: AdminRoute.MANAGE_USER, component: <ManageUser /> },
+  { router: TeacherRoute.EDIT_EXAM, component: <ExamEditing /> },
   //
 ];

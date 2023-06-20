@@ -91,16 +91,26 @@ const addExamToClass = async (exams_id_list: number[], teacher_id: number, class
   return result;
 };
 
+const createClass = async (name: string, description: string, created_by: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/class/teacher/createclass`,
+    data: { name, description, created_by },
+  });
+  return result;
+};
+
 export {
+  addExamToClass,
+  addUserListToClass,
+  createClass,
   getAllClassesStudentCanSee,
   getAllClassesTeacherJoined,
   getAllExamsOfClass,
   getAllStudentsOfClass,
   getAllTeachersOfClass,
-  studentRegisterClass,
-  getTeacherListCanAddToClass,
-  getStudentListCanAddToClass,
-  addUserListToClass,
-  addExamToClass,
   getExamListCanAddToClass,
+  getStudentListCanAddToClass,
+  getTeacherListCanAddToClass,
+  studentRegisterClass,
 };

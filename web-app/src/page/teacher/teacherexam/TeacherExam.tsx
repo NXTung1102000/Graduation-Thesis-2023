@@ -2,16 +2,16 @@ import './index.css';
 
 import { Button } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { getAllExamsOfUser } from '../../../api/exam';
 import { InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
+import { TeacherRoute } from '../../../constant/route/name';
 import { useAppSelector } from '../../../store/hook';
 import { getDateFromString } from '../../../util/datetime';
 import { selectAuth } from '../../account/AuthSlice';
 import DialogCreateExam from './DialogCreateExam';
-import { StudentRoute, TeacherRoute } from '../../../constant/route/name';
-import { useNavigate } from 'react-router-dom';
 
 const tableColumn = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 

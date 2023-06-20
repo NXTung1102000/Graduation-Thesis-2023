@@ -4,9 +4,10 @@ import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+import { getDetailExamForEdit, userUpdateExam } from '../../../../api/exam';
 import { CommonDialog, InfoBox, QuestionList, RadioBoxGroup } from '../../../../component';
 import { IQuestion, IQuestionAnswer } from '../../../../constant';
-import { getDetailExamForEdit, userUpdateExam } from '../../../../api/exam';
 import { useAppSelector } from '../../../../store/hook';
 import { selectAuth } from '../../../account/AuthSlice';
 
@@ -196,6 +197,8 @@ function ExamEditing() {
                   )
                 }
                 primaryButtonText="Xác nhận"
+                cancelButtonText="Hủy"
+                setIsOpen={() => setOpenDialog(false)}
               />
             </div>
             <QuestionList

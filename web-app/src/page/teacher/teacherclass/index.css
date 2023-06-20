@@ -13,3 +13,7 @@
   flex-flow: column;
   gap: 16px;
 }
+
+.a-teacher-teacherclass-table .MuiButton-containedPrimary{
+  width: 170px;
+}
