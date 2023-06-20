@@ -1,7 +1,9 @@
+import ArticleIcon from '@mui/icons-material/Article';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HistoryIcon from '@mui/icons-material/History';
 import HomeIcon from '@mui/icons-material/Home';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import QuizIcon from '@mui/icons-material/Quiz';
 import SchoolIcon from '@mui/icons-material/School';
@@ -34,6 +36,8 @@ export const listTeacherTab: TabRedirect[] = [
 
 export const listAdminTab: TabRedirect[] = [
   { name: AdminTab.DASHBOARD, icon: <DashboardIcon />, route: AdminRoute.DASHBOARD },
+  { name: AdminTab.MANAGE_PUBLIC_EXAM, icon: <ArticleIcon />, route: AdminRoute.MANAGE_PUBLIC_EXAM },
+  { name: AdminTab.MANAGE_USER, icon: <ManageAccountsIcon />, route: AdminRoute.MANAGE_USER },
 
   // define tab
 ];

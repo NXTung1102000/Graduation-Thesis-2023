@@ -1,4 +1,6 @@
 import Profile from '../../page/account/Profile';
+import ManagePublicExam from '../../page/admin/managePublicExam/ManagePublicExam';
+import ManageUser from '../../page/admin/manageUser/ManageUser';
 import Statistic from '../../page/admin/Statistic';
 import SearchExamIntegration from '../../page/guest/SearchExamIntegration';
 import Home from '../../page/Home';
@@ -46,5 +48,7 @@ export const TeacherRouter: Router_Component[] = [
 
 export const AdminRouter: Router_Component[] = [
   { router: AdminRoute.DASHBOARD, component: <Statistic /> },
+  { router: AdminRoute.MANAGE_PUBLIC_EXAM, component: <ManagePublicExam /> },
+  { router: AdminRoute.MANAGE_USER, component: <ManageUser /> },
   //
 ];

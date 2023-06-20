@@ -1,49 +1,57 @@
-import React from 'react';
-import { ContentHeader, PageTitle, TableComponent } from '../../../component';
-import { IExamHistory } from '../../../constant';
 import './index.css';
 
-interface IExamHistoryProps {}
+import React from 'react';
 
-const header = ['#', 'Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Điểm'];
+import { getHistoryDoExam } from '../../../api/exam';
+import { ContentHeader, PageTitle, TableComponent } from '../../../component';
+import { IExamHistory } from '../../../constant';
+import { useAppSelector } from '../../../store/hook';
+import { getDateFromString } from '../../../util/datetime';
+import { selectAuth } from '../../account/AuthSlice';
 
-const data: IExamHistory[] = [
-  {
-    title: 'Ôn tập Toán 12',
-    type: 'Giữa kỳ 1',
-    grade: 10,
-    completedDate: '17/11/2022',
-    score: 10,
-  },
-  {
-    title: 'Ôn tập Toán 12',
-    type: 'Giữa kỳ 1',
-    grade: 10,
-    completedDate: '17/11/2022',
-    score: 9,
-  },
-];
+const header = ['#', 'Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày làm', 'Điểm'];
 
-class ExamHistory extends React.Component<IExamHistoryProps> {
-  public constructor(props: IExamHistoryProps) {
-    super(props);
-  }
+export default function ExamHistory() {
+  const auth = useAppSelector(selectAuth);
 
-  public render(): React.ReactNode {
-    return (
-      <div className="a-student-examhistory">
-        <PageTitle content="Lịch Sử Làm Đề" />
-        <div className="a-student-examhistory-table">
-          <ContentHeader content="Lịch Sử" />
-          <TableComponent header={header} data={this.renderData()} />
-        </div>
-      </div>
-    );
-  }
+  const [data, setData] = React.useState<IExamHistory[]>([]);
 
-  private renderData = () => {
-    return data.map((item, index) => ({ index: index + 1, ...item }));
+  const refreshData = () => {
+    getHistoryDoExam(auth.user.user_id)
+      .then((response) => response.data)
+      .then((res) => {
+        if (res.code == '200') {
+          setData(res.result);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-}
 
-export default ExamHistory;
+  React.useEffect(() => {
+    refreshData();
+  }, []);
+
+  const renderData = () => {
+    return data.map((item, index) => ({
+      index: `${index + 1}`,
+      title: item.title,
+      type: item.type,
+      grade: item.grade,
+      time: item.time,
+      completedDate: getDateFromString(item.created_at as string),
+      score: item.score,
+    }));
+  };
+
+  return (
+    <div className="a-student-examhistory">
+      <PageTitle content="Lịch Sử Làm Đề" />
+      <div className="a-student-examhistory-table">
+        <ContentHeader content="Lịch Sử" />
+        <TableComponent header={header} data={renderData()} />
+      </div>
+    </div>
+  );
+}

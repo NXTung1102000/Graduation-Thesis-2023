@@ -15,5 +15,6 @@ export enum TeacherTab {
 
 export enum AdminTab {
   DASHBOARD = 'Thống kê',
-  MANAGE_TEACHER = 'Quản lý giáo viên',
+  MANAGE_USER = 'Quản lý người dùng',
+  MANAGE_PUBLIC_EXAM = 'Quản lý đề thi công khai',
 }

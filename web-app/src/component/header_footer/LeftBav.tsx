@@ -1,5 +1,6 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuIcon from '@mui/icons-material/Menu';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { IconButton } from '@mui/material';
 import Divider from '@mui/material/Divider';
@@ -37,7 +38,17 @@ export default function LeftBav(props: IProps) {
     <>
       <CreateAccountTeacher open={openCreate} setOpen={setOpenCreate} />
       <Menu variant="permanent" open={props.open}>
-        <ResponsiveMenu>
+        <ResponsiveMenu color="inherit" sx={{ padding: '0 .5rem 0 0' }}>
+          <List sx={{ width: '100%' }}>
+            <ListItem disablePadding sx={{ display: 'block' }}>
+              <ListItemButton sx={{ minHeight: 48, justifyContent: props.open ? 'initial' : 'center', px: 2.5 }}>
+                <ListItemIcon sx={{ minWidth: 0, mr: props.open ? 3 : 'auto', justifyContent: 'center' }}>
+                  <MenuIcon />
+                </ListItemIcon>
+                <ListItemText primary={'Menu'} sx={{ opacity: props.open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          </List>
           <IconButton onClick={() => props.setOpen(false)}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>

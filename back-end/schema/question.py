@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 from .answer import AnswerInfo
+from typing import Optional
+
+class QuestionTrueAnswer(BaseModel):
+    question_id: int
+    true_answer: int
+
 class QuestionBase(BaseModel):
     content: str
 
@@ -19,7 +25,7 @@ class QuestionInfo(QuestionBase, QuestionUpdateTrueAnswer):
         orm_mode = True
 
 class QuestionInfoHasTrueAnswer(QuestionInfo):
-    true_answer_id: int
+    true_answer_id: Optional[int] = None
 
 
 class DoQuestion(BaseModel):

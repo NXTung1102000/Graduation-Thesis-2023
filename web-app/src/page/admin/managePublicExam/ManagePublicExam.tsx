@@ -9,15 +9,12 @@ import { IExam } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { getDateFromString } from '../../../util/datetime';
 import { selectAuth } from '../../account/AuthSlice';
-import DialogCreateExam from './DialogCreateExam';
-import { StudentRoute, TeacherRoute } from '../../../constant/route/name';
-import { useNavigate } from 'react-router-dom';
+import DialogCreateExam from '../../teacher/teacherexam/DialogCreateExam';
 
 const tableColumn = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 
-export default function TeacherExam() {
+export default function ManagePublicExam() {
   const [data, setData] = React.useState<IExam[]>([]);
-  const navigate = useNavigate();
   const auth = useAppSelector(selectAuth);
   const [openDialogCreateExam, setOpenDialogCreateExam] = React.useState(false);
 
@@ -48,14 +45,7 @@ export default function TeacherExam() {
       created_at: (
         <div className="a-teacherclass-examlist-createddate">
           <div className="a-examlist-createddate-detail">{getDateFromString(item.created_at as string)}</div>
-          <Button
-            color="warning"
-            size="small"
-            variant="contained"
-            onClick={() => {
-              navigate(TeacherRoute.EDIT_EXAM, { state: item });
-            }}
-          >
+          <Button color="warning" size="small" variant="contained">
             {'Sửa'}
           </Button>
           <Button color="error" size="small" variant="contained">

@@ -24,7 +24,7 @@ class ExamInfo(ExamUpdate):
 
     @classmethod
     def from_orm(cls, exam):
-        exam.created_at = exam.created_at.strftime('%d-%m-%Y %H:%M:%S')
+        exam.created_at = str(exam.created_at)
         return super().from_orm(exam)
     
 class ExamDetail(ExamInfo):

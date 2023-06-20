@@ -85,7 +85,15 @@ export default function StudentList() {
       action: (
         <Box>
           {item.status === ClassStatus.Pending && (
-            <Button color="success" size="small" variant="contained" sx={{ margin: '0 1rem 0 0' }}>
+            <Button
+              color="success"
+              size="small"
+              variant="contained"
+              sx={{ margin: '0 1rem 0 0' }}
+              onClick={() => {
+                addStudentList([item.user_id as number], auth.user.user_id, params.class_id);
+              }}
+            >
               {'Xác nhận'}
             </Button>
           )}

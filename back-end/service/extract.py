@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 import asyncio
 from schema.constant import NameSourceExam
 import requests
-
+from sys import platform
 #region
 def asyncQuery(url):
     client = http3.AsyncClient()
@@ -55,13 +55,19 @@ def download_file_and_convert_to_img(url: str):
     file = open(file_name, "wb")
     file.write(response.content)
     file.close()
-    dir_path = os.getcwd()
-    dir_path = dir_path.replace("\\", "\\\\")
-    poppler_path = 'poppler-0.68.0\\bin'
-    full_path = f"{dir_path}\\{poppler_path}"
-    pages = convert_from_path(file_name, 500, poppler_path=full_path)
-    os.remove(file_name)
-    return pages
+
+    if platform == "win32":
+        dir_path = os.getcwd()
+        dir_path = dir_path.replace("\\", "\\\\")
+        poppler_path = 'poppler-0.68.0\\bin'
+        full_path = f"{dir_path}\\{poppler_path}"
+        pages = convert_from_path(file_name, 500, poppler_path=full_path)
+        os.remove(file_name)
+        return pages
+    else:
+        pages = convert_from_path(file_name, 500)
+        os.remove(file_name)
+        return pages
 
 def process_download_file_and_get_full_img(source_url: str, source: NameSourceExam):
     try:
@@ -103,13 +109,20 @@ def convert_pdf_to_img(file):
         temp_file.write(file.file.read())
         
     # content = await file.read()
-    dir_path = os.getcwd()
-    dir_path = dir_path.replace("\\", "\\\\")
-    poppler_path = 'poppler-0.68.0\\bin'
-    full_path = f"{dir_path}\\{poppler_path}"
-    pages = convert_from_path(temp_path, 500, poppler_path=full_path)
-    os.remove(temp_path)
-    return pages
+    print(platform)
+    if platform == "win32":
+        dir_path = os.getcwd()
+        dir_path = dir_path.replace("\\", "\\\\")
+        poppler_path = 'poppler-0.68.0\\bin'
+        full_path = f"{dir_path}\\{poppler_path}"
+        print(full_path)
+        pages = convert_from_path(temp_path, 500, poppler_path=full_path)
+        os.remove(temp_path)
+        return pages
+    else:
+        pages = convert_from_path(temp_path, 500)
+        os.remove(temp_path)
+        return pages
     
 
 def create_img_full(pages):

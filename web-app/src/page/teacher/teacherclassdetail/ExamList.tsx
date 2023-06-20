@@ -2,10 +2,13 @@ import './index.css';
 
 import { Button, CircularProgress } from '@mui/material';
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
+import { addExamToClass, getAllExamsOfClass, getExamListCanAddToClass } from '../../../api/classes';
 import { AutoComplete, CommonDialog, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
+import { getDateFromString } from '../../../util/datetime';
 import { selectAuth } from '../../account/AuthSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { addExamToClass, getAllExamsOfClass, getExamListCanAddToClass } from '../../../api/classes';
@@ -78,10 +81,14 @@ export default function ExamList() {
 
   const renderData = () => {
     return data.map((item) => ({
-      ...item,
+      // ...item,
+      title: item.title,
+      type: item.type,
+      grade: item.grade,
+      time: item.time,
       created_at: (
         <div className="a-teacherclass-examlist-createddate">
-          <div className="a-examlist-createddate-detail">{item.created_at?.toString()}</div>
+          <div className="a-examlist-createddate-detail">{getDateFromString(item.created_at as string)}</div>
           <Button
             color="warning"
             size="small"

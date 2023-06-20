@@ -10,7 +10,7 @@ import { ITeacher } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { selectAuth } from '../../account/AuthSlice';
 
-const header = ['Tên học sinh', 'Email'];
+const header = ['Tên giáo viên', 'Email'];
 
 export default function TeacherList() {
   const auth = useAppSelector(selectAuth);

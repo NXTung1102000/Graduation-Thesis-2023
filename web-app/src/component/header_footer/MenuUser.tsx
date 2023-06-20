@@ -1,11 +1,11 @@
 import { AccountCircle } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { IconButton, Menu, MenuItem } from '@mui/material';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Badge, IconButton, Menu, MenuItem } from '@mui/material';
 
 import { selectAuth } from '../../page/account/AuthSlice';
 import { useAppSelector } from '../../store/hook';
-
 interface IProps {
   anchorEl: null | HTMLElement;
   handleMenuClose: () => void;
@@ -72,29 +72,45 @@ export function MenuUserMobile(props: IPropsMobile) {
       open={Boolean(props.mobileMoreAnchorEl)}
       onClose={props.handleMobileMenuClose}
     >
-      <MenuItem onClick={props.openProfile}>
-        <IconButton size="large" color="inherit">
-          <AccountCircle />
-        </IconButton>
-        <p>Tài khoản</p>
-      </MenuItem>
-      <MenuItem onClick={props.signOut}>
-        <IconButton size="large" color="inherit">
-          <LogoutIcon />
-        </IconButton>
-        <p>Đăng xuất</p>
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          props.setOpenLogin(true);
-          props.handleMobileMenuClose();
-        }}
-      >
-        <IconButton size="large" color="inherit">
-          <LoginIcon />
-        </IconButton>
-        <p>Đăng nhập</p>
-      </MenuItem>
+      {auth.access_token && (
+        <MenuItem>
+          <IconButton size="large" color="inherit">
+            <Badge badgeContent={17} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+          <p>Thông báo</p>
+        </MenuItem>
+      )}
+      {auth.access_token && (
+        <MenuItem onClick={props.openProfile}>
+          <IconButton size="large" color="inherit">
+            <AccountCircle />
+          </IconButton>
+          <p>Tài khoản</p>
+        </MenuItem>
+      )}
+      {auth.access_token && (
+        <MenuItem onClick={props.signOut}>
+          <IconButton size="large" color="inherit">
+            <LogoutIcon />
+          </IconButton>
+          <p>Đăng xuất</p>
+        </MenuItem>
+      )}
+      {!auth.access_token && (
+        <MenuItem
+          onClick={() => {
+            props.setOpenLogin(true);
+            props.handleMobileMenuClose();
+          }}
+        >
+          <IconButton size="large" color="inherit">
+            <LoginIcon />
+          </IconButton>
+          <p>Đăng nhập</p>
+        </MenuItem>
+      )}
     </Menu>
   );
 }

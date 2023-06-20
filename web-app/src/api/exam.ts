@@ -67,6 +67,15 @@ const getDetailExamForDo = async (exam_id: number) => {
   return result;
 };
 
+const getHistoryDoExam = async (user_id: number) => {
+  const result = await api({
+    method: 'GET',
+    url: `/exam/gethisorydoexam?user_id=${user_id}`,
+  });
+
+  return result;
+};
+
 const userDoExam = async (user_id: number, exam_id: number, list_questions: IQuestionAnswer[]) => {
   const result = await api({
     method: 'POST',
@@ -136,6 +145,7 @@ export {
   getAllPublicExams,
   getDetailExamForDo,
   getDetailExamForEdit,
+  getHistoryDoExam,
   searchIntegration,
   searchIntegrationOneWeb,
   searchPublicExams,
