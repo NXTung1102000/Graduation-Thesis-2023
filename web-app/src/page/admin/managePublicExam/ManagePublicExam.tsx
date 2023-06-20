@@ -26,7 +26,6 @@ export default function ManagePublicExam() {
       .then((res) => res.data)
       .then((res) => {
         if (res.code == '200') {
-          console.log(res.result);
           setData(res.result);
         } else {
           setData([]);

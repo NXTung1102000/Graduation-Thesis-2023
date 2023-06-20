@@ -104,12 +104,11 @@ export default function SearchExamIntegration() {
   };
 
   const handleCreateExam = (item: IExamFromSource) => {
-    console.log(item);
     const source_url = item.link;
     const source = item.source;
     const title = item.title;
     const type = item.type;
-    const grade = item.grade;
+    const grade = item.type == (TypeExam.Demo as string) ? 12 : item.grade;
     const created_by = auth.user.user_id;
     createExamFromUrlAPIv1(source_url, source, title, type, grade, created_by)
       .then((res) => res.data)

@@ -44,17 +44,11 @@ export default function Layout(props: Props) {
   const [anchorElNotification, setAnchorElNotification] = React.useState<null | HTMLElement>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [webSocket, setWebSocket] = React.useState<WebSocket | null>(null);
 
   const signOut = async () => {
     navigate(GuestRoute.HOME);
     dispatch(LogOutUser());
     handleMenuClose();
-    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.close();
-      console.log(webSocket);
-      setWebSocket(null);
-    }
   };
 
   const returnHome = () => {
