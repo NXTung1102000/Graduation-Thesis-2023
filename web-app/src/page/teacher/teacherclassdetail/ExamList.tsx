@@ -7,8 +7,9 @@ import { AutoComplete, CommonDialog, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
 import { selectAuth } from '../../account/AuthSlice';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { addExamToClass, getAllExamsOfClass, getExamListCanAddToClass } from '../../../api/classes';
+import { TeacherRoute } from '../../../constant/route/name';
 
 const header = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 
@@ -20,6 +21,7 @@ export default function ExamList() {
   const [examCanAddListLoading, setExamCanAddListLoading] = React.useState<boolean>(true);
   const [examAddList, setExamAddList] = React.useState<number[]>([]);
   const params = useLocation().state;
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     handleGetTable();
@@ -80,7 +82,14 @@ export default function ExamList() {
       created_at: (
         <div className="a-teacherclass-examlist-createddate">
           <div className="a-examlist-createddate-detail">{item.created_at?.toString()}</div>
-          <Button color="warning" size="small" variant="contained">
+          <Button
+            color="warning"
+            size="small"
+            variant="contained"
+            onClick={() => {
+              navigate(TeacherRoute.EDIT_EXAM, { state: item });
+            }}
+          >
             {'Sửa'}
           </Button>
           <Button color="error" size="small" variant="contained">

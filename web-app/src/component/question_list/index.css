@@ -3,6 +3,11 @@
   color: #fff;
 }
 
+.MuiButtonBase-root.MuiToggleButton-root.a-question-deleted{
+  background-color: #c62828;
+  color: #fff;
+}
+
 .a-question-uncompleted{
 }
 

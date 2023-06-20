@@ -9,6 +9,7 @@ import StudentClass from '../../page/student/studentclass/StudentClass';
 import StudentExamClass from '../../page/student/studentexamclass/StudentExamClass';
 import TeacherClass from '../../page/teacher/teacherclass/TeacherClass';
 import TeacherClassDetail from '../../page/teacher/teacherclassdetail/TeacherClassDetail';
+import ExamEditing from '../../page/teacher/teacherexam/examediting/ExamEditing';
 import TeacherExam from '../../page/teacher/teacherexam/TeacherExam';
 import { AccountRoute, AdminRoute, GuestRoute, StudentRoute, TeacherRoute } from './name';
 
@@ -40,6 +41,7 @@ export const TeacherRouter: Router_Component[] = [
   { router: TeacherRoute.MANAGE_CLASS, component: <TeacherClass /> },
   { router: TeacherRoute.MANAGE_CLASS_DETAIL, component: <TeacherClassDetail /> },
   { router: TeacherRoute.MANAGE_EXAM, component: <TeacherExam /> },
+  { router: TeacherRoute.EDIT_EXAM, component: <ExamEditing /> },
 ];
 
 export const AdminRouter: Router_Component[] = [

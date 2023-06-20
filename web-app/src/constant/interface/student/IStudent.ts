@@ -32,12 +32,14 @@ export interface IQuestionModel {
   question_number?: number;
   true_answer_id?: number;
   answer_list?: IAnswerModel[];
+  exam_id?: number;
 }
 
 export interface IAnswerModel {
   answer_id?: number;
   answer_number?: number;
   content?: string;
+  question_id?: number;
 }
 
 export interface IHumanModel {

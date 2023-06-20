@@ -1,4 +1,5 @@
 import { ClassStatus } from './enum/ClassStatus';
+import { IQuestionAnswerModel } from './interface/exam/IExam';
 import {
   IAnswerModel,
   IClassModel,
@@ -18,5 +19,6 @@ export type IStudent = IStudentModel;
 export type ITeacher = ITeacherModel;
 export type IQuestion = IQuestionModel;
 export type IAnswer = IAnswerModel;
+export type IQuestionAnswer = IQuestionAnswerModel;
 
 export { ClassStatus };

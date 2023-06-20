@@ -1,3 +1,4 @@
+import { IQuestionAnswer } from '../constant';
 import { axiosAPI as api } from './configAPI';
 
 const searchIntegrationOneWeb = async (
@@ -66,6 +67,15 @@ const getDetailExamForDo = async (exam_id: number) => {
   return result;
 };
 
+const userDoExam = async (user_id: number, exam_id: number, list_questions: IQuestionAnswer[]) => {
+  const result = await api({
+    method: 'POST',
+    url: `/exam/doexam`,
+    data: { user_id, exam_id, list_questions },
+  });
+  return result;
+};
+
 const getDetailExamForEdit = async (exam_id: number) => {
   // has true answer for question
   const result = await api({
@@ -73,6 +83,21 @@ const getDetailExamForEdit = async (exam_id: number) => {
     url: `/exam/getdetailexamforedit?exam_id=${exam_id}`,
   });
 
+  return result;
+};
+
+const userUpdateExam = async (
+  user_id: number,
+  exam_id: number,
+  time: number,
+  list_questions: IQuestionAnswer[],
+  list_delete_questions: number[],
+) => {
+  const result = await api({
+    method: 'POST',
+    url: `/examupdateanswerofexam`,
+    data: { user_id, exam_id, time, list_questions, list_delete_questions },
+  });
   return result;
 };
 
@@ -114,4 +139,6 @@ export {
   searchIntegration,
   searchIntegrationOneWeb,
   searchPublicExams,
+  userUpdateExam,
+  userDoExam,
 };

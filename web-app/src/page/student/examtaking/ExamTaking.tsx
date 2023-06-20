@@ -6,9 +6,11 @@ import React from 'react';
 import Countdown from 'react-countdown';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { getDetailExamForDo } from '../../../api/exam';
+import { getDetailExamForDo, userDoExam } from '../../../api/exam';
 import { CommonDialog, InfoBox, QuestionList, RadioBoxGroup } from '../../../component';
-import { IExam, IQuestion } from '../../../constant';
+import { IQuestion, IQuestionAnswer } from '../../../constant';
+import { useAppSelector } from '../../../store/hook';
+import { selectAuth } from '../../account/AuthSlice';
 
 const initQuestions: IQuestion = {
   question_id: 0,
@@ -19,14 +21,18 @@ const initQuestions: IQuestion = {
 };
 
 function ExamTaking() {
+  const auth = useAppSelector(selectAuth);
   const examState = useLocation().state;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answerArray, setAnswerArray] = useState([0]);
+  const [questionAnswerArray, setQuestionAnswerArray] = useState<IQuestionAnswer[]>([]);
+  const [isOpenResult, setOpenResult] = useState(false);
   const [isOpenDialog, setOpenDialog] = useState(false);
   const [currentTime, setCurrentTime] = useState(Date.now());
   const navigate = useNavigate();
   const [questionsList, setQuestionsList] = React.useState<IQuestion[]>([initQuestions]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [examTakingResult, setExamTakingResult] = useState<number>(0);
+  const [isResultLoading, setIsResultLoading] = React.useState(false);
 
   const getData = () => {
     setIsLoading(true);
@@ -35,7 +41,12 @@ function ExamTaking() {
       .then((res) => {
         if (res.code == '200') {
           setQuestionsList(res.result.question_list);
-          setAnswerArray(Array(res.result.question_list.length).fill(0));
+          setQuestionAnswerArray(
+            res.result.question_list.map((item: IQuestion) => ({
+              question_id: item.question_id,
+              true_answer: 0,
+            })),
+          );
           setIsLoading(false);
         } else {
           setQuestionsList([]);
@@ -52,14 +63,39 @@ function ExamTaking() {
     getData();
   }, []);
 
-  const handleAnswerChange = (questionId: number, value: string) => {
-    const updatedAnswers = [...answerArray];
-    updatedAnswers[questionId] = Number(value);
-    setAnswerArray(updatedAnswers);
+  const handleAnswerChange = (questionId: number, value: number) => {
+    setQuestionAnswerArray((prevArray) => {
+      return prevArray.map((item) => {
+        if (item.question_id === questionId) {
+          return {
+            question_id: questionId,
+            true_answer: value,
+          };
+        }
+        return item;
+      });
+    });
   };
 
   const handleQuestionChange = (value: string) => {
     setCurrentQuestion(Number(value));
+  };
+
+  const sendAnswerExam = (user_id: number, exam_id: number, list_questions: IQuestionAnswer[]) => {
+    userDoExam(user_id, exam_id, list_questions)
+      .then((res) => {
+        return res.data;
+      })
+      .then((res) => {
+        if (res.code === '200') {
+          setExamTakingResult(res.result.toFixed(2));
+        }
+        setIsResultLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsResultLoading(false);
+      });
   };
 
   return (
@@ -84,30 +120,54 @@ function ExamTaking() {
                     content: item.content,
                   }))}
                   questionNumber={currentQuestion}
-                  answerArray={answerArray}
-                  onChange={(e) => handleAnswerChange(currentQuestion, e.target.value)}
+                  answerArray={questionAnswerArray.map((item) => item.true_answer!)}
+                  onChange={(e) =>
+                    handleAnswerChange(questionsList[currentQuestion].question_id!, Number(e.target.value))
+                  }
                 />
               </div>
             </div>
           </div>
           <div className="a-examtaking-examlist-container">
             <div className="a-examtaking-examlist-timer">
-              <div className="a-infobox-info-title">{'Thời gian:'}</div>
+              <div className="a-examtaking-timer-title">{'Thời gian:'}</div>
               <Countdown
                 date={currentTime + Number(examState.time) * 60000}
                 onComplete={() => {
-                  setOpenDialog(true);
+                  setOpenResult(true);
                 }}
               />
               <CommonDialog
-                isOpen={isOpenDialog}
-                content="Điểm"
+                isOpen={isOpenResult}
+                content={
+                  isResultLoading ? (
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '.5rem 0 .5rem 0' }}>
+                      <CircularProgress />
+                    </Box>
+                  ) : (
+                    'Điểm thi: ' + examTakingResult
+                  )
+                }
                 title="Kết quả thi"
                 action={() => navigate(-1)}
                 primaryButtonText="Xác nhận"
               />
+              <CommonDialog
+                isOpen={isOpenDialog}
+                content="Xác nhận?"
+                title="Hoàn thành bài thi"
+                action={() => {
+                  setOpenResult(true);
+                  setIsResultLoading(true);
+                  sendAnswerExam(auth.user.user_id, examState.exam_id, questionAnswerArray);
+                }}
+                primaryButtonText="Xác nhận"
+              />
             </div>
-            <QuestionList answerArray={answerArray} onClick={(e, value) => handleQuestionChange(value)} />
+            <QuestionList
+              questionAnswerArray={questionAnswerArray}
+              onClick={(e, value) => handleQuestionChange(value)}
+            />
             <Button
               size="small"
               variant="contained"

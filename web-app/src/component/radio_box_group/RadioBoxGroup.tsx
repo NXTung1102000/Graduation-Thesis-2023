@@ -12,6 +12,7 @@ interface IRadioBoxGroup {
   questionNumber: number;
   answerArray: number[];
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  disable?: boolean;
 }
 
 export default function RadioBoxGroup(props: IRadioBoxGroup) {
@@ -27,6 +28,7 @@ export default function RadioBoxGroup(props: IRadioBoxGroup) {
         {props.options.map((item) => {
           return (
             <FormControlLabel
+              disabled={props.disable}
               key={item.key}
               value={item.key}
               control={<Radio />}
