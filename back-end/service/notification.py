@@ -42,7 +42,7 @@ def update_status_of_notification_by_user(user_id: int, db: Session):
         stmt = (
             update(models.Notification)
             .where(models.Notification.user_id == user_id)
-            .values(is_read=False)
+            .values(is_read=True)
             )
         db.execute(stmt)
         db.commit()

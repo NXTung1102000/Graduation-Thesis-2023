@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getUnreadNotification } from '../api/notification';
+import { getUnreadNotification, updateStatusOfNotificationByUser } from '../api/notification';
 import { HeaderApp } from '../component/header_footer/HeaderApp';
 import LeftBav from '../component/header_footer/LeftBav';
 import { ResponsiveMenu } from '../component/header_footer/Menu';
@@ -70,7 +70,9 @@ export default function Layout(props: Props) {
   };
 
   const handleNotificationMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNotification(event.currentTarget);
+    if (notifications.length > 0) {
+      setAnchorElNotification(event.currentTarget);
+    }
   };
 
   const handleNotificationMenuClose = () => {
@@ -103,6 +105,17 @@ export default function Layout(props: Props) {
           console.log(err);
         });
     }
+  };
+
+  const markAllNoticeAsRead = () => {
+    updateStatusOfNotificationByUser(auth.user.user_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          refreshNotification();
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   React.useEffect(() => {
@@ -183,6 +196,9 @@ export default function Layout(props: Props) {
           anchorEl={anchorElNotification}
           handleMenuClose={handleNotificationMenuClose}
           notifications={notifications}
+          markAllAsRead={() => {
+            markAllNoticeAsRead();
+          }}
         />
         <MenuUser
           anchorEl={anchorEl}

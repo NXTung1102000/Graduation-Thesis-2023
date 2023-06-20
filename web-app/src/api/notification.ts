@@ -19,3 +19,14 @@ export const getAllNotification = async (user_id: number) => {
 
   return result;
 };
+
+export const updateStatusOfNotificationByUser = async (user_id: number) => {
+  const url = `/notification/readallnotificationsbyuser`;
+  const result = await api({
+    method: 'POST',
+    url: url,
+    data: user_id,
+  });
+
+  return result;
+};
