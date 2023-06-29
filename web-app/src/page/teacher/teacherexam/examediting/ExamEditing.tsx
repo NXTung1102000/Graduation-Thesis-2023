@@ -24,7 +24,6 @@ function ExamEditing() {
   const examState = useLocation().state;
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questionAnswerArray, setQuestionAnswerArray] = useState<IQuestionAnswer[]>([]);
-  const [isOpenDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
   const [questionsList, setQuestionsList] = React.useState<IQuestion[]>([initQuestions]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -183,38 +182,37 @@ function ExamEditing() {
                 }}
                 value={time}
               />
-              <CommonDialog
-                isOpen={isOpenDialog}
-                content="Xác nhận?"
-                title="Hoàn tất chỉnh sủa"
-                action={() =>
-                  updateExam(
-                    auth.user.user_id,
-                    examState.exam_id,
-                    time,
-                    questionAnswerArray.filter((item) => item.true_answer != null),
-                    deleteList,
-                  )
-                }
-                primaryButtonText="Xác nhận"
-                cancelButtonText="Hủy"
-              />
             </div>
             <QuestionList
               questionAnswerArray={questionAnswerArray}
               deleteList={deleteList}
               onClick={(e, value) => handleQuestionChange(value)}
             />
-            <Button
-              disabled={checkUncompleted()}
-              size="small"
-              variant="contained"
-              onClick={() => {
-                setOpenDialog(true);
-              }}
-            >
-              {'Hoàn tất chỉnh sửa'}
-            </Button>
+
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              {checkUncompleted() ? (
+                <Button disabled={checkUncompleted()} size="small" variant="contained">
+                  {'Hoàn tất chỉnh sửa'}
+                </Button>
+              ) : (
+                <CommonDialog
+                  buttonText="Hoàn tất chỉnh sửa"
+                  content="Xác nhận?"
+                  title="Hoàn tất chỉnh sửa"
+                  action={() =>
+                    updateExam(
+                      auth.user.user_id,
+                      examState.exam_id,
+                      time,
+                      questionAnswerArray.filter((item) => item.true_answer != null),
+                      deleteList,
+                    )
+                  }
+                  primaryButtonText="Xác nhận"
+                  cancelButtonText="Hủy"
+                />
+              )}
+            </Box>
           </div>
         </div>
       )}

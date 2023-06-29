@@ -162,6 +162,8 @@ function ExamTaking() {
                   sendAnswerExam(auth.user.user_id, examState.exam_id, questionAnswerArray);
                 }}
                 primaryButtonText="Xác nhận"
+                cancelButtonText="Hủy"
+                setIsOpen={setOpenDialog}
               />
             </div>
             <QuestionList

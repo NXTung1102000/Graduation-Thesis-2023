@@ -16,6 +16,7 @@ interface ICommonDialogProps {
   action?: () => unknown;
   className?: string;
   onOpenButtonClick?: () => void;
+  setIsOpen?: (open: boolean) => void;
 }
 
 export default function CommonDialog(props: ICommonDialogProps) {
@@ -23,16 +24,18 @@ export default function CommonDialog(props: ICommonDialogProps) {
 
   const handleClickOpen = () => {
     setOpen(true);
-    props.onOpenButtonClick!();
+    props.onOpenButtonClick?.();
   };
 
   const handleClose = () => {
     setOpen(false);
+    props.setIsOpen?.(false);
   };
 
   const doAction = () => {
     setOpen(false);
-    props.action!();
+    props.action?.();
+    props.setIsOpen?.(false);
   };
 
   return (

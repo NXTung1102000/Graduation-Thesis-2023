@@ -171,12 +171,8 @@ export default function Layout(props: Props) {
                   color="inherit"
                 >
                   <AccountCircle />
-
-                  {!auth.access_token && <Typography noWrap>Đăng nhập</Typography>}
+                  <Typography noWrap>{auth.access_token ? `${auth.user.name}` : 'Đăng nhập'}</Typography>
                 </IconButton>
-                <Typography variant="h6" noWrap>
-                  {auth.access_token && `${auth.user.name}`}
-                </Typography>
               </Box>
               <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
