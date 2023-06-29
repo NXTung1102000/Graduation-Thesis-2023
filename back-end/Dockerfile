@@ -8,6 +8,8 @@ WORKDIR /back_end
 COPY ./requirements.txt /back_end/requirements.txt
 
 # 
+RUN apt-get update 
+RUN apt-get install -y python3-opencv && apt-get install -y poppler-utils
 RUN pip install --upgrade pip
 RUN pip install -U setuptools
 RUN pip install --no-cache-dir --upgrade -r /back_end/requirements.txt
@@ -16,4 +18,6 @@ RUN pip install --no-cache-dir --upgrade -r /back_end/requirements.txt
 COPY . /back_end
 
 # 
-CMD ["uvicorn", "app:app", "--host=0.0.0.0", "--port=80"]
+CMD ["uvicorn", "app:app", "--host=0.0.0.0", "--port=9000"]
+
+EXPOSE 9000/tcp
