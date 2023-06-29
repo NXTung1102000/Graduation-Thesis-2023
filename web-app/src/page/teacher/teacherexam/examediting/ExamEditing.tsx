@@ -198,7 +198,6 @@ function ExamEditing() {
                 }
                 primaryButtonText="Xác nhận"
                 cancelButtonText="Hủy"
-                setIsOpen={() => setOpenDialog(false)}
               />
             </div>
             <QuestionList
