@@ -21,13 +21,13 @@
   width: 170px;
 }
 
-.a-teacherclass-examlist-createddate, .a-teacherclass-studentlist-email, .a-teacherclass-teacherlist-email{
+.a-teacherclass-examlist-createddate, .a-teacherclass-teacherlist-email{
   display: flex;
   flex-flow: row;
   gap: 16px;
 }
 
-.a-examlist-createddate-detail, .a-studentlist-email-detail, .a-teacherlist-email-detail{
+.a-examlist-createddate-detail, .a-teacherlist-email-detail{
   display: flex;
   align-items: center;
 }

@@ -11,6 +11,7 @@ import { TeacherRoute } from '../../../constant/route/name';
 import { useAppSelector } from '../../../store/hook';
 import { getDateFromString } from '../../../util/datetime';
 import { selectAuth } from '../../account/AuthSlice';
+import { teacherRemoveExamFromClass } from '../../../api/classes';
 
 const header = ['Tên đề', 'Loại đề', 'Khối', 'Thời gian', 'Ngày tạo'];
 
@@ -23,6 +24,9 @@ export default function ExamList() {
   const [examAddList, setExamAddList] = React.useState<number[]>([]);
   const params = useLocation().state;
   const navigate = useNavigate();
+  const [openDeleteAlert, setOpenDeleteAlert] = React.useState(false);
+  const [deleteBusy, setDeleteBusy] = React.useState(false);
+  const [itemDeleted, setItemDeleted] = React.useState<number>(0);
 
   React.useEffect(() => {
     handleGetTable();
@@ -77,6 +81,20 @@ export default function ExamList() {
       });
   };
 
+  const deleteExam = (exam_id: number) => {
+    teacherRemoveExamFromClass(auth.user.user_id, exam_id, params.class_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          handleGetTable();
+        } else {
+        }
+        setOpenDeleteAlert(false);
+        setDeleteBusy(false);
+      });
+    return;
+  };
+
   const renderData = () => {
     return data.map((item) => ({
       // ...item,
@@ -97,7 +115,15 @@ export default function ExamList() {
           >
             {'Sửa'}
           </Button>
-          <Button color="error" size="small" variant="contained">
+          <Button
+            color="error"
+            size="small"
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteAlert(true);
+              setItemDeleted(item.exam_id!);
+            }}
+          >
             {'Xóa'}
           </Button>
         </div>
@@ -133,7 +159,22 @@ export default function ExamList() {
           <CircularProgress />
         </div>
       ) : (
-        <TableComponent header={header} data={renderData()} />
+        <>
+          <TableComponent header={header} data={renderData()} />
+          <CommonDialog
+            isOpen={openDeleteAlert}
+            cancelButtonText="Hủy"
+            primaryButtonText="Xóa"
+            isPrimaryButtonBusy={deleteBusy}
+            title="Xác nhận"
+            content="Xóa?"
+            action={() => {
+              setDeleteBusy(true);
+              deleteExam(itemDeleted);
+            }}
+            setIsOpen={(isOpen) => setOpenDeleteAlert(isOpen)}
+          />
+        </>
       )}
     </div>
   );

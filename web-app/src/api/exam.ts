@@ -138,6 +138,15 @@ const createExamFromUrlAPIv1 = async (
   return result;
 };
 
+const removeExam = async (user_id: number, exam_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/exam/`,
+    data: { user_id, exam_id },
+  });
+  return result;
+};
+
 export {
   createExamAPIv1,
   createExamFromUrlAPIv1,
@@ -151,4 +160,5 @@ export {
   searchPublicExams,
   userUpdateExam,
   userDoExam,
+  removeExam,
 };

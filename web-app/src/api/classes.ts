@@ -100,6 +100,33 @@ const createClass = async (name: string, description: string, created_by: number
   return result;
 };
 
+const teacherRemoveExamFromClass = async (teacher_id: number, exam_id: number, class_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/class/teacher/removeexamfromclass`,
+    data: { teacher_id, exam_id, class_id },
+  });
+  return result;
+};
+
+const teacherRemoveStudentFromClass = async (teacher_id: number, student_id: number, class_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/class/teacher/removestudentfromclass`,
+    data: { teacher_id, student_id, class_id },
+  });
+  return result;
+};
+
+const teacherRemoveTeacherFromClass = async (teacher_owner_id: number, teacher_id: number, class_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/class/teacher/removeteacherfromclass`,
+    data: { teacher_owner_id, teacher_id, class_id },
+  });
+  return result;
+};
+
 export {
   addExamToClass,
   addUserListToClass,
@@ -113,4 +140,7 @@ export {
   getStudentListCanAddToClass,
   getTeacherListCanAddToClass,
   studentRegisterClass,
+  teacherRemoveExamFromClass,
+  teacherRemoveStudentFromClass,
+  teacherRemoveTeacherFromClass,
 };

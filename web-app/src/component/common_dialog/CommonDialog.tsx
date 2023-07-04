@@ -1,3 +1,4 @@
+import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,6 +11,7 @@ interface ICommonDialogProps {
   isOpen?: boolean;
   cancelButtonText?: string;
   primaryButtonText?: string;
+  isPrimaryButtonBusy?: boolean;
   title: string;
   content: string | React.ReactNode;
   buttonText?: string;
@@ -33,9 +35,7 @@ export default function CommonDialog(props: ICommonDialogProps) {
   };
 
   const doAction = () => {
-    setOpen(false);
     props.action?.();
-    props.setIsOpen?.(false);
   };
 
   return (
@@ -62,7 +62,15 @@ export default function CommonDialog(props: ICommonDialogProps) {
               {props.cancelButtonText}
             </Button>
           )}
-          {props.primaryButtonText != undefined && <Button onClick={doAction}>{props.primaryButtonText}</Button>}
+          {props.primaryButtonText != undefined && (
+            <Button
+              onClick={doAction}
+              disabled={props.isPrimaryButtonBusy}
+              startIcon={props.isPrimaryButtonBusy ? <CircularProgress size={15} /> : null}
+            >
+              {props.primaryButtonText}
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

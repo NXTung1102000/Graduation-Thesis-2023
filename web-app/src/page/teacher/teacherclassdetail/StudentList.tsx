@@ -4,7 +4,12 @@ import { Box, Button, CircularProgress } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { addUserListToClass, getAllStudentsOfClass, getStudentListCanAddToClass } from '../../../api/classes';
+import {
+  addUserListToClass,
+  getAllStudentsOfClass,
+  getStudentListCanAddToClass,
+  teacherRemoveStudentFromClass,
+} from '../../../api/classes';
 import { AutoComplete, CommonDialog, TableComponent } from '../../../component';
 import { ClassStatus, IStudent } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
@@ -20,6 +25,9 @@ export default function StudentList() {
   const [studentCanAddListLoading, setStudentCanAddListLoading] = React.useState<boolean>(true);
   const [studentAddList, setStudentAddList] = React.useState<number[]>([]);
   const params = useLocation().state;
+  const [openDeleteAlert, setOpenDeleteAlert] = React.useState(false);
+  const [deleteBusy, setDeleteBusy] = React.useState(false);
+  const [itemDeleted, setItemDeleted] = React.useState<number>(0);
 
   React.useEffect(() => {
     handleGetTable();
@@ -74,16 +82,26 @@ export default function StudentList() {
       });
   };
 
+  const deleteStudent = (student_id: number) => {
+    teacherRemoveStudentFromClass(auth.user.user_id, student_id, params.class_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          handleGetTable();
+        } else {
+        }
+        setOpenDeleteAlert(false);
+        setDeleteBusy(false);
+      });
+    return;
+  };
+
   const renderData = () => {
     return data.map((item) => ({
       name: item.name,
-      email: (
-        <div className="a-teacherclass-studentlist-email">
-          <div className="a-studentlist-email-detail">{item.email?.toString()}</div>
-        </div>
-      ),
+      email: item.email,
       action: (
-        <Box>
+        <div className="a-teacherclass-studentlist-action">
           {item.status === ClassStatus.Pending && (
             <Button
               color="success"
@@ -97,10 +115,18 @@ export default function StudentList() {
               {'Xác nhận'}
             </Button>
           )}
-          <Button color="error" size="small" variant="contained">
+          <Button
+            color="error"
+            size="small"
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteAlert(true);
+              setItemDeleted(item.user_id!);
+            }}
+          >
             {'Xóa'}
           </Button>
-        </Box>
+        </div>
       ),
     }));
   };
@@ -134,7 +160,22 @@ export default function StudentList() {
           <CircularProgress />
         </div>
       ) : (
-        <TableComponent header={header} data={renderData()} />
+        <>
+          <TableComponent header={header} data={renderData()} />
+          <CommonDialog
+            isOpen={openDeleteAlert}
+            cancelButtonText="Hủy"
+            primaryButtonText="Xóa"
+            isPrimaryButtonBusy={deleteBusy}
+            title="Xác nhận"
+            content="Xóa?"
+            action={() => {
+              setDeleteBusy(true);
+              deleteStudent(itemDeleted);
+            }}
+            setIsOpen={(isOpen) => setOpenDeleteAlert(isOpen)}
+          />
+        </>
       )}
     </div>
   );

@@ -4,8 +4,8 @@ import { Button } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllExamsOfUser } from '../../../api/exam';
-import { InfoBox, TableComponent } from '../../../component';
+import { getAllExamsOfUser, removeExam } from '../../../api/exam';
+import { CommonDialog, InfoBox, TableComponent } from '../../../component';
 import { IExam } from '../../../constant';
 import { TeacherRoute } from '../../../constant/route/name';
 import { useAppSelector } from '../../../store/hook';
@@ -20,6 +20,9 @@ export default function TeacherExam() {
   const navigate = useNavigate();
   const auth = useAppSelector(selectAuth);
   const [openDialogCreateExam, setOpenDialogCreateExam] = React.useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = React.useState(false);
+  const [deleteBusy, setDeleteBusy] = React.useState(false);
+  const [itemDeleted, setItemDeleted] = React.useState<number>(0);
 
   const refreshData = () => {
     getAllExamsOfUser(auth.user.user_id)
@@ -30,6 +33,20 @@ export default function TeacherExam() {
         } else {
           setData([]);
         }
+      });
+    return;
+  };
+
+  const deleteExam = (exam_id: number) => {
+    removeExam(auth.user.user_id, exam_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          refreshData();
+        } else {
+        }
+        setOpenDeleteAlert(false);
+        setDeleteBusy(false);
       });
     return;
   };
@@ -57,7 +74,15 @@ export default function TeacherExam() {
           >
             {'Sửa'}
           </Button>
-          <Button color="error" size="small" variant="contained">
+          <Button
+            color="error"
+            size="small"
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteAlert(true);
+              setItemDeleted(item.exam_id!);
+            }}
+          >
             {'Xóa'}
           </Button>
         </div>
@@ -74,6 +99,19 @@ export default function TeacherExam() {
             {'Tải lên đề mới'}
           </Button>
           <TableComponent header={tableColumn} data={renderData()} />
+          <CommonDialog
+            isOpen={openDeleteAlert}
+            cancelButtonText="Hủy"
+            primaryButtonText="Xóa"
+            isPrimaryButtonBusy={deleteBusy}
+            title="Xác nhận"
+            content="Xóa?"
+            action={() => {
+              setDeleteBusy(true);
+              deleteExam(itemDeleted);
+            }}
+            setIsOpen={(isOpen) => setOpenDeleteAlert(isOpen)}
+          />
         </div>
       </div>
     </>

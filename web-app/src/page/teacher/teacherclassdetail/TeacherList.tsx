@@ -4,7 +4,12 @@ import { Button, CircularProgress } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { addUserListToClass, getAllTeachersOfClass, getTeacherListCanAddToClass } from '../../../api/classes';
+import {
+  addUserListToClass,
+  getAllTeachersOfClass,
+  getTeacherListCanAddToClass,
+  teacherRemoveTeacherFromClass,
+} from '../../../api/classes';
 import { AutoComplete, CommonDialog, TableComponent } from '../../../component';
 import { ITeacher } from '../../../constant';
 import { useAppSelector } from '../../../store/hook';
@@ -21,6 +26,9 @@ export default function TeacherList() {
 
   const [teacherAddList, setTeacherAddList] = React.useState<number[]>([]);
   const params = useLocation().state;
+  const [openDeleteAlert, setOpenDeleteAlert] = React.useState(false);
+  const [deleteBusy, setDeleteBusy] = React.useState(false);
+  const [itemDeleted, setItemDeleted] = React.useState<number>(0);
 
   React.useEffect(() => {
     handleGetTable();
@@ -75,13 +83,35 @@ export default function TeacherList() {
       });
   };
 
+  const deleteTeacher = (teacher_id: number) => {
+    teacherRemoveTeacherFromClass(auth.user.user_id, teacher_id, params.class_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          handleGetTable();
+        } else {
+        }
+        setOpenDeleteAlert(false);
+        setDeleteBusy(false);
+      });
+    return;
+  };
+
   const renderData = () => {
     return data.map((item) => ({
       name: item.name,
       email: (
         <div className="a-teacherclass-teacherlist-email">
           <div className="a-teacherlist-email-detail">{item.email?.toString()}</div>
-          <Button color="error" size="small" variant="contained">
+          <Button
+            color="error"
+            size="small"
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteAlert(true);
+              setItemDeleted(item.user_id!);
+            }}
+          >
             {'Xóa'}
           </Button>
         </div>
@@ -118,7 +148,22 @@ export default function TeacherList() {
           <CircularProgress />
         </div>
       ) : (
-        <TableComponent header={header} data={renderData()} />
+        <>
+          <TableComponent header={header} data={renderData()} />
+          <CommonDialog
+            isOpen={openDeleteAlert}
+            cancelButtonText="Hủy"
+            primaryButtonText="Xóa"
+            isPrimaryButtonBusy={deleteBusy}
+            title="Xác nhận"
+            content="Xóa?"
+            action={() => {
+              setDeleteBusy(true);
+              deleteTeacher(itemDeleted);
+            }}
+            setIsOpen={(isOpen) => setOpenDeleteAlert(isOpen)}
+          />
+        </>
       )}
     </div>
   );
