@@ -205,7 +205,7 @@ def remove_student_from_class(teacher_id: int, student_id: int, class_id: int, d
     
     student_class_entry = db.query(models.User_Class).filter_by(user_id=student_id, class_id=class_id).first()
 
-    if student_class_entry is None or student_class_entry.status != 1:
+    if student_class_entry is None or student_class_entry.status != ClassStatus.Joined.value[0]:
         code = "400"
         message = "học sinh {} không tham gia lớp {}".format(student_id, _class_in_db.name)
         return(code, message)
@@ -228,7 +228,7 @@ def remove_teacher_from_class(teacher_owner_id: int, teacher_id: int, class_id: 
     
     teacher_class_entry = db.query(models.User_Class).filter_by(user_id=teacher_id, class_id=class_id).first()
 
-    if teacher_class_entry is None or teacher_class_entry.status != 1:
+    if teacher_class_entry is None or teacher_class_entry.status != ClassStatus.Joined.value[0]:
         code = "400"
         message = "giáo viên {} không tham gia lớp {}".format(teacher_id, _class_in_db.name)
         return(code, message)
