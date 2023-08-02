@@ -35,7 +35,7 @@ export const listTeacherTab: TabRedirect[] = [
 ];
 
 export const listAdminTab: TabRedirect[] = [
-  { name: AdminTab.DASHBOARD, icon: <DashboardIcon />, route: AdminRoute.DASHBOARD },
+  // { name: AdminTab.DASHBOARD, icon: <DashboardIcon />, route: AdminRoute.DASHBOARD },
   { name: AdminTab.MANAGE_PUBLIC_EXAM, icon: <ArticleIcon />, route: AdminRoute.MANAGE_PUBLIC_EXAM },
   { name: AdminTab.MANAGE_USER, icon: <ManageAccountsIcon />, route: AdminRoute.MANAGE_USER },
 

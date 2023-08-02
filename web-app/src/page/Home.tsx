@@ -1,12 +1,14 @@
-import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
-import Management from '../assets/homepage/quan-ly-b-1.png';
-import TakeExam from '../assets/homepage/college-entrance-exam-concept-illustration_114360-13742.png';
-import PublicExam from '../assets/homepage/2903631.jpg';
 import './index.css';
+
+import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
+import PublicExam from '../assets/homepage/2903631.jpg';
+import TakeExam from '../assets/homepage/college-entrance-exam-concept-illustration_114360-13742.png';
+import Management from '../assets/homepage/quan-ly-b-1.png';
+import { AdminRoute, GuestRoute, StudentRoute, TeacherRoute } from '../constant/route/name';
 import { useAppDispatch, useAppSelector } from '../store/hook';
 import { selectAuth } from './account/AuthSlice';
-import { useNavigate } from 'react-router-dom';
-import { AdminRoute, GuestRoute, StudentRoute, TeacherRoute } from '../constant/route/name';
 import { setOpenSignIn } from './account/SignInSlice';
 
 export default function Home() {
@@ -42,7 +44,7 @@ export default function Home() {
 
   return (
     <div className="a-homepage">
-      <div className="a-homepage-welcome">{'Chào Mừng Bạn Đến Với Hệ Thống Quản Lý Lớp'}</div>
+      <div className="a-homepage-welcome">{'Chào mừng bạn đến với thi thử Toán trực tuyến'}</div>
       <div className="a-homepage-paper">
         <Card sx={{ maxWidth: 345 }} onClick={handleManagement}>
           <CardActionArea>
