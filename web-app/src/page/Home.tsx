@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material';
 import Management from '../assets/homepage/quan-ly-b-1.png';
-import TakeExam from '../assets/homepage/college-entrance-exam-concept-illustration_114360-13742.avif';
+import TakeExam from '../assets/homepage/college-entrance-exam-concept-illustration_114360-13742.png';
 import PublicExam from '../assets/homepage/2903631.jpg';
 import './index.css';
 import { useAppDispatch, useAppSelector } from '../store/hook';
