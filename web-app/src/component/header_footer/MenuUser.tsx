@@ -5,17 +5,19 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Badge, IconButton, Menu, MenuItem } from '@mui/material';
 
 import { selectAuth } from '../../page/account/AuthSlice';
-import { useAppSelector } from '../../store/hook';
+import { useAppDispatch, useAppSelector } from '../../store/hook';
+import { setOpenSignIn } from '../../page/account/SignInSlice';
 interface IProps {
   anchorEl: null | HTMLElement;
   handleMenuClose: () => void;
   openProfile: () => void;
   signOut: () => void;
-  setOpenLogin: (open: boolean) => void;
 }
 
 export function MenuUser(props: IProps) {
   const auth = useAppSelector(selectAuth);
+  const dispatch = useAppDispatch();
+
   return (
     <Menu
       anchorEl={props.anchorEl}
@@ -36,7 +38,7 @@ export function MenuUser(props: IProps) {
       {!auth.access_token && (
         <MenuItem
           onClick={() => {
-            props.setOpenLogin(true);
+            dispatch(setOpenSignIn({ open: true }));
             props.handleMenuClose();
           }}
         >
@@ -51,12 +53,13 @@ interface IPropsMobile {
   mobileMoreAnchorEl: null | HTMLElement;
   signOut: () => void;
   openProfile: () => void;
-  setOpenLogin: (open: boolean) => void;
   handleMobileMenuClose: () => void;
 }
 
 export function MenuUserMobile(props: IPropsMobile) {
   const auth = useAppSelector(selectAuth);
+  const dispatch = useAppDispatch();
+
   return (
     <Menu
       anchorEl={props.mobileMoreAnchorEl}
@@ -101,7 +104,7 @@ export function MenuUserMobile(props: IPropsMobile) {
       {!auth.access_token && (
         <MenuItem
           onClick={() => {
-            props.setOpenLogin(true);
+            dispatch(setOpenSignIn({ open: true }));
             props.handleMobileMenuClose();
           }}
         >

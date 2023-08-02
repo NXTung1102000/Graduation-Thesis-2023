@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 
 import loadingSlice from '../component/loading_notice/loadingSlide';
 import noticeSlice from '../component/loading_notice/noticeSlice';
+import signInSlice from '../page/account/SignInSlice';
 import AuthSlice from '../page/account/AuthSlice';
 
 const authPersistConfig = {
@@ -16,6 +17,7 @@ const reducer = combineReducers({
   // auth: AuthSlice,
   isLoading: loadingSlice,
   notice: noticeSlice,
+  loginOpen: signInSlice,
 });
 
 export const store = configureStore({

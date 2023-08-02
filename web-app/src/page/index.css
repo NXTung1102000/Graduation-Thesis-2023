@@ -1,0 +1,25 @@
+.a-homepage {
+  display: flex;
+  flex-flow: column;
+  gap: 60px;
+}
+
+.a-homepage-welcome{
+  justify-content: center;
+  display: flex;
+  font-family: 'Open Sans';
+  font-weight: 700;
+  font-size: 40px;
+  color: #323E4D;
+}
+
+.a-homepage-paper{
+  justify-content: center;
+  display: flex;
+  flex-flow: row;
+  gap: 20px;
+}
+
+.a-homepage-paper .MuiButtonBase-root.MuiCardActionArea-root{
+  height: 400px;
+}

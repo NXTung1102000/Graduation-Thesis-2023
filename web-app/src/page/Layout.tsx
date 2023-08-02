@@ -39,7 +39,6 @@ export default function Layout(props: Props) {
   const [notifications, setNotifications] = React.useState<INotification[]>([]);
 
   const [open, setOpen] = React.useState(true);
-  const [openLogin, setOpenLogin] = React.useState(false);
 
   const [anchorElNotification, setAnchorElNotification] = React.useState<null | HTMLElement>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -131,7 +130,7 @@ export default function Layout(props: Props) {
     <>
       <Notice />
       <Loading open={loading.isLoading} />
-      <SignIn open={openLogin} setOpen={setOpenLogin} />
+      <SignIn />
       <Box sx={{ display: 'flex' }}>
         <HeaderApp position="fixed" open={open}>
           <Toolbar>
@@ -196,18 +195,11 @@ export default function Layout(props: Props) {
             markAllNoticeAsRead();
           }}
         />
-        <MenuUser
-          anchorEl={anchorEl}
-          signOut={signOut}
-          openProfile={openProfile}
-          setOpenLogin={setOpenLogin}
-          handleMenuClose={handleMenuClose}
-        />
+        <MenuUser anchorEl={anchorEl} signOut={signOut} openProfile={openProfile} handleMenuClose={handleMenuClose} />
         <MenuUserMobile
           mobileMoreAnchorEl={mobileMoreAnchorEl}
           openProfile={openProfile}
           signOut={signOut}
-          setOpenLogin={setOpenLogin}
           handleMobileMenuClose={handleMobileMenuClose}
         />
         <LeftBav open={open} setOpen={setOpen} navigate={navigateTab} />

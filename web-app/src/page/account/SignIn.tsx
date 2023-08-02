@@ -16,17 +16,16 @@ import { loginAPI } from '../../api/auth';
 import { changeNotice } from '../../component/loading_notice/noticeSlice';
 import { handleChangeState, IState, messageOfFieldIsNotEmpty, validateState } from '../../constant/validate/message';
 import { regexForNotEmpty } from '../../constant/validate/regex';
-import { useAppDispatch } from '../../store/hook';
+import { useAppDispatch, useAppSelector } from '../../store/hook';
 import { LogInUser } from './AuthSlice';
 import ForgetPW from './ForgetPW';
 import Register from './Register';
-interface IOpenDialog {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
+import { selectSignIn, setOpenSignIn } from './SignInSlice';
+interface IOpenDialog {}
 
-export default function SignIn({ open, setOpen }: IOpenDialog) {
+export default function SignIn() {
   const dispatch = useAppDispatch();
+  const signIn = useAppSelector(selectSignIn);
   const [email, setEmail] = React.useState<IState>({
     value: '',
     isError: false,
@@ -66,7 +65,7 @@ export default function SignIn({ open, setOpen }: IOpenDialog) {
             user: result?.user,
           };
           dispatch(LogInUser(detail_user));
-          setOpen(false);
+          dispatch(setOpenSignIn({ open: false }));
         } else {
           dispatch(changeNotice({ message: response.message, open: true, type: 'error' }));
         }
@@ -82,9 +81,9 @@ export default function SignIn({ open, setOpen }: IOpenDialog) {
       <Register open={openRegister} setOpen={setOpenRegister} />
       <ForgetPW open={openForgetPW} setOpen={setOpenForgetPW} />
       <Dialog
-        open={open}
+        open={signIn.open}
         onClose={() => {
-          setOpen(false);
+          dispatch(setOpenSignIn({ open: false }));
           resetState();
         }}
       >
