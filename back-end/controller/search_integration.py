@@ -10,8 +10,12 @@ API_integration = APIRouter(prefix="/integration", tags=["Search Integration"])
 async def search_one_web(req: RequestSearchIntegration, web:NameSourceExam):
     try:
         engine = FACTORY[web]()
-        #result = tasks.run_session(req.dict(),web) 
-        result = await engine.full_process(req)
+        #result = tasks.run_session(req.dict(),web)
+        result = None
+        if web != NameSourceExam.MATH_VN:
+            result = await engine.full_process(req)
+        else:
+            result = engine.full_process(req)
         return ResponseSchema(
             code="200", status="Ok", message="thành công", result=result
         ).dict(exclude_none=True)
@@ -49,6 +53,7 @@ async def search_integration(req: RequestSearchIntegration):
         results += res_toanmath
         res_onluyen = await FACTORY[NameSourceExam.ON_LUYEN.value]().full_process(req)
         res_timdapan = await FACTORY[NameSourceExam.TIM_DAP_AN.value]().full_process(req)
+        res_mathVN = FACTORY[NameSourceExam.MATH_VN.value]().full_process(req)
 
         __duplicate = []
         for _onluyen in res_onluyen:
@@ -58,6 +63,11 @@ async def search_integration(req: RequestSearchIntegration):
                 __duplicate.append(_onluyen)
 
         for _timdapan in res_timdapan:
+            if not is_duplicate_exam(results, _timdapan):
+                results.append(_timdapan)
+            else:
+                __duplicate.append(_timdapan)
+        for _timdapan in res_mathVN:
             if not is_duplicate_exam(results, _timdapan):
                 results.append(_timdapan)
             else:
