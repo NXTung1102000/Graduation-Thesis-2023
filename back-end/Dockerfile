@@ -10,7 +10,7 @@ COPY ./requirements.txt /back_end/requirements.txt
 # 
 RUN apt-get update 
 RUN apt-get install -y python3-opencv && apt-get install -y poppler-utils
-# RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir --upgrade -r /back_end/requirements.txt
 
 # 
