@@ -1,6 +1,6 @@
 export enum GuestTab {
   HOME = 'Trang chủ',
-  SEARCH_EXAM_INTEGRATION = 'Tìm kiếm tích hợp',
+  SEARCH_EXAM_INTEGRATION = 'Tìm kiếm từ nhiều nguồn',
 }
 
 export enum StudentTab {

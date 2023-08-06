@@ -129,7 +129,9 @@ export default function SearchExamIntegration() {
     return data.map((item) => {
       if (
         (auth.user.role == 2 || auth.user.role == 0) &&
-        (item.source == NameSourceExam.TOAN_MATH || item.source == NameSourceExam.ON_LUYEN)
+        (item.source == NameSourceExam.TOAN_MATH ||
+          item.source == NameSourceExam.ON_LUYEN ||
+          item.source == NameSourceExam.MATH_VN)
       ) {
         return {
           // ...item,
@@ -199,7 +201,7 @@ export default function SearchExamIntegration() {
 
   return (
     <div>
-      <PageTitle content="Tìm kiếm đề thi tích hợp" />
+      <PageTitle content="Tìm kiếm đề thi Toán từ nhiều nguồn" />
       <div className="a-student-publicexam-filter a-student-publicexam-container">
         <ContentHeader content="Bộ Lọc" />
         <div className="a-publicexam-filters">
