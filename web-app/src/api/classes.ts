@@ -127,6 +127,15 @@ const teacherRemoveTeacherFromClass = async (teacher_owner_id: number, teacher_i
   return result;
 };
 
+const teacherDeleteClass = async (teacher_owner_id: number, class_id: number) => {
+  const result = await api({
+    method: 'POST',
+    url: `/class/teacher/deleteclass`,
+    data: { teacher_owner_id, class_id },
+  });
+  return result;
+};
+
 export {
   addExamToClass,
   addUserListToClass,
@@ -140,6 +149,7 @@ export {
   getStudentListCanAddToClass,
   getTeacherListCanAddToClass,
   studentRegisterClass,
+  teacherDeleteClass,
   teacherRemoveExamFromClass,
   teacherRemoveStudentFromClass,
   teacherRemoveTeacherFromClass,
