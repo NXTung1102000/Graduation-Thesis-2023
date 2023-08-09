@@ -57,7 +57,7 @@ def get_all_teachers_of_class(class_id, db: Session):
     .filter(
         models.User.role == 2
     ) \
-    .filter(models.User_Class.status == 1) \.all()
+    .filter(models.User_Class.status == 1).all()
     return result
 
 def get_all_exams_of_class(class_id, db: Session):
