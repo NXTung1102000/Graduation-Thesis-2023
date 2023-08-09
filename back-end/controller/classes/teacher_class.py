@@ -286,3 +286,26 @@ async def teacher_remove_teacher_from_class(teacher_owner_id: Annotated[int, Bod
         return ResponseSchema(
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
+
+@API_Class_Teacher.post('/deleteclass', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
+async def teacher_delete_class(teacher_owner_id: Annotated[int, Body()], \
+                            class_id: Annotated[int, Body()], \
+                            db: Session = Depends(get_db)):
+    try:
+        result = service_class.delete_class(teacher_owner_id, class_id, db)
+        code = result[0]
+        message = result[1]
+        if code == "200":
+            return ResponseSchema(
+                code=code, status="Ok", message=message
+            ).dict(exclude_none=True)
+        return ResponseSchema(
+            code = code, status="Bad request", message = message
+        ).dict(exclude_none=True)
+    
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
