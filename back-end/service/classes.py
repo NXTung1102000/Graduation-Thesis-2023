@@ -8,13 +8,13 @@ from . import notification as notification_service
 from . import user as servicer_user
 
 def get_class_by_id(class_id: int, db: Session):
-    _class = db.query(models.Class).filter(models.Class.class_id == class_id)
+    _class = db.query(models.Class).filter(models.Class.class_id == class_id) \
     .filter(models.Class.is_deleted == False) \
     .first()
     return _class
 
 def is_teacher_taking_class(teacher_id, class_id, db: Session):
-    user_class = db.query(models.User_Class).filter_by(user_id=teacher_id, class_id=class_id)
+    user_class = db.query(models.User_Class).filter_by(user_id=teacher_id, class_id=class_id) \
     .filter(models.Class.is_deleted == False) \
     .first()
     return user_class is not None
@@ -24,7 +24,7 @@ def get_all_classes(db: Session):
     return result
 
 def get_all_classes_of_teacher(teacher_id: int, db: Session):
-    result = db.query(models.Class).filter(models.Class.created_by == teacher_id)
+    result = db.query(models.Class).filter(models.Class.created_by == teacher_id) \
     .filter(models.Class.is_deleted == False) \
     .all()
     return result
