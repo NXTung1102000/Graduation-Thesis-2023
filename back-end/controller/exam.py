@@ -191,3 +191,26 @@ async def user_update_answer_of_exam(user_id: Annotated[int, Body()], exam_id: A
         return ResponseSchema(
             code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
         ).dict(exclude_none=True)
+
+@API_Class_Teacher.post('/deleteexam', response_model=ResponseSchema, dependencies=[Depends(JWTBearerForTeacher())])
+async def teacher_delete_exam(teacher_id: Annotated[int, Body()], \
+                            exam_id: Annotated[int, Body()], \
+                            db: Session = Depends(get_db)):
+    try:
+        result = service_exam.delete_exam(teacher_id, class_id, db)
+        code = result[0]
+        message = result[1]
+        if code == "200":
+            return ResponseSchema(
+                code=code, status="Ok", message=message
+            ).dict(exclude_none=True)
+        return ResponseSchema(
+            code = code, status="Bad request", message = message
+        ).dict(exclude_none=True)
+    
+    except Exception as error:
+        error_message = str(error.args)
+        print(error_message)
+        return ResponseSchema(
+            code="500", status="Internal Server Error", message="Lỗi hệ thống", result=error_message
+        ).dict(exclude_none=True)
