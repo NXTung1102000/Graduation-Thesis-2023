@@ -164,7 +164,7 @@ def update_exam(update_exam: schema_exam.ExamUpdate, db: Session):
     db.refresh(db_exam)
     return(code, message)
 
-def delete_exam(teacher_id: int, exam_id: int, db: Session):
+def delete_exam(user_id: int, exam_id: int, db: Session):
     code = "200"
     message = "thành công"
     db_exam = get_exam_by_id(update_exam.exam_id, db)
@@ -173,9 +173,9 @@ def delete_exam(teacher_id: int, exam_id: int, db: Session):
         message = "không tìm thấy đề thi có id là {}".format(exam_id)
         return(code, message)
 
-    if db_exam.created_by != teacher_id:
+    if db_exam.created_by != user_id:
         code = "403"
-        message = "Giáo viên {} không sở hữu lớp này".format(teacher_id)
+        message = "người dùng {} không sở hữu đề thi này".format(user_id)
         return(code, message)
     
     db_exam.is_deleted = True
