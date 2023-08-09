@@ -1,4 +1,5 @@
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LoadingButton from '@mui/lab/LoadingButton';
 // import { FormControlLabel } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -40,6 +41,7 @@ export default function SignIn() {
 
   const [openRegister, setOpenRegister] = React.useState(false);
   const [openForgetPW, setOpenForgetPW] = React.useState(false);
+  const [isLoadingSignIn, setIsLoadingSignIn] = React.useState(false);
 
   const resetState = () => {
     setEmail({ ...email, value: '', isError: false });
@@ -48,6 +50,7 @@ export default function SignIn() {
   };
 
   const handleSubmit = async () => {
+    setIsLoadingSignIn(true);
     if (!isSubmitted) setIsSubmitted(true);
     const errUsername = validateState(email, setEmail, regexForNotEmpty);
     const errPW = validateState(password, setPassword, regexForNotEmpty);
@@ -73,7 +76,11 @@ export default function SignIn() {
       .catch((err) => {
         console.log(err);
         dispatch(changeNotice({ message: err.message, open: true, type: 'error' }));
-      });
+      })
+      .finally(() => {
+        setIsLoadingSignIn(false);
+      })
+    
   };
 
   return (
@@ -126,9 +133,15 @@ export default function SignIn() {
                 value={password.value}
                 onChange={(event) => handleChangeState(password, setPassword, event.target.value, regexForNotEmpty)}
               />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleSubmit}>
+              {/* <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleSubmit}>
                 Đăng nhập
-              </Button>
+              </Button> */}
+              <LoadingButton
+                type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={handleSubmit}
+                loading={isLoadingSignIn}
+              >
+                Đăng nhập
+              </LoadingButton>
               <Grid container>
                 <Grid item xs>
                   <Link href="#" onClick={() => setOpenForgetPW(true)}>
