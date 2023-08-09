@@ -111,6 +111,7 @@ def get_exams_list_of_teacher_can_add_into_class(class_id: int, teacher_id: int,
         .outerjoin(models.Exam_Class, (models.Exam_Class.exam_id == models.Exam.exam_id) & (models.Exam_Class.class_id == class_id))
         .filter(models.User.user_id == teacher_id)
         .filter(models.Exam_Class.exam_id == None)
+        .filter(models.Exam.is_deleted == False)
         .all()
     )
     return exams_not_in
