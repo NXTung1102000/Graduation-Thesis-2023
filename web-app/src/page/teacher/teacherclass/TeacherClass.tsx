@@ -4,8 +4,8 @@ import { Button } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getAllClassesTeacherJoined } from '../../../api/classes';
-import { ContentHeader, PageTitle, TableComponent } from '../../../component';
+import { getAllClassesTeacherJoined, teacherDeleteClass } from '../../../api/classes';
+import { CommonDialog, ContentHeader, PageTitle, TableComponent } from '../../../component';
 import { IClass } from '../../../constant';
 import { TeacherRoute } from '../../../constant/route/name';
 import { useAppSelector } from '../../../store/hook';
@@ -20,6 +20,9 @@ export default function TeacherClass() {
   const auth = useAppSelector(selectAuth);
   const [data, setData] = React.useState<IClass[]>([]);
   const [openDialogCreateClass, setOpenDialogCreateClass] = React.useState(false);
+  const [openDeleteAlert, setOpenDeleteAlert] = React.useState(false);
+  const [deleteBusy, setDeleteBusy] = React.useState(false);
+  const [itemDeleted, setItemDeleted] = React.useState<number>(0);
 
   const reFreshData = () => {
     getAllClassesTeacherJoined(auth.user.user_id)
@@ -48,8 +51,36 @@ export default function TeacherClass() {
         </Link>
       ),
       description: item.description,
-      owner: item.owner?.name,
+      owner:(
+        <div className="a-teacherclass-teacherlist-email">
+          <div className="a-teacherlist-email-detail">{item.owner?.name}</div>
+          <Button
+            color="error"
+            size="small"
+            variant="contained"
+            onClick={() => {
+              setOpenDeleteAlert(true);
+              setItemDeleted(item.class_id!);
+            }}
+          >
+            {'Xóa'}
+          </Button>
+        </div>
+      ),
     }));
+  };
+
+  const deleteClass = (class_id: number) => {
+    teacherDeleteClass(auth.user.user_id, class_id)
+      .then((res) => res.data)
+      .then((res) => {
+        if (res.code == '200') {
+          reFreshData();
+        }
+        setOpenDeleteAlert(false);
+        setDeleteBusy(false);
+      });
+    return;
   };
 
   return (
@@ -57,9 +88,9 @@ export default function TeacherClass() {
       <DialogCreateClass
         open={openDialogCreateClass}
         setOpen={setOpenDialogCreateClass}
-        doAction={() => {
-          reFreshData();
-        }}
+        doAction={
+          reFreshData
+        }
       />
       <div className="a-teacher-teacherclass">
         <PageTitle content="Quản Lý Lớp" />
@@ -75,6 +106,19 @@ export default function TeacherClass() {
             {'Tạo lớp mới'}
           </Button>
           <TableComponent header={header} data={renderData()} />
+          <CommonDialog
+            isOpen={openDeleteAlert}
+            cancelButtonText="Hủy"
+            primaryButtonText="Xóa"
+            isPrimaryButtonBusy={deleteBusy}
+            title="Xác nhận"
+            content="Xóa?"
+            action={() => {
+              setDeleteBusy(true);
+              deleteClass(itemDeleted);
+            }}
+            setIsOpen={(isOpen) => setOpenDeleteAlert(isOpen)}
+          />
         </div>
       </div>
     </>
