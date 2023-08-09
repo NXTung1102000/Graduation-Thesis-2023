@@ -141,7 +141,7 @@ const createExamFromUrlAPIv1 = async (
 const removeExam = async (user_id: number, exam_id: number) => {
   const result = await api({
     method: 'POST',
-    url: `/exam/`,
+    url: `/exam/deleteexam`,
     data: { user_id, exam_id },
   });
   return result;
@@ -155,10 +155,10 @@ export {
   getDetailExamForDo,
   getDetailExamForEdit,
   getHistoryDoExam,
+  removeExam,
   searchIntegration,
   searchIntegrationOneWeb,
   searchPublicExams,
-  userUpdateExam,
   userDoExam,
-  removeExam,
+  userUpdateExam,
 };
