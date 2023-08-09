@@ -15,7 +15,7 @@ import DialogCreateClass from './DialogCreateClass';
 // interface ITeacherClassProps {}
 
 const header = ['Tên lớp', 'Mô tả', 'Chủ sở hữu'];
-
+    
 export default function TeacherClass() {
   const auth = useAppSelector(selectAuth);
   const [data, setData] = React.useState<IClass[]>([]);
