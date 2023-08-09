@@ -35,6 +35,7 @@ def get_all_students_of_class(class_id, db: Session):
     .filter(
         models.User.role == 1
     ) \
+    .filter(models.User_Class.status == 1) \
     .order_by(models.User_Class.status.desc()) \
     .all()
     
@@ -55,7 +56,8 @@ def get_all_teachers_of_class(class_id, db: Session):
     .join(models.User_Class, (models.User.user_id == models.User_Class.user_id) & (models.User_Class.class_id == class_id))  \
     .filter(
         models.User.role == 2
-    ).all()
+    ) \
+    .filter(models.User_Class.status == 1) \.all()
     return result
 
 def get_all_exams_of_class(class_id, db: Session):
